@@ -29,16 +29,16 @@ import java.util.Map;
 import java.util.Set;
 
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * Jackson implementation of {@link MultilingualTextUpdate}.
+ * Jackson implementation of {@link TermUpdate}.
  */
-public class MultilingualTextUpdateImpl implements MultilingualTextUpdate {
+public class TermUpdateImpl implements TermUpdate {
 
 	@JsonIgnore
 	private final Map<String, MonolingualTextValue> modified;
@@ -46,18 +46,18 @@ public class MultilingualTextUpdateImpl implements MultilingualTextUpdate {
 	private final Set<String> removed;
 
 	/**
-	 * Initializes new multilingual text update.
+	 * Initializes new term update.
 	 * 
 	 * @param modified
-	 *            added or changed values
+	 *            added or changed terms
 	 * @param removed
-	 *            language codes of removed values
+	 *            language codes of removed terms
 	 * @throws NullPointerException
 	 *             if any required parameter is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if any parameters or their combination is invalid
 	 */
-	public MultilingualTextUpdateImpl(Collection<MonolingualTextValue> modified, Collection<String> removed) {
+	public TermUpdateImpl(Collection<MonolingualTextValue> modified, Collection<String> removed) {
 		this.modified = Collections.unmodifiableMap(modified.stream()
 				.map(v -> new TermImpl(v.getLanguageCode(), v.getText()))
 				.collect(toMap(v -> v.getLanguageCode(), r -> r)));
@@ -72,13 +72,13 @@ public class MultilingualTextUpdateImpl implements MultilingualTextUpdate {
 
 	@JsonIgnore
 	@Override
-	public Map<String, MonolingualTextValue> getModifiedValues() {
+	public Map<String, MonolingualTextValue> getModifiedTerms() {
 		return modified;
 	}
 
 	@JsonIgnore
 	@Override
-	public Set<String> getRemovedValues() {
+	public Set<String> getRemovedTerms() {
 		return removed;
 	}
 

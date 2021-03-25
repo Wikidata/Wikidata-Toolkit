@@ -29,7 +29,7 @@ import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 /**
@@ -37,7 +37,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
  */
 public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 
-	private MultilingualTextUpdate representations = MultilingualTextUpdate.NULL;
+	private TermUpdate representations = TermUpdate.NULL;
 	private Set<ItemIdValue> grammaticalFeatures;
 
 	/**
@@ -134,10 +134,10 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 *             if removed representation is not present in current form revision
 	 *             (if available)
 	 */
-	public FormUpdateBuilder updateRepresentations(MultilingualTextUpdate update) {
+	public FormUpdateBuilder updateRepresentations(TermUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
 		if (getBaseRevision() != null) {
-			for (String removed : update.getRemovedValues()) {
+			for (String removed : update.getRemovedTerms()) {
 				if (!getBaseRevision().getRepresentations().containsKey(removed)) {
 					throw new IllegalArgumentException("Removed representation is not in the current revision.");
 				}

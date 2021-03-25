@@ -30,7 +30,7 @@ import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -44,7 +44,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormUpdate {
 
 	@JsonIgnore
-	private final MultilingualTextUpdate representations;
+	private final TermUpdate representations;
 	@JsonIgnore
 	private final Set<ItemIdValue> grammaticalFeatures;
 
@@ -69,7 +69,7 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 	protected FormUpdateImpl(
 			FormIdValue entityId,
 			FormDocument revision,
-			MultilingualTextUpdate representations,
+			TermUpdate representations,
 			Collection<ItemIdValue> grammaticalFeatures,
 			StatementUpdate statements) {
 		super(entityId, revision, statements);
@@ -100,13 +100,13 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 
 	@JsonIgnore
 	@Override
-	public MultilingualTextUpdate getRepresentations() {
+	public TermUpdate getRepresentations() {
 		return representations;
 	}
 
 	@JsonProperty("representations")
 	@JsonInclude(Include.NON_NULL)
-	MultilingualTextUpdate getJsonRepresentations() {
+	TermUpdate getJsonRepresentations() {
 		return representations.isEmpty() ? null : representations;
 	}
 

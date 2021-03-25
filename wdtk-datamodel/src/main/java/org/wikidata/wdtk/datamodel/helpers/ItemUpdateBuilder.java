@@ -22,7 +22,7 @@ package org.wikidata.wdtk.datamodel.helpers;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 /**
@@ -112,13 +112,13 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 	}
 
 	@Override
-	public ItemUpdateBuilder updateLabels(MultilingualTextUpdate update) {
+	public ItemUpdateBuilder updateLabels(TermUpdate update) {
 		super.updateLabels(update);
 		return this;
 	}
 
 	@Override
-	public ItemUpdateBuilder updateDescriptions(MultilingualTextUpdate update) {
+	public ItemUpdateBuilder updateDescriptions(TermUpdate update) {
 		super.updateDescriptions(update);
 		return this;
 	}

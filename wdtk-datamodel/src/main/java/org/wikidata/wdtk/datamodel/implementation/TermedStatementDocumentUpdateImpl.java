@@ -22,7 +22,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 import java.util.Objects;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
@@ -39,7 +39,7 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 		implements TermedStatementDocumentUpdate {
 
 	@JsonIgnore
-	private final MultilingualTextUpdate descriptions;
+	private final TermUpdate descriptions;
 
 	/**
 	 * Initializes new entity update.
@@ -63,8 +63,8 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 	protected TermedStatementDocumentUpdateImpl(
 			EntityIdValue entityId,
 			TermedStatementDocument revision,
-			MultilingualTextUpdate labels,
-			MultilingualTextUpdate descriptions,
+			TermUpdate labels,
+			TermUpdate descriptions,
 			StatementUpdate statements) {
 		super(entityId, revision, labels, statements);
 		Objects.requireNonNull(descriptions, "Description update cannot be null.");
@@ -79,13 +79,13 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 
 	@JsonIgnore
 	@Override
-	public MultilingualTextUpdate getDescriptions() {
+	public TermUpdate getDescriptions() {
 		return descriptions;
 	}
 
 	@JsonProperty("descriptions")
 	@JsonInclude(Include.NON_NULL)
-	MultilingualTextUpdate getJsonDescriptions() {
+	TermUpdate getJsonDescriptions() {
 		return descriptions.isEmpty() ? null : descriptions;
 	}
 

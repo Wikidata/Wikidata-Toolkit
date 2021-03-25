@@ -21,7 +21,7 @@ package org.wikidata.wdtk.datamodel.helpers;
 
 import java.util.Objects;
 
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
@@ -32,7 +32,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
  */
 public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 
-	private MultilingualTextUpdate glosses = MultilingualTextUpdate.NULL;
+	private TermUpdate glosses = TermUpdate.NULL;
 
 	/**
 	 * Initializes new builder object for constructing update of sense entity with
@@ -127,10 +127,10 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 *             if removed gloss is not present in current sense revision (if
 	 *             available)
 	 */
-	public SenseUpdateBuilder updateGlosses(MultilingualTextUpdate update) {
+	public SenseUpdateBuilder updateGlosses(TermUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
 		if (getBaseRevision() != null) {
-			for (String removed : update.getRemovedValues()) {
+			for (String removed : update.getRemovedTerms()) {
 				if (!getBaseRevision().getGlosses().containsKey(removed)) {
 					throw new IllegalArgumentException("Removed gloss is not in the current revision.");
 				}

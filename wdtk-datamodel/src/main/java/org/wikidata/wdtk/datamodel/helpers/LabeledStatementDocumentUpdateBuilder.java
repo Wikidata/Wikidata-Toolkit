@@ -28,7 +28,7 @@ import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocumentUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
@@ -40,7 +40,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
  */
 public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDocumentUpdateBuilder {
 
-	MultilingualTextUpdate labels = MultilingualTextUpdate.NULL;
+	TermUpdate labels = TermUpdate.NULL;
 
 	/**
 	 * Initializes new builder object for constructing update of entity with given
@@ -147,10 +147,10 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	 *             if removed label is not present in current entity revision (if
 	 *             available)
 	 */
-	public LabeledStatementDocumentUpdateBuilder updateLabels(MultilingualTextUpdate update) {
+	public LabeledStatementDocumentUpdateBuilder updateLabels(TermUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
 		if (getBaseRevision() != null) {
-			for (String removed : update.getRemovedValues()) {
+			for (String removed : update.getRemovedTerms()) {
 				if (!getBaseRevision().getLabels().containsKey(removed)) {
 					throw new IllegalArgumentException("Removed label is not in the current revision.");
 				}

@@ -35,6 +35,6 @@ public interface SenseUpdate extends StatementDocumentUpdate {
 	 * 
 	 * @return update of sense glosses, possibly empty
 	 */
-	MultilingualTextUpdate getGlosses();
+	TermUpdate getGlosses();
 
 }

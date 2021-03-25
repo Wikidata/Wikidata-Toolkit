@@ -38,7 +38,7 @@ public interface FormUpdate extends StatementDocumentUpdate {
 	 * 
 	 * @return update of form representations, possibly empty
 	 */
-	MultilingualTextUpdate getRepresentations();
+	TermUpdate getRepresentations();
 
 	/**
 	 * Returns new grammatical features of the form assigned in this update. If

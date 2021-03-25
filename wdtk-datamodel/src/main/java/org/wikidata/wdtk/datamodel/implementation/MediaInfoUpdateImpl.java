@@ -22,7 +22,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -51,7 +51,7 @@ public class MediaInfoUpdateImpl extends LabeledStatementDocumentUpdateImpl impl
 	protected MediaInfoUpdateImpl(
 			MediaInfoIdValue entityId,
 			MediaInfoDocument revision,
-			MultilingualTextUpdate labels,
+			TermUpdate labels,
 			StatementUpdate statements) {
 		super(entityId, revision, labels, statements);
 	}

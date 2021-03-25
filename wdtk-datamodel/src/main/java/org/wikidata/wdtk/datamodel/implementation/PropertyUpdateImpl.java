@@ -19,7 +19,7 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
@@ -54,8 +54,8 @@ public class PropertyUpdateImpl extends TermedStatementDocumentUpdateImpl implem
 	protected PropertyUpdateImpl(
 			PropertyIdValue entityId,
 			PropertyDocument revision,
-			MultilingualTextUpdate labels,
-			MultilingualTextUpdate descriptions,
+			TermUpdate labels,
+			TermUpdate descriptions,
 			StatementUpdate statements) {
 		super(entityId, revision, labels, descriptions, statements);
 	}

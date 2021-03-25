@@ -19,7 +19,7 @@
  */
 package org.wikidata.wdtk.datamodel.helpers;
 
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
@@ -112,13 +112,13 @@ public class PropertyUpdateBuilder extends TermedStatementDocumentUpdateBuilder 
 	}
 
 	@Override
-	public PropertyUpdateBuilder updateLabels(MultilingualTextUpdate update) {
+	public PropertyUpdateBuilder updateLabels(TermUpdate update) {
 		super.updateLabels(update);
 		return this;
 	}
 
 	@Override
-	public PropertyUpdateBuilder updateDescriptions(MultilingualTextUpdate update) {
+	public PropertyUpdateBuilder updateDescriptions(TermUpdate update) {
 		super.updateDescriptions(update);
 		return this;
 	}

@@ -21,7 +21,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import java.util.Objects;
 
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
@@ -38,7 +38,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements SenseUpdate {
 
 	@JsonIgnore
-	private final MultilingualTextUpdate glosses;
+	private final TermUpdate glosses;
 
 	/**
 	 * Initializes new sense update.
@@ -59,7 +59,7 @@ public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements Sens
 	protected SenseUpdateImpl(
 			SenseIdValue entityId,
 			SenseDocument revision,
-			MultilingualTextUpdate glosses,
+			TermUpdate glosses,
 			StatementUpdate statements) {
 		super(entityId, revision, statements);
 		Objects.requireNonNull(glosses, "Gloss update cannot be null.");
@@ -86,13 +86,13 @@ public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements Sens
 
 	@JsonIgnore
 	@Override
-	public MultilingualTextUpdate getGlosses() {
+	public TermUpdate getGlosses() {
 		return glosses;
 	}
 
 	@JsonProperty("glosses")
 	@JsonInclude(Include.NON_EMPTY)
-	MultilingualTextUpdate getJsonGlosses() {
+	TermUpdate getJsonGlosses() {
 		return glosses.isEmpty() ? null : glosses;
 	}
 

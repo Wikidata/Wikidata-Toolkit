@@ -29,7 +29,7 @@ import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
 import org.wikidata.wdtk.datamodel.helpers.ItemUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.LexemeUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.MediaInfoUpdateBuilder;
-import org.wikidata.wdtk.datamodel.helpers.MultilingualTextUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.TermUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.PropertyDocumentBuilder;
 import org.wikidata.wdtk.datamodel.helpers.PropertyUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.ReferenceBuilder;
@@ -560,20 +560,20 @@ public interface DataObjectFactory {
 										   long revisionId);
 
 	/**
-	 * Creates new {@link MultilingualTextUpdate}. It might be more convenient to
-	 * use {@link MultilingualTextUpdateBuilder}.
+	 * Creates new {@link TermUpdate}. It might be more convenient to
+	 * use {@link TermUpdateBuilder}.
 	 * 
 	 * @param modified
 	 *            added or changed values
 	 * @param removed
 	 *            language codes of removed values
-	 * @return new {@link MultilingualTextUpdate}
+	 * @return new {@link TermUpdate}
 	 * @throws NullPointerException
 	 *             if any required parameter is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if any parameters or their combination is invalid
 	 */
-	MultilingualTextUpdate getMultilingualTextUpdate(
+	TermUpdate getTermUpdate(
 			Collection<MonolingualTextValue> modified,
 			Collection<String> removed);
 
@@ -619,7 +619,7 @@ public interface DataObjectFactory {
 	SenseUpdate getSenseUpdate(
 			SenseIdValue entityId,
 			SenseDocument document,
-			MultilingualTextUpdate glosses,
+			TermUpdate glosses,
 			StatementUpdate statements);
 
 	/**
@@ -645,7 +645,7 @@ public interface DataObjectFactory {
 	FormUpdate getFormUpdate(
 			FormIdValue entityId,
 			FormDocument document,
-			MultilingualTextUpdate representations,
+			TermUpdate representations,
 			Collection<ItemIdValue> grammaticalFeatures,
 			StatementUpdate statements);
 
@@ -688,7 +688,7 @@ public interface DataObjectFactory {
 			LexemeDocument document,
 			ItemIdValue language,
 			ItemIdValue lexicalCategory,
-			MultilingualTextUpdate lemmas,
+			TermUpdate lemmas,
 			StatementUpdate statements,
 			Collection<SenseDocument> addedSenses,
 			Collection<SenseUpdate> updatedSenses,
@@ -718,7 +718,7 @@ public interface DataObjectFactory {
 	MediaInfoUpdate getMediaInfoUpdate(
 			MediaInfoIdValue entityId,
 			MediaInfoDocument document,
-			MultilingualTextUpdate labels,
+			TermUpdate labels,
 			StatementUpdate statements);
 
 	/**
@@ -744,8 +744,8 @@ public interface DataObjectFactory {
 	ItemUpdate getItemUpdate(
 			ItemIdValue entityId,
 			ItemDocument document,
-			MultilingualTextUpdate labels,
-			MultilingualTextUpdate descriptions,
+			TermUpdate labels,
+			TermUpdate descriptions,
 			StatementUpdate statements);
 
 	/**
@@ -772,8 +772,8 @@ public interface DataObjectFactory {
 	PropertyUpdate getPropertyUpdate(
 			PropertyIdValue entityId,
 			PropertyDocument document,
-			MultilingualTextUpdate labels,
-			MultilingualTextUpdate descriptions,
+			TermUpdate labels,
+			TermUpdate descriptions,
 			StatementUpdate statements);
 
 }

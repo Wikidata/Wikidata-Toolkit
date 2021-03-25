@@ -33,6 +33,6 @@ public interface TermedDocumentUpdate extends LabeledDocumentUpdate {
 	 * 
 	 * @return update of entity descriptions, possibly empty
 	 */
-	MultilingualTextUpdate getDescriptions();
+	TermUpdate getDescriptions();
 
 }

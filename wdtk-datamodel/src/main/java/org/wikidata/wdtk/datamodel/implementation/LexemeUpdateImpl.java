@@ -38,7 +38,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
@@ -59,7 +59,7 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 	@JsonIgnore
 	private final ItemIdValue lexicalCategory;
 	@JsonIgnore
-	private final MultilingualTextUpdate lemmas;
+	private final TermUpdate lemmas;
 	@JsonIgnore
 	private final List<SenseDocument> addedSenses;
 	@JsonIgnore
@@ -111,7 +111,7 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 			LexemeDocument revision,
 			ItemIdValue language,
 			ItemIdValue lexicalCategory,
-			MultilingualTextUpdate lemmas,
+			TermUpdate lemmas,
 			StatementUpdate statements,
 			Collection<SenseDocument> addedSenses,
 			Collection<SenseUpdate> updatedSenses,
@@ -180,13 +180,13 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 
 	@JsonIgnore
 	@Override
-	public MultilingualTextUpdate getLemmas() {
+	public TermUpdate getLemmas() {
 		return lemmas;
 	}
 
 	@JsonProperty("lemmas")
 	@JsonInclude(Include.NON_NULL)
-	MultilingualTextUpdate getJsonLemmas() {
+	TermUpdate getJsonLemmas() {
 		return lemmas.isEmpty() ? null : lemmas;
 	}
 

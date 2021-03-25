@@ -24,7 +24,7 @@ import java.util.Objects;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocumentUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -39,7 +39,7 @@ public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocume
 		implements LabeledStatementDocumentUpdate {
 
 	@JsonIgnore
-	private final MultilingualTextUpdate labels;
+	private final TermUpdate labels;
 
 	/**
 	 * Initializes new entity update.
@@ -61,7 +61,7 @@ public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocume
 	protected LabeledStatementDocumentUpdateImpl(
 			EntityIdValue entityId,
 			LabeledStatementDocument revision,
-			MultilingualTextUpdate labels,
+			TermUpdate labels,
 			StatementUpdate statements) {
 		super(entityId, revision, statements);
 		Objects.requireNonNull(labels, "Label update cannot be null.");
@@ -76,13 +76,13 @@ public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocume
 
 	@JsonIgnore
 	@Override
-	public MultilingualTextUpdate getLabels() {
+	public TermUpdate getLabels() {
 		return labels;
 	}
 
 	@JsonProperty("labels")
 	@JsonInclude(Include.NON_NULL)
-	MultilingualTextUpdate getJsonLabels() {
+	TermUpdate getJsonLabels() {
 		return labels.isEmpty() ? null : labels;
 	}
 

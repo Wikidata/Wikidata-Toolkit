@@ -24,7 +24,7 @@ import java.util.Objects;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
@@ -37,7 +37,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
  */
 public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatementDocumentUpdateBuilder {
 
-	MultilingualTextUpdate descriptions = MultilingualTextUpdate.NULL;
+	TermUpdate descriptions = TermUpdate.NULL;
 
 	/**
 	 * Initializes new builder object for constructing update of entity with given
@@ -135,7 +135,7 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	}
 
 	@Override
-	public TermedStatementDocumentUpdateBuilder updateLabels(MultilingualTextUpdate update) {
+	public TermedStatementDocumentUpdateBuilder updateLabels(TermUpdate update) {
 		super.updateLabels(update);
 		return this;
 	}
@@ -153,10 +153,10 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	 *             if removed description is not present in current entity revision
 	 *             (if available)
 	 */
-	public TermedStatementDocumentUpdateBuilder updateDescriptions(MultilingualTextUpdate update) {
+	public TermedStatementDocumentUpdateBuilder updateDescriptions(TermUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
 		if (getBaseRevision() != null) {
-			for (String removed : update.getRemovedValues()) {
+			for (String removed : update.getRemovedTerms()) {
 				if (!getBaseRevision().getDescriptions().containsKey(removed)) {
 					throw new IllegalArgumentException("Removed description is not in the current revision.");
 				}

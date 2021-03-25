@@ -44,7 +44,7 @@ import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -309,10 +309,10 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
-	public MultilingualTextUpdate getMultilingualTextUpdate(
+	public TermUpdate getTermUpdate(
 			Collection<MonolingualTextValue> modified,
 			Collection<String> removed) {
-		return new MultilingualTextUpdateImpl(modified, removed);
+		return new TermUpdateImpl(modified, removed);
 	}
 
 	@Override
@@ -327,7 +327,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	public SenseUpdate getSenseUpdate(
 			SenseIdValue entityId,
 			SenseDocument document,
-			MultilingualTextUpdate glosses,
+			TermUpdate glosses,
 			StatementUpdate statements) {
 		return new SenseUpdateImpl(entityId, document, glosses, statements);
 	}
@@ -336,7 +336,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	public FormUpdate getFormUpdate(
 			FormIdValue entityId,
 			FormDocument document,
-			MultilingualTextUpdate representations,
+			TermUpdate representations,
 			Collection<ItemIdValue> grammaticalFeatures,
 			StatementUpdate statements) {
 		return new FormUpdateImpl(entityId, document, representations, grammaticalFeatures, statements);
@@ -348,7 +348,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			LexemeDocument document,
 			ItemIdValue language,
 			ItemIdValue lexicalCategory,
-			MultilingualTextUpdate lemmas,
+			TermUpdate lemmas,
 			StatementUpdate statements,
 			Collection<SenseDocument> addedSenses,
 			Collection<SenseUpdate> updatedSenses,
@@ -366,7 +366,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	public MediaInfoUpdate getMediaInfoUpdate(
 			MediaInfoIdValue entityId,
 			MediaInfoDocument document,
-			MultilingualTextUpdate labels,
+			TermUpdate labels,
 			StatementUpdate statements) {
 		return new MediaInfoUpdateImpl(entityId, document, labels, statements);
 	}
@@ -375,8 +375,8 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	public ItemUpdate getItemUpdate(
 			ItemIdValue entityId,
 			ItemDocument document,
-			MultilingualTextUpdate labels,
-			MultilingualTextUpdate descriptions,
+			TermUpdate labels,
+			TermUpdate descriptions,
 			StatementUpdate statements) {
 		return new ItemUpdateImpl(entityId, document, labels, descriptions, statements);
 	}
@@ -385,8 +385,8 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	public PropertyUpdate getPropertyUpdate(
 			PropertyIdValue entityId,
 			PropertyDocument document,
-			MultilingualTextUpdate labels,
-			MultilingualTextUpdate descriptions,
+			TermUpdate labels,
+			TermUpdate descriptions,
 			StatementUpdate statements) {
 		return new PropertyUpdateImpl(entityId, document, labels, descriptions, statements);
 	}

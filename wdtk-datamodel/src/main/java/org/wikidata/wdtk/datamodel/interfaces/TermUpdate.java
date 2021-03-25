@@ -23,39 +23,39 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import org.wikidata.wdtk.datamodel.implementation.MultilingualTextUpdateImpl;
+import org.wikidata.wdtk.datamodel.implementation.TermUpdateImpl;
 
 /**
- * Collection of changes made to multilingual text value.
+ * Collection of changes made to terms (labels, descriptions, ...).
  */
-public interface MultilingualTextUpdate {
+public interface TermUpdate {
 
 	/**
-	 * Empty update that does not alter or add any monolingual values.
+	 * Empty update that does not alter or remove any terms.
 	 */
-	MultilingualTextUpdate NULL = new MultilingualTextUpdateImpl(Collections.emptyList(), Collections.emptyList());
+	TermUpdate NULL = new TermUpdateImpl(Collections.emptyList(), Collections.emptyList());
 
 	/**
 	 * Checks whether the update is empty. Empty update will not change or remove
-	 * any monolingual values.
+	 * any terms.
 	 * 
 	 * @return {@code true} if the update is empty, {@code false} otherwise
 	 */
 	boolean isEmpty();
 
 	/**
-	 * Returns values added or modified in this update. Existing values are
-	 * preserved if their language code is not listed here.
+	 * Returns terms added or modified in this update. Existing terms are preserved
+	 * if their language code is not listed here.
 	 * 
-	 * @return added or modified values indexed by language code
+	 * @return added or modified terms indexed by language code
 	 */
-	Map<String, MonolingualTextValue> getModifiedValues();
+	Map<String, MonolingualTextValue> getModifiedTerms();
 
 	/**
-	 * Returns language codes of values removed in this update.
+	 * Returns language codes of terms removed in this update.
 	 * 
-	 * @return language codes of removed values
+	 * @return language codes of removed terms
 	 */
-	Set<String> getRemovedValues();
+	Set<String> getRemovedTerms();
 
 }

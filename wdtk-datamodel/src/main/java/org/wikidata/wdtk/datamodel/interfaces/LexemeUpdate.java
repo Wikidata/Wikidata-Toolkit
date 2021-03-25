@@ -58,7 +58,7 @@ public interface LexemeUpdate extends StatementDocumentUpdate {
 	 * 
 	 * @return update of lemmas, possibly empty
 	 */
-	MultilingualTextUpdate getLemmas();
+	TermUpdate getLemmas();
 
 	/**
 	 * Returns new forms added to the lexeme in this update. Existing forms are

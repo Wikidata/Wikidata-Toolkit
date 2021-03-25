@@ -22,7 +22,7 @@ package org.wikidata.wdtk.datamodel.helpers;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 /**
@@ -112,7 +112,7 @@ public class MediaInfoUpdateBuilder extends LabeledStatementDocumentUpdateBuilde
 	}
 
 	@Override
-	public MediaInfoUpdateBuilder updateLabels(MultilingualTextUpdate update) {
+	public MediaInfoUpdateBuilder updateLabels(TermUpdate update) {
 		super.updateLabels(update);
 		return this;
 	}

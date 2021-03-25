@@ -22,7 +22,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -53,8 +53,8 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 	protected ItemUpdateImpl(
 			ItemIdValue entityId,
 			ItemDocument revision,
-			MultilingualTextUpdate labels,
-			MultilingualTextUpdate descriptions,
+			TermUpdate labels,
+			TermUpdate descriptions,
 			StatementUpdate statements) {
 		super(entityId, revision, labels, descriptions, statements);
 	}

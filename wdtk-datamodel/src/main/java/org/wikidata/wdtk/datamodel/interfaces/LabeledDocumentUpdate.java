@@ -32,6 +32,6 @@ public interface LabeledDocumentUpdate extends EntityUpdate {
 	 * 
 	 * @return update of entity labels, possibly empty
 	 */
-	MultilingualTextUpdate getLabels();
+	TermUpdate getLabels();
 
 }

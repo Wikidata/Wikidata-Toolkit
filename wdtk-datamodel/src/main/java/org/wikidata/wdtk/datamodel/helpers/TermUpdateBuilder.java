@@ -28,13 +28,12 @@ import java.util.Set;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 /**
- * Builder for incremental construction of {@link MultilingualTextUpdate}
- * objects.
+ * Builder for incremental construction of {@link TermUpdate} objects.
  */
-public class MultilingualTextUpdateBuilder {
+public class TermUpdateBuilder {
 
 	private static DataObjectFactory factory = new DataObjectFactoryImpl();
 
@@ -42,38 +41,37 @@ public class MultilingualTextUpdateBuilder {
 	private final Set<String> removed = new HashSet<>();
 
 	/**
-	 * Adds or changes monolingual value. If there is no value for the language
-	 * code, new value is added. If a value with this language code already exists,
-	 * it is replaced. Values with other language codes are not touched. Calling
-	 * this method overrides any previous changes made with the same language code
-	 * by this method or {@link #removeMonolingualText(String)}.
+	 * Adds or changes term. If there is no term for the language code, new term is
+	 * added. If a term with this language code already exists, it is replaced.
+	 * Terms with other language codes are not touched. Calling this method
+	 * overrides any previous changes made with the same language code by this
+	 * method or {@link #removeTerm(String)}.
 	 * 
-	 * @param value
-	 *            monolingual value to add or change
+	 * @param term
+	 *            term to add or change
 	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
-	 *             if {@code value} is {@code null}
+	 *             if {@code term} is {@code null}
 	 */
-	public MultilingualTextUpdateBuilder setMonolingualText(MonolingualTextValue value) {
-		Objects.requireNonNull(value, "Value cannot be null.");
-		modified.put(value.getLanguageCode(), value);
-		removed.remove(value.getLanguageCode());
+	public TermUpdateBuilder setTerm(MonolingualTextValue term) {
+		Objects.requireNonNull(term, "Term cannot be null.");
+		modified.put(term.getLanguageCode(), term);
+		removed.remove(term.getLanguageCode());
 		return this;
 	}
 
 	/**
-	 * Removes monolingual value. Values with other language codes are not touched.
-	 * Calling this method overrides any previous changes made with the same
-	 * language code by this method or
-	 * {@link #setMonolingualText(MonolingualTextValue)}.
+	 * Removes term. Terms with other language codes are not touched. Calling this
+	 * method overrides any previous changes made with the same language code by
+	 * this method or {@link #setTerm(MonolingualTextValue)}.
 	 * 
 	 * @param languageCode
-	 *            language code of the removed monolingual value
+	 *            language code of the removed term
 	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code languageCode} is {@code null}
 	 */
-	public MultilingualTextUpdateBuilder removeMonolingualText(String languageCode) {
+	public TermUpdateBuilder removeTerm(String languageCode) {
 		Objects.requireNonNull(languageCode, "Language code cannot be null.");
 		removed.add(languageCode);
 		modified.remove(languageCode);
@@ -81,13 +79,12 @@ public class MultilingualTextUpdateBuilder {
 	}
 
 	/**
-	 * Creates new {@link MultilingualTextUpdate} object with contents of this
-	 * builder object.
+	 * Creates new {@link TermUpdate} object with contents of this builder object.
 	 * 
 	 * @return constructed object
 	 */
-	public MultilingualTextUpdate build() {
-		return factory.getMultilingualTextUpdate(modified.values(), removed);
+	public TermUpdate build() {
+		return factory.getTermUpdate(modified.values(), removed);
 	}
 
 }

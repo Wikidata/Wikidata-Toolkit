@@ -35,7 +35,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
@@ -48,7 +48,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	private ItemIdValue language;
 	private ItemIdValue lexicalCategory;
-	private MultilingualTextUpdate lemmas = MultilingualTextUpdate.NULL;
+	private TermUpdate lemmas = TermUpdate.NULL;
 	private final List<SenseDocument> addedSenses = new ArrayList<>();
 	private final Map<SenseIdValue, SenseUpdate> updatedSenses = new HashMap<>();
 	private final Set<SenseIdValue> removedSenses = new HashSet<>();
@@ -181,10 +181,10 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 *             if removed lemma is not present in current lexeme revision (if
 	 *             available)
 	 */
-	public LexemeUpdateBuilder updateLemmas(MultilingualTextUpdate update) {
+	public LexemeUpdateBuilder updateLemmas(TermUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
 		if (getBaseRevision() != null) {
-			for (String removed : update.getRemovedValues()) {
+			for (String removed : update.getRemovedTerms()) {
 				if (!getBaseRevision().getLemmas().containsKey(removed)) {
 					throw new IllegalArgumentException("Removed lemma is not in the current revision.");
 				}
