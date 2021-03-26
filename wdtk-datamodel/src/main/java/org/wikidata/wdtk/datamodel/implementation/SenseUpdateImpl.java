@@ -56,7 +56,7 @@ public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements Sens
 	 * @throws IllegalArgumentException
 	 *             if any parameters or their combination is invalid
 	 */
-	protected SenseUpdateImpl(
+	public SenseUpdateImpl(
 			SenseIdValue entityId,
 			SenseDocument revision,
 			TermUpdate glosses,

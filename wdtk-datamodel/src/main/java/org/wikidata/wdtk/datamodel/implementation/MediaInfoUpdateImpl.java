@@ -48,7 +48,7 @@ public class MediaInfoUpdateImpl extends LabeledStatementDocumentUpdateImpl impl
 	 * @throws IllegalArgumentException
 	 *             if any parameters or their combination is invalid
 	 */
-	protected MediaInfoUpdateImpl(
+	public MediaInfoUpdateImpl(
 			MediaInfoIdValue entityId,
 			MediaInfoDocument revision,
 			TermUpdate labels,

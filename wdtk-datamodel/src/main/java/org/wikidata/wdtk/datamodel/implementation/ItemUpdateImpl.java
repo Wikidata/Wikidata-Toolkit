@@ -19,9 +19,13 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
+import java.util.List;
+import java.util.Map;
+
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
@@ -43,6 +47,8 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 	 *            changes in entity labels or {@code null} for no change
 	 * @param descriptions
 	 *            changes in entity descriptions or {@code null} for no change
+	 * @param aliases
+	 *            changes in entity aliases, possibly empty
 	 * @param statements
 	 *            changes in entity statements, possibly empty
 	 * @throws NullPointerException
@@ -50,13 +56,14 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 	 * @throws IllegalArgumentException
 	 *             if any parameters or their combination is invalid
 	 */
-	protected ItemUpdateImpl(
+	public ItemUpdateImpl(
 			ItemIdValue entityId,
 			ItemDocument revision,
 			TermUpdate labels,
 			TermUpdate descriptions,
+			Map<String, List<MonolingualTextValue>> aliases,
 			StatementUpdate statements) {
-		super(entityId, revision, labels, descriptions, statements);
+		super(entityId, revision, labels, descriptions, aliases, statements);
 	}
 
 	@JsonIgnore

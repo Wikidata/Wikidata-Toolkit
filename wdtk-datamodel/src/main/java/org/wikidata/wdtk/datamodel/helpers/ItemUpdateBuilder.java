@@ -19,6 +19,8 @@
  */
 package org.wikidata.wdtk.datamodel.helpers;
 
+import java.util.List;
+
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
@@ -124,8 +126,14 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 	}
 
 	@Override
+	public ItemUpdateBuilder setAliases(String language, List<String> aliases) {
+		super.setAliases(language, aliases);
+		return this;
+	}
+
+	@Override
 	public ItemUpdate build() {
-		return factory.getItemUpdate(getEntityId(), getBaseRevision(), labels, descriptions, statements);
+		return factory.getItemUpdate(getEntityId(), getBaseRevision(), labels, descriptions, aliases, statements);
 	}
 
 }

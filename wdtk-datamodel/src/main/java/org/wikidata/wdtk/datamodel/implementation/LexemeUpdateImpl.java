@@ -106,7 +106,7 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 	 * @throws IllegalArgumentException
 	 *             if any parameters or their combination is invalid
 	 */
-	protected LexemeUpdateImpl(
+	public LexemeUpdateImpl(
 			LexemeIdValue entityId,
 			LexemeDocument revision,
 			ItemIdValue language,

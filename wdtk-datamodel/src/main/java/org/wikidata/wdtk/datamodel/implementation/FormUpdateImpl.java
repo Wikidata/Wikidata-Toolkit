@@ -66,7 +66,7 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 	 * @throws IllegalArgumentException
 	 *             if any parameters or their combination is invalid
 	 */
-	protected FormUpdateImpl(
+	public FormUpdateImpl(
 			FormIdValue entityId,
 			FormDocument revision,
 			TermUpdate representations,

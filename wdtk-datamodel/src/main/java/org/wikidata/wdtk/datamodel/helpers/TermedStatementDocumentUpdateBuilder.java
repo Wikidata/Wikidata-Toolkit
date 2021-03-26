@@ -19,11 +19,17 @@
  */
 package org.wikidata.wdtk.datamodel.helpers;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -38,6 +44,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
 public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatementDocumentUpdateBuilder {
 
 	TermUpdate descriptions = TermUpdate.NULL;
+	final Map<String, List<MonolingualTextValue>> aliases = new HashMap<>();
 
 	/**
 	 * Initializes new builder object for constructing update of entity with given
@@ -163,6 +170,29 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 			}
 		}
 		descriptions = update;
+		return this;
+	}
+
+	/**
+	 * Updates entity aliases. Any previous aliases for the language code are
+	 * discarded. To remove aliases for some language code, pass in empty alias
+	 * list.
+	 * 
+	 * @param language
+	 *            language code of the altered aliases
+	 * @param aliases
+	 *            new list of aliases for the language, possibly empty
+	 * @return {@code this} (fluent method)
+	 * @throws NullPointerException
+	 *             if {@code language}, {@code aliases}, or any of the aliases are
+	 *             {@code null}
+	 */
+	public TermedStatementDocumentUpdateBuilder setAliases(String language, List<String> aliases) {
+		Objects.requireNonNull(language, "Language code cannot be null.");
+		Objects.requireNonNull(aliases, "Alias list cannot be null.");
+		this.aliases.put(language, aliases.stream()
+				.map(a -> Datamodel.makeMonolingualTextValue(a, language))
+				.collect(toList()));
 		return this;
 	}
 

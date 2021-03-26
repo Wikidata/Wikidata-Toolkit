@@ -377,8 +377,9 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			ItemDocument document,
 			TermUpdate labels,
 			TermUpdate descriptions,
+			Map<String, List<MonolingualTextValue>> aliases,
 			StatementUpdate statements) {
-		return new ItemUpdateImpl(entityId, document, labels, descriptions, statements);
+		return new ItemUpdateImpl(entityId, document, labels, descriptions, aliases, statements);
 	}
 
 	@Override
@@ -387,8 +388,9 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			PropertyDocument document,
 			TermUpdate labels,
 			TermUpdate descriptions,
+			Map<String, List<MonolingualTextValue>> aliases,
 			StatementUpdate statements) {
-		return new PropertyUpdateImpl(entityId, document, labels, descriptions, statements);
+		return new PropertyUpdateImpl(entityId, document, labels, descriptions, aliases, statements);
 	}
 
 }

@@ -20,6 +20,9 @@
 package org.wikidata.wdtk.datamodel.helpers;
 
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
+
+import java.util.List;
+
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
@@ -124,8 +127,14 @@ public class PropertyUpdateBuilder extends TermedStatementDocumentUpdateBuilder 
 	}
 
 	@Override
+	public PropertyUpdateBuilder setAliases(String language, List<String> aliases) {
+		super.setAliases(language, aliases);
+		return this;
+	}
+
+	@Override
 	public PropertyUpdate build() {
-		return factory.getPropertyUpdate(getEntityId(), getBaseRevision(), labels, descriptions, statements);
+		return factory.getPropertyUpdate(getEntityId(), getBaseRevision(), labels, descriptions, aliases, statements);
 	}
 
 }

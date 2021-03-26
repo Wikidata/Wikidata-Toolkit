@@ -733,6 +733,8 @@ public interface DataObjectFactory {
 	 *            changes in entity labels or {@code null} for no change
 	 * @param descriptions
 	 *            changes in entity descriptions or {@code null} for no change
+	 * @param aliases
+	 *            changes in entity aliases, possibly empty
 	 * @param statements
 	 *            changes in entity statements, possibly empty
 	 * @return new {@link ItemUpdate}
@@ -746,6 +748,7 @@ public interface DataObjectFactory {
 			ItemDocument document,
 			TermUpdate labels,
 			TermUpdate descriptions,
+			Map<String, List<MonolingualTextValue>> aliases,
 			StatementUpdate statements);
 
 	/**
@@ -761,6 +764,8 @@ public interface DataObjectFactory {
 	 *            changes in entity labels or {@code null} for no change
 	 * @param descriptions
 	 *            changes in entity descriptions or {@code null} for no change
+	 * @param aliases
+	 *            changes in entity aliases, possibly empty
 	 * @param statements
 	 *            changes in entity statements, possibly empty
 	 * @return new {@link PropertyUpdate}
@@ -774,6 +779,7 @@ public interface DataObjectFactory {
 			PropertyDocument document,
 			TermUpdate labels,
 			TermUpdate descriptions,
+			Map<String, List<MonolingualTextValue>> aliases,
 			StatementUpdate statements);
 
 }
