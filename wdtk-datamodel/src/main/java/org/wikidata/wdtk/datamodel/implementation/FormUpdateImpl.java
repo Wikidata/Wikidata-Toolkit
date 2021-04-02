@@ -19,9 +19,12 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -30,13 +33,13 @@ import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Jackson implementation of {@link FormUpdate}.
@@ -110,11 +113,18 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 		return representations.isEmpty() ? null : representations;
 	}
 
-	@JsonProperty
-	@JsonInclude(Include.NON_ABSENT)
+	@JsonIgnore
 	@Override
 	public Optional<Set<ItemIdValue>> getGrammaticalFeatures() {
 		return Optional.ofNullable(grammaticalFeatures);
+	}
+
+	@JsonProperty("grammaticalFeatures")
+	@JsonInclude(Include.NON_NULL)
+	List<String> getJsonGrammaticalFeatures() {
+		if (grammaticalFeatures == null)
+			return null;
+		return grammaticalFeatures.stream().map(f -> f.getId()).collect(toList());
 	}
 
 }
