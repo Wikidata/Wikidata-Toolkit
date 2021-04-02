@@ -242,12 +242,14 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 
 	static class RemovedSense {
 
+		@JsonIgnore
 		private final SenseIdValue id;
 
 		RemovedSense(SenseIdValue id) {
 			this.id = id;
 		}
 
+		@JsonProperty
 		String getId() {
 			return id.getId();
 		}
@@ -289,12 +291,14 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 
 	static class RemovedForm {
 
+		@JsonIgnore
 		private final FormIdValue id;
 
 		RemovedForm(FormIdValue id) {
 			this.id = id;
 		}
 
+		@JsonProperty
 		String getId() {
 			return id.getId();
 		}
