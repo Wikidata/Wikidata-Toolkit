@@ -41,32 +41,10 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 	private final Map<String, SiteLink> modifiedSiteLinks = new HashMap<>();
 	private final Set<String> removedSiteLinks = new HashSet<>();
 
-	/**
-	 * Initializes new builder object for constructing update of item entity with
-	 * given ID.
-	 * 
-	 * @param itemId
-	 *            ID of the item entity that is to be updated
-	 * @throws NullPointerException
-	 *             if {@code itemId} is {@code null}
-	 * @throws IllegalArgumentException
-	 *             if {@code itemId} is not a valid ID
-	 */
 	private ItemUpdateBuilder(ItemIdValue itemId) {
 		super(itemId);
 	}
 
-	/**
-	 * Initializes new builder object for constructing update of given base item
-	 * entity revision.
-	 * 
-	 * @param revision
-	 *            base item entity revision to be updated
-	 * @throws NullPointerException
-	 *             if {@code revision} is {@code null}
-	 * @throws IllegalArgumentException
-	 *             if {@code revision} does not have valid ID
-	 */
 	private ItemUpdateBuilder(ItemDocument revision) {
 		super(revision);
 	}

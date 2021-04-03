@@ -40,32 +40,10 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	private TermUpdate representations = TermUpdate.NULL;
 	private Set<ItemIdValue> grammaticalFeatures;
 
-	/**
-	 * Initializes new builder object for constructing update of form entity with
-	 * given ID.
-	 * 
-	 * @param formId
-	 *            ID of the form entity that is to be updated
-	 * @throws NullPointerException
-	 *             if {@code formId} is {@code null}
-	 * @throws IllegalArgumentException
-	 *             if {@code formId} is not a valid ID
-	 */
 	private FormUpdateBuilder(FormIdValue formId) {
 		super(formId);
 	}
 
-	/**
-	 * Initializes new builder object for constructing update of given base form
-	 * entity revision.
-	 * 
-	 * @param revision
-	 *            base form revision to be updated
-	 * @throws NullPointerException
-	 *             if {@code revision} is {@code null}
-	 * @throws IllegalArgumentException
-	 *             if {@code revision} does not have valid ID
-	 */
 	private FormUpdateBuilder(FormDocument revision) {
 		super(revision);
 	}

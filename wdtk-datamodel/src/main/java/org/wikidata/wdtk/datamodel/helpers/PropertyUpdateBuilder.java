@@ -33,32 +33,10 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
  */
 public class PropertyUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 
-	/**
-	 * Initializes new builder object for constructing update of property entity
-	 * with given ID.
-	 * 
-	 * @param propertyId
-	 *            ID of the property entity that is to be updated
-	 * @throws NullPointerException
-	 *             if {@code propertyId} is {@code null}
-	 * @throws IllegalArgumentException
-	 *             if {@code propertyId} is not a valid ID
-	 */
 	private PropertyUpdateBuilder(PropertyIdValue propertyId) {
 		super(propertyId);
 	}
 
-	/**
-	 * Initializes new builder object for constructing update of given base property
-	 * entity revision.
-	 * 
-	 * @param revision
-	 *            base property entity revision to be updated
-	 * @throws NullPointerException
-	 *             if {@code revision} is {@code null}
-	 * @throws IllegalArgumentException
-	 *             if {@code revision} does not have valid ID
-	 */
 	private PropertyUpdateBuilder(PropertyDocument revision) {
 		super(revision);
 	}

@@ -34,32 +34,10 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	private TermUpdate glosses = TermUpdate.NULL;
 
-	/**
-	 * Initializes new builder object for constructing update of sense entity with
-	 * given ID.
-	 * 
-	 * @param senseId
-	 *            ID of the sense entity that is to be updated
-	 * @throws NullPointerException
-	 *             if {@code senseId} is {@code null}
-	 * @throws IllegalArgumentException
-	 *             if {@code senseId} is not a valid ID
-	 */
 	private SenseUpdateBuilder(SenseIdValue senseId) {
 		super(senseId);
 	}
 
-	/**
-	 * Initializes new builder object for constructing update of given base sense
-	 * entity revision.
-	 * 
-	 * @param revision
-	 *            base sense revision to be updated
-	 * @throws NullPointerException
-	 *             if {@code revision} is {@code null}
-	 * @throws IllegalArgumentException
-	 *             if {@code revision} does not have valid ID
-	 */
 	private SenseUpdateBuilder(SenseDocument revision) {
 		super(revision);
 	}

@@ -56,32 +56,10 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	private final Map<FormIdValue, FormUpdate> updatedForms = new HashMap<>();
 	private final Set<FormIdValue> removedForms = new HashSet<>();
 
-	/**
-	 * Initializes new builder object for constructing update of lexeme entity with
-	 * given ID.
-	 * 
-	 * @param lexemeId
-	 *            ID of the lexeme entity that is to be updated
-	 * @throws NullPointerException
-	 *             if {@code lexemeId} is {@code null}
-	 * @throws IllegalArgumentException
-	 *             if {@code lexemeId} is not a valid ID
-	 */
 	private LexemeUpdateBuilder(LexemeIdValue lexemeId) {
 		super(lexemeId);
 	}
 
-	/**
-	 * Initializes new builder object for constructing update of given base lexeme
-	 * entity revision.
-	 * 
-	 * @param revision
-	 *            base lexeme revision to be updated
-	 * @throws NullPointerException
-	 *             if {@code revision} is {@code null}
-	 * @throws IllegalArgumentException
-	 *             if {@code revision} does not have valid ID
-	 */
 	private LexemeUpdateBuilder(LexemeDocument revision) {
 		super(revision);
 	}

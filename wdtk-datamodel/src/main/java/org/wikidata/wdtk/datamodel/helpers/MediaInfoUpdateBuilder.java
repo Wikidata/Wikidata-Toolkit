@@ -30,32 +30,10 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
  */
 public class MediaInfoUpdateBuilder extends LabeledStatementDocumentUpdateBuilder {
 
-	/**
-	 * Initializes new builder object for constructing update of media entity with
-	 * given ID.
-	 * 
-	 * @param mediaInfoId
-	 *            ID of the media entity that is to be updated
-	 * @throws NullPointerException
-	 *             if {@code mediaInfoId} is {@code null}
-	 * @throws IllegalArgumentException
-	 *             if {@code mediaInfoId} is not a valid ID
-	 */
 	private MediaInfoUpdateBuilder(MediaInfoIdValue mediaInfoId) {
 		super(mediaInfoId);
 	}
 
-	/**
-	 * Initializes new builder object for constructing update of given base media
-	 * entity revision.
-	 * 
-	 * @param revision
-	 *            base media revision to be updated
-	 * @throws NullPointerException
-	 *             if {@code revision} is {@code null}
-	 * @throws IllegalArgumentException
-	 *             if {@code revision} does not have valid ID
-	 */
 	private MediaInfoUpdateBuilder(MediaInfoDocument revision) {
 		super(revision);
 	}
