@@ -144,7 +144,7 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if removed label is not present in current entity revision (if
+	 *             if removed label is not present in base entity revision (if
 	 *             available)
 	 */
 	public LabeledStatementDocumentUpdateBuilder updateLabels(TermUpdate update) {

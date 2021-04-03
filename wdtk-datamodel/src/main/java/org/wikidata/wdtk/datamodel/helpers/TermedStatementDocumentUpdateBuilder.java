@@ -157,8 +157,8 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if removed description is not present in current entity revision
-	 *             (if available)
+	 *             if removed description is not present in base entity revision (if
+	 *             available)
 	 */
 	public TermedStatementDocumentUpdateBuilder updateDescriptions(TermUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");

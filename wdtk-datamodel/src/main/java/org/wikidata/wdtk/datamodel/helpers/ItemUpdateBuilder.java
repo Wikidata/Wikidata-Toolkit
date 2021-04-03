@@ -148,9 +148,15 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code site} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if there is no such site link in base entity revision (if
+	 *             available)
 	 */
 	public ItemUpdateBuilder removeSiteLink(String site) {
 		Objects.requireNonNull(site, "Site key cannot be null.");
+		if (getBaseRevision() != null && !getBaseRevision().getSiteLinks().containsKey(site)) {
+			throw new IllegalArgumentException("Removed site link is not in the current revision.");
+		}
 		removedSiteLinks.add(site);
 		modifiedSiteLinks.remove(site);
 		return this;
