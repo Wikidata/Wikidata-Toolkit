@@ -19,6 +19,9 @@
  */
 package org.wikidata.wdtk.datamodel.interfaces;
 
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Collection of changes that can be applied to item entity.
  */
@@ -29,5 +32,20 @@ public interface ItemUpdate extends TermedStatementDocumentUpdate {
 
 	@Override
 	ItemDocument getBaseRevision();
+
+	/**
+	 * Returns site links added or modified in this update. Existing site links are
+	 * preserved if their site key is not listed here.
+	 * 
+	 * @return added or modified site links indexed by site key
+	 */
+	Map<String, SiteLink> getModifiedSiteLinks();
+
+	/**
+	 * Returns site keys of site links removed in this update.
+	 * 
+	 * @return site keys of removed site links
+	 */
+	Set<String> getRemovedSiteLinks();
 
 }

@@ -81,7 +81,7 @@ public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements Sens
 	@JsonIgnore
 	@Override
 	public boolean isEmpty() {
-		return glosses.isEmpty() && getStatements().isEmpty();
+		return super.isEmpty() && glosses.isEmpty();
 	}
 
 	@JsonIgnore

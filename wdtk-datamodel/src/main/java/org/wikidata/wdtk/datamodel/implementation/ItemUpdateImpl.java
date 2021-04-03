@@ -19,22 +19,36 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
+import static java.util.stream.Collectors.toMap;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Jackson implementation of {@link ItemUpdate}.
  */
 public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements ItemUpdate {
+
+	@JsonIgnore
+	private final Map<String, SiteLink> modifiedSiteLinks;
+	@JsonIgnore
+	private final Set<String> removedSiteLinks;
 
 	/**
 	 * Initializes new item update.
@@ -51,6 +65,10 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 	 *            changes in entity aliases, possibly empty
 	 * @param statements
 	 *            changes in entity statements, possibly empty
+	 * @param modifiedSiteLinks
+	 *            added or replaced site links
+	 * @param removedSiteLinks
+	 *            site keys of removed site links
 	 * @throws NullPointerException
 	 *             if any required parameter is {@code null}
 	 * @throws IllegalArgumentException
@@ -62,8 +80,13 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 			TermUpdate labels,
 			TermUpdate descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,
-			StatementUpdate statements) {
+			StatementUpdate statements,
+			Collection<SiteLink> modifiedSiteLinks,
+			Collection<String> removedSiteLinks) {
 		super(entityId, revision, labels, descriptions, aliases, statements);
+		this.modifiedSiteLinks = Collections.unmodifiableMap(modifiedSiteLinks.stream()
+				.collect(toMap(sl -> sl.getSiteKey(), sl -> sl)));
+		this.removedSiteLinks = Collections.unmodifiableSet(new HashSet<>(removedSiteLinks));
 	}
 
 	@JsonIgnore
@@ -81,7 +104,51 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 	@JsonIgnore
 	@Override
 	public boolean isEmpty() {
-		return getLabels().isEmpty() && getDescriptions().isEmpty() && getStatements().isEmpty();
+		return super.isEmpty() && modifiedSiteLinks.isEmpty() && removedSiteLinks.isEmpty();
+	}
+
+	@JsonIgnore
+	@Override
+	public Map<String, SiteLink> getModifiedSiteLinks() {
+		return modifiedSiteLinks;
+	}
+
+	@JsonIgnore
+	@Override
+	public Set<String> getRemovedSiteLinks() {
+		return removedSiteLinks;
+	}
+
+	static class RemovedSiteLink {
+
+		private final String site;
+
+		RemovedSiteLink(String site) {
+			this.site = site;
+		}
+
+		@JsonProperty
+		String getSite() {
+			return site;
+		}
+
+		@JsonProperty("remove")
+		String getRemoveCommand() {
+			return "";
+		}
+
+	}
+
+	@JsonProperty("sitelinks")
+	Map<String, Object> getJsonSiteLinks() {
+		Map<String, Object> map = new HashMap<>();
+		for (SiteLink link : modifiedSiteLinks.values()) {
+			map.put(link.getSiteKey(), link);
+		}
+		for (String site : removedSiteLinks) {
+			map.put(site, new RemovedSiteLink(site));
+		}
+		return map;
 	}
 
 }

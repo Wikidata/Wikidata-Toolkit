@@ -19,18 +19,27 @@
  */
 package org.wikidata.wdtk.datamodel.helpers;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 /**
  * Builder for incremental construction of {@link ItemUpdate} objects.
  */
 public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
+
+	private final Map<String, SiteLink> modifiedSiteLinks = new HashMap<>();
+	private final Set<String> removedSiteLinks = new HashSet<>();
 
 	/**
 	 * Initializes new builder object for constructing update of item entity with
@@ -131,9 +140,48 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 		return this;
 	}
 
+	/**
+	 * Adds or replaces site link. If there is no site link for the site key, new
+	 * site link is added. If a site link with this site key already exists, it is
+	 * replaced. Site links with other site keys are not touched. Calling this
+	 * method overrides any previous changes made with the same site key by this
+	 * method or {@link #removeSiteLink(String)}.
+	 * 
+	 * @param link
+	 *            new or replacement site link
+	 * @return {@code this} (fluent method)
+	 * @throws NullPointerException
+	 *             if {@code link} is {@code null}
+	 */
+	public ItemUpdateBuilder setSiteLink(SiteLink link) {
+		Objects.requireNonNull(link, "Site link cannot be null.");
+		modifiedSiteLinks.put(link.getSiteKey(), link);
+		removedSiteLinks.remove(link.getSiteKey());
+		return this;
+	}
+
+	/**
+	 * Removes site link. Site links with other site keys are not touched. Calling
+	 * this method overrides any previous changes made with the same site key by
+	 * this method or {@link #setSiteLink(SiteLink)}.
+	 * 
+	 * @param site
+	 *            site key of the removed site link
+	 * @return {@code this} (fluent method)
+	 * @throws NullPointerException
+	 *             if {@code site} is {@code null}
+	 */
+	public ItemUpdateBuilder removeSiteLink(String site) {
+		Objects.requireNonNull(site, "Site key cannot be null.");
+		removedSiteLinks.add(site);
+		modifiedSiteLinks.remove(site);
+		return this;
+	}
+
 	@Override
 	public ItemUpdate build() {
-		return factory.getItemUpdate(getEntityId(), getBaseRevision(), labels, descriptions, aliases, statements);
+		return factory.getItemUpdate(getEntityId(), getBaseRevision(), labels, descriptions, aliases, statements,
+				modifiedSiteLinks.values(), removedSiteLinks);
 	}
 
 }

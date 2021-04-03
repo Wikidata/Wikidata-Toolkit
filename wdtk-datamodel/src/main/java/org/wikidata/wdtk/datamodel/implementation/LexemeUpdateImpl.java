@@ -149,7 +149,7 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 	@JsonIgnore
 	@Override
 	public boolean isEmpty() {
-		return language == null && lexicalCategory == null && lemmas.isEmpty() && getStatements().isEmpty()
+		return super.isEmpty() && language == null && lexicalCategory == null && lemmas.isEmpty()
 				&& addedSenses.isEmpty() && updatedSenses.isEmpty() && removedSenses.isEmpty()
 				&& addedForms.isEmpty() && updatedForms.isEmpty() && removedForms.isEmpty();
 	}

@@ -378,8 +378,11 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			TermUpdate labels,
 			TermUpdate descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,
-			StatementUpdate statements) {
-		return new ItemUpdateImpl(entityId, document, labels, descriptions, aliases, statements);
+			StatementUpdate statements,
+			Collection<SiteLink> modifiedSiteLinks,
+			Collection<String> removedSiteLinks) {
+		return new ItemUpdateImpl(entityId, document, labels, descriptions, aliases, statements,
+				modifiedSiteLinks, removedSiteLinks);
 	}
 
 	@Override

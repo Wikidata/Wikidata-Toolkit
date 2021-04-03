@@ -76,6 +76,12 @@ public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocume
 
 	@JsonIgnore
 	@Override
+	public boolean isEmpty() {
+		return super.isEmpty() && labels.isEmpty();
+	}
+
+	@JsonIgnore
+	@Override
 	public TermUpdate getLabels() {
 		return labels;
 	}

@@ -96,6 +96,12 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 
 	@JsonIgnore
 	@Override
+	public boolean isEmpty() {
+		return super.isEmpty() && descriptions.isEmpty() && aliases.isEmpty();
+	}
+
+	@JsonIgnore
+	@Override
 	public TermUpdate getDescriptions() {
 		return descriptions;
 	}

@@ -73,6 +73,12 @@ public abstract class StatementDocumentUpdateImpl extends EntityUpdateImpl imple
 
 	@JsonIgnore
 	@Override
+	public boolean isEmpty() {
+		return statements.isEmpty();
+	}
+
+	@JsonIgnore
+	@Override
 	public StatementUpdate getStatements() {
 		return statements;
 	}
@@ -82,4 +88,5 @@ public abstract class StatementDocumentUpdateImpl extends EntityUpdateImpl imple
 	StatementUpdate getClaims() {
 		return statements.isEmpty() ? null : statements;
 	}
+
 }

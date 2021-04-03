@@ -737,6 +737,10 @@ public interface DataObjectFactory {
 	 *            changes in entity aliases, possibly empty
 	 * @param statements
 	 *            changes in entity statements, possibly empty
+	 * @param modifiedSiteLinks
+	 *            added or replaced site links
+	 * @param removedSiteLinks
+	 *            site keys of removed site links
 	 * @return new {@link ItemUpdate}
 	 * @throws NullPointerException
 	 *             if any required parameter is {@code null}
@@ -749,7 +753,9 @@ public interface DataObjectFactory {
 			TermUpdate labels,
 			TermUpdate descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,
-			StatementUpdate statements);
+			StatementUpdate statements,
+			Collection<SiteLink> modifiedSiteLinks,
+			Collection<String> removedSiteLinks);
 
 	/**
 	 * Creates new {@link PropertyUpdate}. It might be more convenient to use

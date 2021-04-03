@@ -98,7 +98,7 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 	@JsonIgnore
 	@Override
 	public boolean isEmpty() {
-		return representations.isEmpty() && grammaticalFeatures == null && getStatements().isEmpty();
+		return super.isEmpty() && representations.isEmpty() && grammaticalFeatures == null;
 	}
 
 	@JsonIgnore
