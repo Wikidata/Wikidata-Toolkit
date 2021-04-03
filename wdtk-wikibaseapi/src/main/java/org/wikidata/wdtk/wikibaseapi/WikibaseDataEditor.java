@@ -1,5 +1,10 @@
 package org.wikidata.wdtk.wikibaseapi;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.wikidata.wdtk.datamodel.helpers.EntityUpdateBuilder;
+
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -21,12 +26,37 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
-import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
+import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.LabeledDocument;
+import org.wikidata.wdtk.datamodel.interfaces.LabeledDocumentUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocument;
+import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocumentUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
+import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocumentUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
+import org.wikidata.wdtk.datamodel.interfaces.TermedDocumentUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
+import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Class that provides high-level editing functionality for Wikibase data.
@@ -1227,6 +1257,22 @@ public class WikibaseDataEditor {
 	}
 	
 	/**
+	 * Performs a null edit on an entity. This has some effects on Wikibase, such as
+	 * refreshing the labels of the referred items in the UI.
+	 * 
+	 * @param entityId
+	 *            the document to perform a null edit on
+	 * @throws MediaWikiApiErrorException
+	 *             if the API returns errors
+	 * @throws IOException
+	 *             if there are any IO errors, such as missing network connection
+	 */
+	public void nullEdit(EntityIdValue entityId) throws IOException, MediaWikiApiErrorException {
+		nullEdit(wikibaseDataFetcher.getEntityDocument(entityId.getId()));
+	}
+
+	/**
+	 * @deprecated Use {@link #nullEdit(EntityIdValue)} instead.
 	 * Performs a null edit on an item. This has some effects on Wikibase,
 	 * such as refreshing the labels of the referred items in the UI.
 	 * 
@@ -1237,6 +1283,7 @@ public class WikibaseDataEditor {
 	 * @throws IOException 
 	 * 		    if there are any IO errors, such as missing network connection
 	 */
+	@Deprecated
 	public <T extends StatementDocument> void nullEdit(ItemIdValue itemId)
 			throws IOException, MediaWikiApiErrorException {
 		ItemDocument currentDocument = (ItemDocument) this.wikibaseDataFetcher
@@ -1246,6 +1293,7 @@ public class WikibaseDataEditor {
 	}
 	
 	/**
+	 * @deprecated Use {@link #nullEdit(EntityIdValue)} instead.
 	 * Performs a null edit on a property. This has some effects on Wikibase,
 	 * such as refreshing the labels of the referred items in the UI.
 	 * 
@@ -1256,6 +1304,7 @@ public class WikibaseDataEditor {
 	 * @throws IOException 
 	 * 		    if there are any IO errors, such as missing network connection
 	 */
+	@Deprecated
 	public <T extends StatementDocument> void nullEdit(PropertyIdValue propertyId)
 			throws IOException, MediaWikiApiErrorException {
 		PropertyDocument currentDocument = (PropertyDocument) this.wikibaseDataFetcher
@@ -1265,26 +1314,23 @@ public class WikibaseDataEditor {
 	}
 	
 	/**
-	 * Performs a null edit on an entity. This has some effects on Wikibase,
-	 * such as refreshing the labels of the referred items in the UI.
+	 * Performs a null edit on an entity. This has some effects on Wikibase, such as
+	 * refreshing the labels of the referred items in the UI.
 	 * 
 	 * @param currentDocument
-	 * 			the document to perform a null edit on
+	 *            the document to perform a null edit on
+	 * @return new version of the document returned by Wikibase API
 	 * @throws MediaWikiApiErrorException
-	 * 	        if the API returns errors
-	 * @throws IOException 
-	 * 		    if there are any IO errors, such as missing network connection
+	 *             if the API returns errors
+	 * @throws IOException
+	 *             if there are any IO errors, such as missing network connection
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends StatementDocument> T nullEdit(T currentDocument)
+	public <T extends EntityDocument> T nullEdit(T currentDocument)
 			throws IOException, MediaWikiApiErrorException {
-		StatementUpdate statementUpdate = new StatementUpdate(currentDocument,
-				Collections.emptyList(), Collections.emptyList());
-		statementUpdate.setGuidGenerator(guidGenerator);
-		
-	    return (T) this.wbEditingAction.wbEditEntity(currentDocument
-				.getEntityId().getId(), null, null, null, statementUpdate
-				.getJsonUpdateString(), false, this.editAsBot, currentDocument
-				.getRevisionId(), null, null);
+		EntityUpdate update = EntityUpdateBuilder.forBaseRevision(currentDocument).build();
+		return (T) wbEditingAction.wbEditEntity(currentDocument.getEntityId().getId(), null, null, null,
+				JsonSerializer.getJsonString(update), false, editAsBot, currentDocument.getRevisionId(), null, null);
 	}
+
 }

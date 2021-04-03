@@ -39,6 +39,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 
 /**
  * Builder for incremental construction of {@link EntityUpdate} objects.
@@ -125,7 +126,10 @@ public abstract class EntityUpdateBuilder {
 	 *             if {@code revision} is of unrecognized type
 	 */
 	public static EntityUpdateBuilder forBaseRevision(EntityDocument revision) {
-		return StatementDocumentUpdateBuilder.forBaseRevision(revision);
+		if (revision instanceof StatementDocument) {
+			return StatementDocumentUpdateBuilder.forBaseRevision((StatementDocument) revision);
+		}
+		throw new IllegalArgumentException("Unrecognized entity document type.");
 	}
 
 	/**

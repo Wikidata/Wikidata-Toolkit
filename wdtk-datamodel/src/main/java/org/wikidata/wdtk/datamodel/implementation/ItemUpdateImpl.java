@@ -38,7 +38,9 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * Jackson implementation of {@link ItemUpdate}.
@@ -140,6 +142,7 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 	}
 
 	@JsonProperty("sitelinks")
+	@JsonInclude(Include.NON_EMPTY)
 	Map<String, Object> getJsonSiteLinks() {
 		Map<String, Object> map = new HashMap<>();
 		for (SiteLink link : modifiedSiteLinks.values()) {

@@ -545,7 +545,7 @@ public class WikibaseDataEditorTest {
 		params.put("format", "json");
 		params.put("baserevid", "1234");
 		params.put("maxlag", "5");
-		params.put("data", "{}");
+		params.put("data", "{\"id\":\"Q1234\"}");
 		String data = JsonSerializer.getJsonString(itemDocument);
 		String expectedResult = "{\"entity\":"+data+",\"success\":1}";
 		con.setWebResource(params, expectedResult);
