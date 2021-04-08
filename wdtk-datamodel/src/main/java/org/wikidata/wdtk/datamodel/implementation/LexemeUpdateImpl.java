@@ -31,6 +31,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
@@ -322,6 +324,16 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 			list.add(new RemovedForm(id));
 		}
 		return list;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsLexemeUpdate(this, obj);
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
 	}
 
 }

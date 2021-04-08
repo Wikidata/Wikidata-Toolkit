@@ -29,6 +29,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
@@ -125,6 +127,16 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 		if (grammaticalFeatures == null)
 			return null;
 		return grammaticalFeatures.stream().map(f -> f.getId()).collect(toList());
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsFormUpdate(this, obj);
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
 	}
 
 }

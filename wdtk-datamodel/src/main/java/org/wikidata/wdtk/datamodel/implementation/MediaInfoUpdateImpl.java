@@ -19,6 +19,8 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
@@ -66,6 +68,16 @@ public class MediaInfoUpdateImpl extends LabeledStatementDocumentUpdateImpl impl
 	@Override
 	public MediaInfoDocument getBaseRevision() {
 		return (MediaInfoDocument) super.getBaseRevision();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsMediaInfoUpdate(this, obj);
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
 	}
 
 }

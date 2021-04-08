@@ -40,7 +40,7 @@ import java.util.Objects;
 public class Equality {
 
 	/**
-	 * Returns true if the parameters are two {@link EntityIdValue} objects with
+	 * Returns {@code true} if the parameters are two {@link EntityIdValue} objects with
 	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -48,7 +48,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsEntityIdValue(EntityIdValue o1, Object o2) {
 		if (o2 == null) {
@@ -68,7 +68,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link DatatypeIdValue} objects
+	 * Returns {@code true} if the parameters are two {@link DatatypeIdValue} objects
 	 * with exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -76,7 +76,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsDatatypeIdValue(DatatypeIdValue o1, Object o2) {
 		if (o2 == null) {
@@ -90,7 +90,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link TimeValue} objects with
+	 * Returns {@code true} if the parameters are two {@link TimeValue} objects with
 	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -98,7 +98,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsTimeValue(TimeValue o1, Object o2) {
 		if (o2 == null) {
@@ -126,7 +126,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link GlobeCoordinatesValue}
+	 * Returns {@code true} if the parameters are two {@link GlobeCoordinatesValue}
 	 * objects with exactly the same data. It does not matter if they are
 	 * different implementations of the interface as long as their content is
 	 * the same.
@@ -135,7 +135,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsGlobeCoordinatesValue(GlobeCoordinatesValue o1,
 			Object o2) {
@@ -156,7 +156,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link StringValue} objects with
+	 * Returns {@code true} if the parameters are two {@link StringValue} objects with
 	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -164,7 +164,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsStringValue(StringValue o1, Object o2) {
 		if (o2 == null) {
@@ -178,7 +178,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link MonolingualTextValue}
+	 * Returns {@code true} if the parameters are two {@link MonolingualTextValue}
 	 * objects with exactly the same data. It does not matter if they are
 	 * different implementations of the interface as long as their content is
 	 * the same.
@@ -187,7 +187,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsMonolingualTextValue(MonolingualTextValue o1,
 			Object o2) {
@@ -206,7 +206,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link QuantityValue} objects with
+	 * Returns {@code true} if the parameters are two {@link QuantityValue} objects with
 	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -214,7 +214,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsQuantityValue(QuantityValue o1, Object o2) {
 		if (o2 == null) {
@@ -234,7 +234,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link ValueSnak} objects with
+	 * Returns {@code true} if the parameters are two {@link ValueSnak} objects with
 	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -242,7 +242,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsValueSnak(ValueSnak o1, Object o2) {
 		if (o2 == null) {
@@ -257,7 +257,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link SomeValueSnak} objects with
+	 * Returns {@code true} if the parameters are two {@link SomeValueSnak} objects with
 	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -265,7 +265,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsSomeValueSnak(SomeValueSnak o1, Object o2) {
 		if (o2 == null) {
@@ -279,7 +279,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link NoValueSnak} objects with
+	 * Returns {@code true} if the parameters are two {@link NoValueSnak} objects with
 	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -287,7 +287,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsNoValueSnak(NoValueSnak o1, Object o2) {
 		if (o2 == null) {
@@ -301,7 +301,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link SnakGroup} objects with
+	 * Returns {@code true} if the parameters are two {@link SnakGroup} objects with
 	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -309,7 +309,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsSnakGroup(SnakGroup o1, Object o2) {
 		if (o2 == null) {
@@ -323,7 +323,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link Claim} objects with exactly
+	 * Returns {@code true} if the parameters are two {@link Claim} objects with exactly
 	 * the same data. It does not matter if they are different implementations
 	 * of the interface as long as their content is the same.
 	 *
@@ -331,7 +331,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsClaim(Claim o1, Object o2) {
 		if (o2 == null) {
@@ -350,7 +350,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link Reference} objects with
+	 * Returns {@code true} if the parameters are two {@link Reference} objects with
 	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -358,7 +358,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsReference(Reference o1, Object o2) {
 		if (o2 == null) {
@@ -372,7 +372,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link Statement} objects with
+	 * Returns {@code true} if the parameters are two {@link Statement} objects with
 	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -380,7 +380,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsStatement(Statement o1, Object o2) {
 		if (o2 == null) {
@@ -402,7 +402,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link StatementGroup} objects
+	 * Returns {@code true} if the parameters are two {@link StatementGroup} objects
 	 * with exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 * Note that this includes the statement id, so that two statement objects
@@ -413,7 +413,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsStatementGroup(StatementGroup o1, Object o2) {
 		if (o2 == null) {
@@ -427,7 +427,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link SiteLink} objects with
+	 * Returns {@code true} if the parameters are two {@link SiteLink} objects with
 	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -435,7 +435,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsSiteLink(SiteLink o1, Object o2) {
 		if (o2 == null) {
@@ -454,7 +454,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link PropertyDocument} objects
+	 * Returns {@code true} if the parameters are two {@link PropertyDocument} objects
 	 * with exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -462,7 +462,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsPropertyDocument(PropertyDocument o1, Object o2) {
 		if (o2 == o1) {
@@ -479,7 +479,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link ItemDocument} objects with
+	 * Returns {@code true} if the parameters are two {@link ItemDocument} objects with
 	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -487,7 +487,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsItemDocument(ItemDocument o1, Object o2) {
 		if (o2 == o1) {
@@ -504,7 +504,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link LexemeDocument} objects with
+	 * Returns {@code true} if the parameters are two {@link LexemeDocument} objects with
 	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -512,7 +512,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsLexemeDocument(LexemeDocument o1, Object o2) {
 		if (o2 == o1) {
@@ -533,7 +533,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link FormDocument} objects with
+	 * Returns {@code true} if the parameters are two {@link FormDocument} objects with
 	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -541,7 +541,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsFormDocument(FormDocument o1, Object o2) {
 		if (o2 == o1) {
@@ -559,7 +559,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link SenseDocument} objects with
+	 * Returns {@code true} if the parameters are two {@link SenseDocument} objects with
 	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -567,7 +567,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsSenseDocument(SenseDocument o1, Object o2) {
 		if (o2 == o1) {
@@ -584,7 +584,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link MediaInfoDocument} objects with
+	 * Returns {@code true} if the parameters are two {@link MediaInfoDocument} objects with
 	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -592,7 +592,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsMediaInfoDocument(MediaInfoDocument o1, Object o2) {
 		if (o2 == o1) {
@@ -617,7 +617,7 @@ public class Equality {
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link EntityRedirectDocument} objects with
+	 * Returns {@code true} if the parameters are two {@link EntityRedirectDocument} objects with
 	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
@@ -625,7 +625,7 @@ public class Equality {
 	 *            the first object to compare
 	 * @param o2
 	 *            the second object to compare
-	 * @return true if both objects are equal
+	 * @return {@code true} if both objects are equal
 	 */
 	public static boolean equalsEntityRedirectDocument(EntityRedirectDocument o1, Object o2) {
 		if (o2 == o1) {
@@ -639,4 +639,221 @@ public class Equality {
 				&& o1.getTargetId().equals(other.getTargetId())
 				&& o1.getRevisionId() == other.getRevisionId();
 	}
+
+	/**
+	 * Returns {@code true} if the two {@link TermUpdate} objects contain exactly
+	 * the same data. It does not matter whether they are different implementations
+	 * of the interface as long as their content is the same.
+	 *
+	 * @param o1
+	 *            the first object to compare
+	 * @param o2
+	 *            the second object to compare
+	 * @return {@code true} if both objects are equal
+	 */
+	public static boolean equalsTermUpdate(TermUpdate o1, Object o2) {
+		if (o2 == o1) {
+			return true;
+		}
+		if (!(o2 instanceof TermUpdate)) {
+			return false;
+		}
+		TermUpdate other = (TermUpdate) o2;
+		return Objects.equals(o1.getModifiedTerms(), other.getModifiedTerms())
+				&& Objects.equals(o1.getRemovedTerms(), other.getRemovedTerms());
+	}
+
+	/**
+	 * Returns {@code true} if the two {@link StatementUpdate} objects contain
+	 * exactly the same data. It does not matter whether they are different
+	 * implementations of the interface as long as their content is the same.
+	 *
+	 * @param o1
+	 *            the first object to compare
+	 * @param o2
+	 *            the second object to compare
+	 * @return {@code true} if both objects are equal
+	 */
+	public static boolean equalsStatementUpdate(StatementUpdate o1, Object o2) {
+		if (o2 == o1) {
+			return true;
+		}
+		if (!(o2 instanceof StatementUpdate)) {
+			return false;
+		}
+		StatementUpdate other = (StatementUpdate) o2;
+		return Objects.equals(o1.getAddedStatements(), other.getAddedStatements())
+				&& Objects.equals(o1.getReplacedStatements(), other.getReplacedStatements())
+				&& Objects.equals(o1.getRemovedStatements(), other.getRemovedStatements());
+	}
+
+	private static boolean equalsEntityUpdate(EntityUpdate o1, EntityUpdate o2) {
+		return Objects.equals(o1.getEntityId(), o2.getEntityId())
+				&& Objects.equals(o1.getBaseRevision(), o2.getBaseRevision());
+	}
+
+	private static boolean equalsStatementDocumentUpdate(StatementDocumentUpdate o1, StatementDocumentUpdate o2) {
+		return equalsEntityUpdate(o1, o2)
+				&& Objects.equals(o1.getStatements(), o2.getStatements());
+	}
+
+	private static boolean equalsLabeledStatementDocumentUpdate(
+			LabeledStatementDocumentUpdate o1, LabeledStatementDocumentUpdate o2) {
+		return equalsStatementDocumentUpdate(o1, o2)
+				&& Objects.equals(o1.getLabels(), o2.getLabels());
+	}
+
+	private static boolean equalsTermedStatementDocumentUpdate(
+			TermedStatementDocumentUpdate o1, TermedStatementDocumentUpdate o2) {
+		return equalsLabeledStatementDocumentUpdate(o1, o2)
+				&& Objects.equals(o1.getDescriptions(), o2.getDescriptions())
+				&& Objects.equals(o1.getAliases(), o2.getAliases());
+	}
+
+	/**
+	 * Returns {@code true} if the two {@link MediaInfoUpdate} objects contain
+	 * exactly the same data. It does not matter whether they are different
+	 * implementations of the interface as long as their content is the same.
+	 *
+	 * @param o1
+	 *            the first object to compare
+	 * @param o2
+	 *            the second object to compare
+	 * @return {@code true} if both objects are equal
+	 */
+	public static boolean equalsMediaInfoUpdate(MediaInfoUpdate o1, Object o2) {
+		if (o2 == o1) {
+			return true;
+		}
+		if (!(o2 instanceof MediaInfoUpdate)) {
+			return false;
+		}
+		MediaInfoUpdate other = (MediaInfoUpdate) o2;
+		return equalsLabeledStatementDocumentUpdate(o1, other);
+	}
+
+	/**
+	 * Returns {@code true} if the two {@link ItemUpdate} objects contain exactly
+	 * the same data. It does not matter whether they are different implementations
+	 * of the interface as long as their content is the same.
+	 *
+	 * @param o1
+	 *            the first object to compare
+	 * @param o2
+	 *            the second object to compare
+	 * @return {@code true} if both objects are equal
+	 */
+	public static boolean equalsItemUpdate(ItemUpdate o1, Object o2) {
+		if (o2 == o1) {
+			return true;
+		}
+		if (!(o2 instanceof ItemUpdate)) {
+			return false;
+		}
+		ItemUpdate other = (ItemUpdate) o2;
+		return equalsTermedStatementDocumentUpdate(o1, other)
+				&& Objects.equals(o1.getModifiedSiteLinks(), other.getModifiedSiteLinks())
+				&& Objects.equals(o1.getRemovedSiteLinks(), other.getRemovedSiteLinks());
+	}
+
+	/**
+	 * Returns {@code true} if the two {@link PropertyUpdate} objects contain
+	 * exactly the same data. It does not matter whether they are different
+	 * implementations of the interface as long as their content is the same.
+	 *
+	 * @param o1
+	 *            the first object to compare
+	 * @param o2
+	 *            the second object to compare
+	 * @return {@code true} if both objects are equal
+	 */
+	public static boolean equalsPropertyUpdate(PropertyUpdate o1, Object o2) {
+		if (o2 == o1) {
+			return true;
+		}
+		if (!(o2 instanceof PropertyUpdate)) {
+			return false;
+		}
+		PropertyUpdate other = (PropertyUpdate) o2;
+		return equalsTermedStatementDocumentUpdate(o1, other);
+	}
+
+	/**
+	 * Returns {@code true} if the two {@link SenseUpdate} objects contain exactly
+	 * the same data. It does not matter whether they are different implementations
+	 * of the interface as long as their content is the same.
+	 *
+	 * @param o1
+	 *            the first object to compare
+	 * @param o2
+	 *            the second object to compare
+	 * @return {@code true} if both objects are equal
+	 */
+	public static boolean equalsSenseUpdate(SenseUpdate o1, Object o2) {
+		if (o2 == o1) {
+			return true;
+		}
+		if (!(o2 instanceof SenseUpdate)) {
+			return false;
+		}
+		SenseUpdate other = (SenseUpdate) o2;
+		return equalsStatementDocumentUpdate(o1, other)
+				&& Objects.equals(o1.getGlosses(), other.getGlosses());
+	}
+
+	/**
+	 * Returns {@code true} if the two {@link FormUpdate} objects contain exactly
+	 * the same data. It does not matter whether they are different implementations
+	 * of the interface as long as their content is the same.
+	 *
+	 * @param o1
+	 *            the first object to compare
+	 * @param o2
+	 *            the second object to compare
+	 * @return {@code true} if both objects are equal
+	 */
+	public static boolean equalsFormUpdate(FormUpdate o1, Object o2) {
+		if (o2 == o1) {
+			return true;
+		}
+		if (!(o2 instanceof FormUpdate)) {
+			return false;
+		}
+		FormUpdate other = (FormUpdate) o2;
+		return equalsStatementDocumentUpdate(o1, other)
+				&& Objects.equals(o1.getRepresentations(), other.getRepresentations())
+				&& Objects.equals(o1.getGrammaticalFeatures(), other.getGrammaticalFeatures());
+	}
+
+	/**
+	 * Returns {@code true} if the two {@link LexemeUpdate} objects contain exactly
+	 * the same data. It does not matter whether they are different implementations
+	 * of the interface as long as their content is the same.
+	 *
+	 * @param o1
+	 *            the first object to compare
+	 * @param o2
+	 *            the second object to compare
+	 * @return {@code true} if both objects are equal
+	 */
+	public static boolean equalsLexemeUpdate(LexemeUpdate o1, Object o2) {
+		if (o2 == o1) {
+			return true;
+		}
+		if (!(o2 instanceof LexemeUpdate)) {
+			return false;
+		}
+		LexemeUpdate other = (LexemeUpdate) o2;
+		return equalsStatementDocumentUpdate(o1, other)
+				&& Objects.equals(o1.getLanguage(), other.getLanguage())
+				&& Objects.equals(o1.getLexicalCategory(), other.getLexicalCategory())
+				&& Objects.equals(o1.getLemmas(), other.getLemmas())
+				&& Objects.equals(o1.getAddedSenses(), other.getAddedSenses())
+				&& Objects.equals(o1.getUpdatedSenses(), other.getUpdatedSenses())
+				&& Objects.equals(o1.getRemovedSenses(), other.getRemovedSenses())
+				&& Objects.equals(o1.getAddedForms(), other.getAddedForms())
+				&& Objects.equals(o1.getUpdatedForms(), other.getUpdatedForms())
+				&& Objects.equals(o1.getRemovedForms(), other.getRemovedForms());
+	}
+
 }

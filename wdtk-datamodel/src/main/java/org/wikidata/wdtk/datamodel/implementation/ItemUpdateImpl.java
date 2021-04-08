@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
@@ -152,6 +154,16 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 			map.put(site, new RemovedSiteLink(site));
 		}
 		return map;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsItemUpdate(this, obj);
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
 	}
 
 }

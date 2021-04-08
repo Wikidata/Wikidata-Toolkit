@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
@@ -124,6 +126,16 @@ public class StatementUpdateImpl implements StatementUpdate {
 			list.add(new RemovedStatement(id));
 		}
 		return list;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsStatementUpdate(this, obj);
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
 	}
 
 }

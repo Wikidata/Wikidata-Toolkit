@@ -24,6 +24,8 @@ import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import java.util.List;
 import java.util.Map;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -78,6 +80,16 @@ public class PropertyUpdateImpl extends TermedStatementDocumentUpdateImpl implem
 	@Override
 	public PropertyDocument getBaseRevision() {
 		return (PropertyDocument) super.getBaseRevision();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsPropertyUpdate(this, obj);
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
 	}
 
 }

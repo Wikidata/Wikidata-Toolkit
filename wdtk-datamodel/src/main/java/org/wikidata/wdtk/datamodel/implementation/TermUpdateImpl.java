@@ -28,6 +28,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
@@ -112,6 +114,16 @@ public class TermUpdateImpl implements TermUpdate {
 			map.put(language, new RemovedMonolingualTextValue(language));
 		}
 		return map;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsTermUpdate(this, obj);
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
 	}
 
 }

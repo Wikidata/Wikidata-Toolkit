@@ -22,6 +22,8 @@ package org.wikidata.wdtk.datamodel.implementation;
 import java.util.Objects;
 
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
@@ -94,6 +96,16 @@ public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements Sens
 	@JsonInclude(Include.NON_EMPTY)
 	TermUpdate getJsonGlosses() {
 		return glosses.isEmpty() ? null : glosses;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsSenseUpdate(this, obj);
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
 	}
 
 }
