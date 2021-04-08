@@ -29,7 +29,6 @@ import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
 import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
@@ -47,7 +46,6 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
@@ -477,19 +475,17 @@ public class WikibaseDataEditor {
 	 * @param tags
 	 *            string identifiers of the tags to apply to the edit, {@code null}
 	 *            or empty for no tags
-	 * @return updated {@link EntityDocument} or {@code null} for simulated edit
-	 *         (see {@link #disableEditing()}
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network connection
 	 * @throws MediaWikiApiErrorException
 	 *             if MediaWiki API returned an error response
 	 */
-	public EntityDocument editEntityDocument(
+	public void editEntityDocument(
 			EntityUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
 		String data = JsonSerializer.getJsonString(update);
 		long revisionId = update.getBaseRevision() != null ? update.getBaseRevision().getRevisionId() : 0;
-		return this.wbEditingAction.wbEditEntity(
+		this.wbEditingAction.wbEditEntity(
 				update.getEntityId().getId(), null, null, null, data, clear, editAsBot, revisionId, summary, tags);
 	}
 
@@ -516,17 +512,15 @@ public class WikibaseDataEditor {
 	 * @param tags
 	 *            string identifiers of the tags to apply to the edit, {@code null}
 	 *            or empty for no tags
-	 * @return updated item document or {@code null} for simulated edit (see
-	 *         {@link #disableEditing()}
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network connection
 	 * @throws MediaWikiApiErrorException
 	 *             if MediaWiki API returned an error response
 	 */
-	public ItemDocument editItemDocument(
+	public void editItemDocument(
 			ItemUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		return (ItemDocument) editEntityDocument(update, clear, summary, tags);
+		editEntityDocument(update, clear, summary, tags);
 	}
 
 	/**
@@ -606,17 +600,15 @@ public class WikibaseDataEditor {
 	 * @param tags
 	 *            string identifiers of the tags to apply to the edit, {@code null}
 	 *            or empty for no tags
-	 * @return updated property document or {@code null} for simulated edit (see
-	 *         {@link #disableEditing()}
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network connection
 	 * @throws MediaWikiApiErrorException
 	 *             if MediaWiki API returned an error response
 	 */
-	public PropertyDocument editPropertyDocument(
+	public void editPropertyDocument(
 			PropertyUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		return (PropertyDocument) editEntityDocument(update, clear, summary, tags);
+		editEntityDocument(update, clear, summary, tags);
 	}
 
 	/**
@@ -694,17 +686,15 @@ public class WikibaseDataEditor {
 	 * @param tags
 	 *            string identifiers of the tags to apply to the edit, {@code null}
 	 *            or empty for no tags
-	 * @return updated media document or {@code null} for simulated edit (see
-	 *         {@link #disableEditing()}
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network connection
 	 * @throws MediaWikiApiErrorException
 	 *             if MediaWiki API returned an error response
 	 */
-	public MediaInfoDocument editMediaInfoDocument(
+	public void editMediaInfoDocument(
 			MediaInfoUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		return (MediaInfoDocument) editEntityDocument(update, clear, summary, tags);
+		editEntityDocument(update, clear, summary, tags);
 	}
 
 	/**
@@ -730,17 +720,15 @@ public class WikibaseDataEditor {
 	 * @param tags
 	 *            string identifiers of the tags to apply to the edit, {@code null}
 	 *            or empty for no tags
-	 * @return updated sense document or {@code null} for simulated edit (see
-	 *         {@link #disableEditing()}
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network connection
 	 * @throws MediaWikiApiErrorException
 	 *             if MediaWiki API returned an error response
 	 */
-	public SenseDocument editSenseDocument(
+	public void editSenseDocument(
 			SenseUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		return (SenseDocument) editEntityDocument(update, clear, summary, tags);
+		editEntityDocument(update, clear, summary, tags);
 	}
 
 	/**
@@ -766,17 +754,15 @@ public class WikibaseDataEditor {
 	 * @param tags
 	 *            string identifiers of the tags to apply to the edit, {@code null}
 	 *            or empty for no tags
-	 * @return updated form document or {@code null} for simulated edit (see
-	 *         {@link #disableEditing()}
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network connection
 	 * @throws MediaWikiApiErrorException
 	 *             if MediaWiki API returned an error response
 	 */
-	public FormDocument editFormDocument(
+	public void editFormDocument(
 			FormUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		return (FormDocument) editEntityDocument(update, clear, summary, tags);
+		editEntityDocument(update, clear, summary, tags);
 	}
 
 	/**
@@ -802,17 +788,15 @@ public class WikibaseDataEditor {
 	 * @param tags
 	 *            string identifiers of the tags to apply to the edit, {@code null}
 	 *            or empty for no tags
-	 * @return updated lexeme document or {@code null} for simulated edit (see
-	 *         {@link #disableEditing()}
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network connection
 	 * @throws MediaWikiApiErrorException
 	 *             if MediaWiki API returned an error response
 	 */
-	public LexemeDocument editLexemeDocument(
+	public void editLexemeDocument(
 			LexemeUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		return (LexemeDocument) editEntityDocument(update, clear, summary, tags);
+		editEntityDocument(update, clear, summary, tags);
 	}
 
 	/**
@@ -838,17 +822,15 @@ public class WikibaseDataEditor {
 	 * @param tags
 	 *            string identifiers of the tags to apply to the edit, {@code null}
 	 *            or empty for no tags
-	 * @return updated {@link StatementDocument} or {@code null} for simulated edit
-	 *         (see {@link #disableEditing()}
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network connection
 	 * @throws MediaWikiApiErrorException
 	 *             if MediaWiki API returned an error response
 	 */
-	public StatementDocument editStatementDocument(
+	public void editStatementDocument(
 			StatementDocumentUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		return (StatementDocument) editEntityDocument(update, clear, summary, tags);
+		editEntityDocument(update, clear, summary, tags);
 	}
 
 	/**
@@ -874,17 +856,15 @@ public class WikibaseDataEditor {
 	 * @param tags
 	 *            string identifiers of the tags to apply to the edit, {@code null}
 	 *            or empty for no tags
-	 * @return updated {@link LabeledDocument} or {@code null} for simulated edit
-	 *         (see {@link #disableEditing()}
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network connection
 	 * @throws MediaWikiApiErrorException
 	 *             if MediaWiki API returned an error response
 	 */
-	public LabeledDocument editLabeledDocument(
+	public void editLabeledDocument(
 			LabeledDocumentUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		return (LabeledDocument) editEntityDocument(update, clear, summary, tags);
+		editEntityDocument(update, clear, summary, tags);
 	}
 
 	/**
@@ -910,17 +890,15 @@ public class WikibaseDataEditor {
 	 * @param tags
 	 *            string identifiers of the tags to apply to the edit, {@code null}
 	 *            or empty for no tags
-	 * @return updated {@link LabeledStatementDocument} or {@code null} for
-	 *         simulated edit (see {@link #disableEditing()}
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network connection
 	 * @throws MediaWikiApiErrorException
 	 *             if MediaWiki API returned an error response
 	 */
-	public LabeledStatementDocument editLabeledStatementDocument(
+	public void editLabeledStatementDocument(
 			LabeledStatementDocumentUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		return (LabeledStatementDocument) editEntityDocument(update, clear, summary, tags);
+		editEntityDocument(update, clear, summary, tags);
 	}
 
 	/**
@@ -946,17 +924,15 @@ public class WikibaseDataEditor {
 	 * @param tags
 	 *            string identifiers of the tags to apply to the edit, {@code null}
 	 *            or empty for no tags
-	 * @return updated {@link TermedDocument} or {@code null} for simulated edit
-	 *         (see {@link #disableEditing()}
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network connection
 	 * @throws MediaWikiApiErrorException
 	 *             if MediaWiki API returned an error response
 	 */
-	public TermedDocument editTermedDocument(
+	public void editTermedDocument(
 			TermedDocumentUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		return (TermedDocument) editEntityDocument(update, clear, summary, tags);
+		editEntityDocument(update, clear, summary, tags);
 	}
 
 	/**
@@ -982,17 +958,15 @@ public class WikibaseDataEditor {
 	 * @param tags
 	 *            string identifiers of the tags to apply to the edit, {@code null}
 	 *            or empty for no tags
-	 * @return updated {@link TermedStatementDocument} or {@code null} for simulated
-	 *         edit (see {@link #disableEditing()}
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network connection
 	 * @throws MediaWikiApiErrorException
 	 *             if MediaWiki API returned an error response
 	 */
-	public TermedStatementDocument editTermedStatementDocument(
+	public void editTermedStatementDocument(
 			TermedStatementDocumentUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		return (TermedStatementDocument) editEntityDocument(update, clear, summary, tags);
+		editEntityDocument(update, clear, summary, tags);
 	}
 
 	/**
