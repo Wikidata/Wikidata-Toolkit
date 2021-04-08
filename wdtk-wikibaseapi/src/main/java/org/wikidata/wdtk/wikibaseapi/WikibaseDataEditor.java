@@ -29,20 +29,15 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
-import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
-import org.wikidata.wdtk.datamodel.interfaces.StatementDocumentUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
-import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 /**
@@ -390,7 +385,7 @@ public class WikibaseDataEditor {
 	}
 
 	/**
-	 * @deprecated Use {@link #editItemDocument(ItemUpdate, boolean, String, List)} instead.
+	 * @deprecated Use {@link #editEntityDocument(EntityUpdate, boolean, String, List)} instead.
 	 * Writes the data for the given item document with the summary message as
 	 * given. Optionally, the existing data is cleared (deleted).
 	 * <p>
@@ -479,7 +474,7 @@ public class WikibaseDataEditor {
 	}
 
 	/**
-	 * @deprecated Use {@link #editPropertyDocument(PropertyUpdate, boolean, String, List)} instead.
+	 * @deprecated Use {@link #editEntityDocument(EntityUpdate, boolean, String, List)} instead.
 	 * Writes the data for the given property document with the summary message
 	 * as given. Optionally, the existing data is cleared (deleted).
 	 * <p>
@@ -533,7 +528,7 @@ public class WikibaseDataEditor {
 	}
 
 	/**
-	 * @deprecated Use {@link #editMediaInfoDocument(MediaInfoUpdate, boolean, String, List)} instead.
+	 * @deprecated Use {@link #editEntityDocument(EntityUpdate, boolean, String, List)} instead.
 	 * Writes the data for the given media info document with the summary message
 	 * as given. Optionally, the existing data is cleared (deleted).
 	 * It creates the media info if needed.
@@ -724,7 +719,7 @@ public class WikibaseDataEditor {
 	}
 
 	/**
-	 * @deprecated {@link #editStatementDocument(StatementDocumentUpdate, boolean, String, List)} instead.
+	 * @deprecated Use {@link #editEntityDocument(EntityUpdate, boolean, String, List)} instead.
 	 * Updates statements of the given document. The document should be the
 	 * current revision of the data that is to be updated. The updates are
 	 * computed with respect to the data found in the document, making sure that
@@ -783,7 +778,7 @@ public class WikibaseDataEditor {
 	}
 	
 	/**
-	 * @deprecated Use {@link #editTermedStatementDocument(TermedStatementDocumentUpdate, boolean, String, List)} instead.
+	 * @deprecated Use {@link #editEntityDocument(EntityUpdate, boolean, String, List)} instead.
 	 * Updates the terms and statements of the current document.
 	 * The updates are computed with respect to the current data in the document,
 	 * making sure that no redundant deletions or duplicate insertions
