@@ -19,15 +19,20 @@
  */
 package org.wikidata.wdtk.datamodel.helpers;
 
+import static java.util.stream.Collectors.toMap;
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 /**
@@ -37,21 +42,59 @@ public class TermUpdateBuilder {
 
 	private static DataObjectFactory factory = new DataObjectFactoryImpl();
 
+	private final Map<String, MonolingualTextValue> base;
 	private final Map<String, MonolingualTextValue> modified = new HashMap<>();
 	private final Set<String> removed = new HashSet<>();
 
+	private TermUpdateBuilder(Collection<MonolingualTextValue> base) {
+		if (base != null) {
+			Validate.noNullElements(base, "Base document terms cannot be null.");
+			this.base = base.stream().collect(toMap(v -> v.getLanguageCode(), v -> v));
+		} else
+			this.base = null;
+	}
+
 	/**
-	 * Creates new empty builder.
+	 * Creates new builder object for constructing term update.
+	 * 
+	 * @return update builder object
 	 */
-	public TermUpdateBuilder() {
+	public static TermUpdateBuilder create() {
+		return new TermUpdateBuilder(null);
+	}
+
+	/**
+	 * Creates new builder object for constructing update of given base revision
+	 * terms. Provided terms will be used to check correctness of changes.
+	 * <p>
+	 * Since all changes will be checked after the {@link TermUpdate} is passed to
+	 * {@link EntityDocumentBuilder} anyway, it is usually unnecessary to use this
+	 * method. It is simpler to initialize the builder with {@link #create()}.
+	 * 
+	 * @param terms
+	 *            terms from base revision of the document
+	 * @return update builder object
+	 * @throws NullPointerException
+	 *             if {@code terms} or any of its items is {@code null}
+	 */
+	public static TermUpdateBuilder forTerms(Collection<MonolingualTextValue> terms) {
+		Objects.requireNonNull(terms, "Base document term collection cannot be null.");
+		return new TermUpdateBuilder(terms);
 	}
 
 	/**
 	 * Adds or changes term. If there is no term for the language code, new term is
-	 * added. If a term with this language code already exists, it is replaced.
-	 * Terms with other language codes are not touched. Calling this method
-	 * overrides any previous changes made with the same language code by this
-	 * method or {@link #removeTerm(String)}.
+	 * added. If a term with this langua *
+	 * <p>
+	 * Since all changes will be checked after the {@link StatementUpdate} is passed
+	 * to {@link EntityDocumentBuilder} anyway, it is usually unnecessary to use
+	 * this method. It is simpler to initialize the builder with {@link #create()}.
+	 * ge code already exists, it is replaced. Terms with other language codes are
+	 * not touched. Calling this method overrides any previous changes made with the
+	 * same language code by this method or {@link #removeTerm(String)}.
+	 * <p>
+	 * If base revision terms were provided, attempt to overwrite some term with the
+	 * same value will be silently ignored, resulting in empty update.
 	 * 
 	 * @param term
 	 *            term to add or change
@@ -61,6 +104,13 @@ public class TermUpdateBuilder {
 	 */
 	public TermUpdateBuilder setTerm(MonolingualTextValue term) {
 		Objects.requireNonNull(term, "Term cannot be null.");
+		if (base != null) {
+			if (term.equals(base.get(term.getLanguageCode()))) {
+				modified.remove(term.getLanguageCode());
+				removed.remove(term.getLanguageCode());
+				return this;
+			}
+		}
 		modified.put(term.getLanguageCode(), term);
 		removed.remove(term.getLanguageCode());
 		return this;
@@ -70,17 +120,48 @@ public class TermUpdateBuilder {
 	 * Removes term. Terms with other language codes are not touched. Calling this
 	 * method overrides any previous changes made with the same language code by
 	 * this method or {@link #setTerm(MonolingualTextValue)}.
+	 * <p>
+	 * If base revision terms were provided, attempts to remove missing terms will
+	 * be silently ignored, resulting in empty update.
 	 * 
 	 * @param languageCode
 	 *            language code of the removed term
 	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code languageCode} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code languageCode} is blank
 	 */
 	public TermUpdateBuilder removeTerm(String languageCode) {
-		Objects.requireNonNull(languageCode, "Language code cannot be null.");
+		Validate.notBlank(languageCode, "Language code must be provided.");
+		if (base != null && !base.containsKey(languageCode)) {
+			modified.remove(languageCode);
+			return this;
+		}
 		removed.add(languageCode);
 		modified.remove(languageCode);
+		return this;
+	}
+
+	/**
+	 * Replays all changes in provided update into this builder object. Changes are
+	 * performed as if by calling {@link #setTerm(MonolingualTextValue)} and
+	 * {@link #removeTerm(String)} methods.
+	 * 
+	 * @param update
+	 *            term update to replay
+	 * @return {@code this} (fluent method)
+	 * @throws NullPointerException
+	 *             if {@code update} is {@code null}
+	 */
+	public TermUpdateBuilder apply(TermUpdate update) {
+		Objects.requireNonNull(update, "Term update cannot be null.");
+		for (MonolingualTextValue term : update.getModifiedTerms().values()) {
+			setTerm(term);
+		}
+		for (String language : update.getRemovedTerms()) {
+			removeTerm(language);
+		}
 		return this;
 	}
 

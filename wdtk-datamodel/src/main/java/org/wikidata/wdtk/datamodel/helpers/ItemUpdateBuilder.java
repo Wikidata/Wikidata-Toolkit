@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
@@ -124,6 +125,9 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 	 * replaced. Site links with other site keys are not touched. Calling this
 	 * method overrides any previous changes made with the same site key by this
 	 * method or {@link #removeSiteLink(String)}.
+	 * <p>
+	 * If base entity revision was provided, attempt to overwrite some site link
+	 * with identical site link will be silently ignored, resulting in empty update.
 	 * 
 	 * @param link
 	 *            new or replacement site link
@@ -133,6 +137,14 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 	 */
 	public ItemUpdateBuilder setSiteLink(SiteLink link) {
 		Objects.requireNonNull(link, "Site link cannot be null.");
+		if (getBaseRevision() != null) {
+			SiteLink original = getBaseRevision().getSiteLinks().get(link.getSiteKey());
+			if (link.equals(original)) {
+				modifiedSiteLinks.remove(link.getSiteKey());
+				removedSiteLinks.remove(link.getSiteKey());
+				return this;
+			}
+		}
 		modifiedSiteLinks.put(link.getSiteKey(), link);
 		removedSiteLinks.remove(link.getSiteKey());
 		return this;
@@ -142,6 +154,9 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 	 * Removes site link. Site links with other site keys are not touched. Calling
 	 * this method overrides any previous changes made with the same site key by
 	 * this method or {@link #setSiteLink(SiteLink)}.
+	 * <p>
+	 * If base entity revision was provided, attempts to remove missing site links
+	 * will be silently ignored, resulting in empty update.
 	 * 
 	 * @param site
 	 *            site key of the removed site link
@@ -149,16 +164,41 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code site} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if there is no such site link in base entity revision (if
-	 *             available)
+	 *             if {@code site} is blank
 	 */
 	public ItemUpdateBuilder removeSiteLink(String site) {
-		Objects.requireNonNull(site, "Site key cannot be null.");
+		Validate.notBlank(site, "Site key cannot be null.");
 		if (getBaseRevision() != null && !getBaseRevision().getSiteLinks().containsKey(site)) {
-			throw new IllegalArgumentException("Removed site link is not in the current revision.");
+			modifiedSiteLinks.remove(site);
+			return this;
 		}
 		removedSiteLinks.add(site);
 		modifiedSiteLinks.remove(site);
+		return this;
+	}
+
+	/**
+	 * Replays all changes in provided update into this builder object. Changes from
+	 * the update are added on top of changes already present in this builder
+	 * object.
+	 * 
+	 * @param update
+	 *            item update to replay
+	 * @return {@code this} (fluent method)
+	 * @throws NullPointerException
+	 *             if {@code update} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code update} cannot be applied to base entity revision (if
+	 *             available)
+	 */
+	public ItemUpdateBuilder apply(ItemUpdate update) {
+		super.apply(update);
+		for (SiteLink link : update.getModifiedSiteLinks().values()) {
+			setSiteLink(link);
+		}
+		for (String site : update.getRemovedSiteLinks()) {
+			removeSiteLink(site);
+		}
 		return this;
 	}
 

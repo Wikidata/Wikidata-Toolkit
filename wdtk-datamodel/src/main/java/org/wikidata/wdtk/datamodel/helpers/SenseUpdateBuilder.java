@@ -21,11 +21,11 @@ package org.wikidata.wdtk.datamodel.helpers;
 
 import java.util.Objects;
 
-import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 /**
  * Builder for incremental construction of {@link SenseUpdate} objects.
@@ -94,27 +94,44 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	/**
-	 * Updates sense glosses. Any previous changes to sense glosses are discarded.
+	 * Updates sense glosses. If this method is called multiple times, changes are
+	 * accumulated. If base entity revision was provided, redundant changes are
+	 * silently ignored, resulting in empty update.
 	 * 
 	 * @param update
-	 *            changes to sense glosses
+	 *            changes in sense glosses
+	 * @return {@code this} (fluent method)
+	 * @throws NullPointerException
+	 *             if {@code update} is {@code null}
+	 */
+	public SenseUpdateBuilder updateGlosses(TermUpdate update) {
+		Objects.requireNonNull(update, "Update cannot be null.");
+		TermUpdateBuilder combined = getBaseRevision() != null
+				? TermUpdateBuilder.forTerms(getBaseRevision().getGlosses().values())
+				: TermUpdateBuilder.create();
+		combined.apply(glosses);
+		combined.apply(update);
+		glosses = combined.build();
+		return this;
+	}
+
+	/**
+	 * Replays all changes in provided update into this builder object. Changes from
+	 * the update are added on top of changes already present in this builder
+	 * object.
+	 * 
+	 * @param update
+	 *            sense update to replay
 	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if removed gloss is not present in current sense revision (if
+	 *             if {@code update} cannot be applied to base entity revision (if
 	 *             available)
 	 */
-	public SenseUpdateBuilder updateGlosses(TermUpdate update) {
-		Objects.requireNonNull(update, "Update cannot be null.");
-		if (getBaseRevision() != null) {
-			for (String removed : update.getRemovedTerms()) {
-				if (!getBaseRevision().getGlosses().containsKey(removed)) {
-					throw new IllegalArgumentException("Removed gloss is not in the current revision.");
-				}
-			}
-		}
-		glosses = update;
+	public SenseUpdateBuilder apply(SenseUpdate update) {
+		super.apply(update);
+		updateGlosses(update.getGlosses());
 		return this;
 	}
 

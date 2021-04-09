@@ -29,8 +29,8 @@ import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 /**
  * Builder for incremental construction of {@link FormUpdate} objects.
@@ -100,36 +100,33 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	/**
-	 * Updates form representations. Any previous changes to form representations
-	 * are discarded.
+	 * Updates form representations. If this method is called multiple times,
+	 * changes are accumulated. If base entity revision was provided, redundant
+	 * changes are silently ignored, resulting in empty update.
 	 * 
 	 * @param update
-	 *            changes to form representations
+	 *            changes in form representations
 	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
-	 * @throws IllegalArgumentException
-	 *             if removed representation is not present in current form revision
-	 *             (if available)
 	 */
 	public FormUpdateBuilder updateRepresentations(TermUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
-		if (getBaseRevision() != null) {
-			for (String removed : update.getRemovedTerms()) {
-				if (!getBaseRevision().getRepresentations().containsKey(removed)) {
-					throw new IllegalArgumentException("Removed representation is not in the current revision.");
-				}
-			}
-		}
-		representations = update;
+		TermUpdateBuilder combined = getBaseRevision() != null
+				? TermUpdateBuilder.forTerms(getBaseRevision().getRepresentations().values())
+				: TermUpdateBuilder.create();
+		combined.apply(representations);
+		combined.apply(update);
+		representations = combined.build();
 		return this;
 	}
 
 	/**
 	 * Sets grammatical features of the form. Any previously assigned grammatical
-	 * features are removed. Duplicate grammatical features are ignored. To remove
-	 * all grammatical features without replacement, call this method with empty
-	 * collection.
+	 * features are removed. To remove all grammatical features without replacement,
+	 * call this method with empty collection. If base entity revision was provided,
+	 * attempt to replace grammatical features with identical set is silently
+	 * ignored, resulting in empty update.
 	 * 
 	 * @param features
 	 *            new grammatical features of the form
@@ -137,7 +134,8 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code features} or any of its items is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if any item ID in {@code features} is invalid
+	 *             if any item ID in {@code features} is invalid or if there are
+	 *             duplicate features
 	 */
 	public FormUpdateBuilder setGrammaticalFeatures(Collection<ItemIdValue> features) {
 		Objects.requireNonNull(features, "Collection of grammatical features cannot be null.");
@@ -145,7 +143,36 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 			Objects.requireNonNull(id, "Grammatical feature IDs must not be null.");
 			Validate.isTrue(id.isValid(), "Grammatical feature ID must be valid.");
 		}
-		this.grammaticalFeatures = new HashSet<>(features);
+		Set<ItemIdValue> set = new HashSet<>(features);
+		Validate.isTrue(set.size() == features.size(), "Every grammatical feature must be unique.");
+		if (getBaseRevision() != null && set.equals(new HashSet<>(getBaseRevision().getGrammaticalFeatures()))) {
+			grammaticalFeatures = null;
+			return this;
+		}
+		grammaticalFeatures = new HashSet<>(features);
+		return this;
+	}
+
+	/**
+	 * Replays all changes in provided update into this builder object. Changes from
+	 * the update are added on top of changes already present in this builder
+	 * object.
+	 * 
+	 * @param update
+	 *            form update to replay
+	 * @return {@code this} (fluent method)
+	 * @throws NullPointerException
+	 *             if {@code update} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code update} cannot be applied to base entity revision (if
+	 *             available)
+	 */
+	public FormUpdateBuilder apply(FormUpdate update) {
+		super.apply(update);
+		updateRepresentations(update.getRepresentations());
+		if (update.getGrammaticalFeatures().isPresent()) {
+			setGrammaticalFeatures(update.getGrammaticalFeatures().get());
+		}
 		return this;
 	}
 

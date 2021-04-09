@@ -35,10 +35,8 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocumentUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 /**
@@ -153,19 +151,11 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 		return (StatementDocument) super.getBaseRevision();
 	}
 
-	private boolean hadStatementId(String statementId) {
-		for (StatementGroup group : getBaseRevision().getStatementGroups()) {
-			for (Statement statement : group.getStatements()) {
-				if (statement.getStatementId().equals(statementId)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
 	/**
-	 * Updates entity statements. Any previous changes to statements are discarded.
+	 * Updates entity statements. If this method is called multiple times, changes
+	 * are accumulated. If base entity revision was provided, the update is checked
+	 * against it and redundant changes are silently ignored, resulting in empty
+	 * update.
 	 * 
 	 * @param update
 	 *            statement update, possibly empty
@@ -178,20 +168,18 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	 */
 	public StatementDocumentUpdateBuilder updateStatements(StatementUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
-		if (getBaseRevision() != null) {
-			for (Statement replaced : update.getReplacedStatements().values()) {
-				if (!hadStatementId(replaced.getStatementId())) {
-					throw new IllegalArgumentException("Replaced statement is not in the current revision.");
-				}
-			}
-			for (String removed : update.getRemovedStatements()) {
-				if (!hadStatementId(removed)) {
-					throw new IllegalArgumentException("Removed statement is not in the current revision.");
-				}
-			}
-		}
-		statements = update;
+		StatementUpdateBuilder combined = getBaseRevision() != null
+				? StatementUpdateBuilder.forStatementGroups(getBaseRevision().getStatementGroups())
+				: StatementUpdateBuilder.create();
+		combined.apply(statements);
+		combined.apply(update);
+		statements = combined.build();
 		return this;
+	}
+
+	void apply(StatementDocumentUpdate update) {
+		Objects.requireNonNull(update, "Update cannot be null.");
+		updateStatements(update.getStatements());
 	}
 
 	/**

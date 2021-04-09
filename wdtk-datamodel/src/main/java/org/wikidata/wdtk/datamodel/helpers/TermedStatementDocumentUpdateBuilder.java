@@ -22,18 +22,20 @@ package org.wikidata.wdtk.datamodel.helpers;
 import static java.util.stream.Collectors.toList;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
 
@@ -148,35 +150,32 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	}
 
 	/**
-	 * Updates entity descriptions. Any previous changes to descriptions are
-	 * discarded.
+	 * Updates entity descriptions. If this method is called multiple times, changes
+	 * are accumulated. If base entity revision was provided, redundant changes are
+	 * silently ignored, resulting in empty update.
 	 * 
 	 * @param update
-	 *            changes to entity descriptions
+	 *            changes in entity descriptions
 	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
-	 * @throws IllegalArgumentException
-	 *             if removed description is not present in base entity revision (if
-	 *             available)
 	 */
 	public TermedStatementDocumentUpdateBuilder updateDescriptions(TermUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
-		if (getBaseRevision() != null) {
-			for (String removed : update.getRemovedTerms()) {
-				if (!getBaseRevision().getDescriptions().containsKey(removed)) {
-					throw new IllegalArgumentException("Removed description is not in the current revision.");
-				}
-			}
-		}
-		descriptions = update;
+		TermUpdateBuilder combined = getBaseRevision() != null
+				? TermUpdateBuilder.forTerms(getBaseRevision().getDescriptions().values())
+				: TermUpdateBuilder.create();
+		combined.apply(descriptions);
+		combined.apply(update);
+		descriptions = combined.build();
 		return this;
 	}
 
 	/**
 	 * Updates entity aliases. Any previous aliases for the language code are
 	 * discarded. To remove aliases for some language code, pass in empty alias
-	 * list.
+	 * list. If base entity revision was provided, redundant changes are silently
+	 * ignored, resulting in empty update.
 	 * 
 	 * @param language
 	 *            language code of the altered aliases
@@ -186,14 +185,34 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	 * @throws NullPointerException
 	 *             if {@code language}, {@code aliases}, or any of the aliases are
 	 *             {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code aliases} contains duplicates
 	 */
 	public TermedStatementDocumentUpdateBuilder setAliases(String language, List<String> aliases) {
 		Objects.requireNonNull(language, "Language code cannot be null.");
 		Objects.requireNonNull(aliases, "Alias list cannot be null.");
-		this.aliases.put(language, aliases.stream()
+		Validate.noNullElements(aliases, "Aliases cannot be null.");
+		Validate.isTrue(new HashSet<>(aliases).size() == aliases.size(), "Aliases must be unique.");
+		List<MonolingualTextValue> values = aliases.stream()
 				.map(a -> Datamodel.makeMonolingualTextValue(a, language))
-				.collect(toList()));
+				.collect(toList());
+		if (getBaseRevision() != null) {
+			List<MonolingualTextValue> original = getBaseRevision().getAliases().get(language);
+			if (values.equals(original) || original == null && values.isEmpty()) {
+				this.aliases.remove(language);
+				return this;
+			}
+		}
+		this.aliases.put(language, values);
 		return this;
+	}
+
+	void apply(TermedStatementDocumentUpdate update) {
+		super.apply(update);
+		updateDescriptions(update.getDescriptions());
+		for (Map.Entry<String, List<MonolingualTextValue>> entry : update.getAliases().entrySet()) {
+			setAliases(entry.getKey(), entry.getValue().stream().map(v -> v.getText()).collect(toList()));
+		}
 	}
 
 	/**

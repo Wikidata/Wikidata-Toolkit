@@ -19,14 +19,13 @@
  */
 package org.wikidata.wdtk.datamodel.helpers;
 
-import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
-
 import java.util.List;
 
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 /**
  * Builder for incremental construction of {@link PropertyUpdate} objects.
@@ -107,6 +106,25 @@ public class PropertyUpdateBuilder extends TermedStatementDocumentUpdateBuilder 
 	@Override
 	public PropertyUpdateBuilder setAliases(String language, List<String> aliases) {
 		super.setAliases(language, aliases);
+		return this;
+	}
+
+	/**
+	 * Replays all changes in provided update into this builder object. Changes from
+	 * the update are added on top of changes already present in this builder
+	 * object.
+	 * 
+	 * @param update
+	 *            property update to replay
+	 * @return {@code this} (fluent method)
+	 * @throws NullPointerException
+	 *             if {@code update} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code update} cannot be applied to base entity revision (if
+	 *             available)
+	 */
+	public PropertyUpdateBuilder apply(PropertyUpdate update) {
+		super.apply(update);
 		return this;
 	}
 

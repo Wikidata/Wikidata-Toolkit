@@ -35,11 +35,11 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 /**
  * Builder for incremental construction of {@link LexemeUpdate} objects.
@@ -116,59 +116,72 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	/**
-	 * Sets lexeme language.
+	 * Sets lexeme language. If base entity revision was provided, attempt to
+	 * replace lexeme language with the same value is silently ignored, resulting in
+	 * empty update.
 	 * 
 	 * @param language
 	 *            new lexeme language
 	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code language} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code language} is an invalid ID
 	 */
 	public LexemeUpdateBuilder setLanguage(ItemIdValue language) {
 		Objects.requireNonNull(language, "Language cannot be null.");
 		Validate.isTrue(language.isValid(), "Language ID is not valid.");
+		if (getBaseRevision() != null && getBaseRevision().getLanguage().equals(language)) {
+			this.language = null;
+			return this;
+		}
 		this.language = language;
 		return this;
 	}
 
 	/**
-	 * Sets lexical category of the lexeme.
+	 * Sets lexical category of the lexeme. If base entity revision was provided,
+	 * attempt to replace lexical category with the same value is silently ignored,
+	 * resulting in empty update.
 	 * 
 	 * @param category
 	 *            new lexical category
 	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code category} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code category} is an invalid ID
 	 */
 	public LexemeUpdateBuilder setLexicalCategory(ItemIdValue category) {
 		Objects.requireNonNull(category, "Lexical category cannot be null.");
 		Validate.isTrue(category.isValid(), "Lexical category ID is not valid.");
+		if (getBaseRevision() != null && getBaseRevision().getLexicalCategory().equals(category)) {
+			lexicalCategory = null;
+			return this;
+		}
 		lexicalCategory = category;
 		return this;
 	}
 
 	/**
-	 * Updates lemmas. Any previous changes to lemmas are discarded.
+	 * Updates lemmas. If this method is called multiple times, changes are
+	 * accumulated. If base entity revision was provided, redundant changes are
+	 * silently ignored, resulting in empty update.
 	 * 
 	 * @param update
-	 *            changes to lemmas
+	 *            changes in lemmas
 	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
-	 * @throws IllegalArgumentException
-	 *             if removed lemma is not present in current lexeme revision (if
-	 *             available)
 	 */
 	public LexemeUpdateBuilder updateLemmas(TermUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
-		if (getBaseRevision() != null) {
-			for (String removed : update.getRemovedTerms()) {
-				if (!getBaseRevision().getLemmas().containsKey(removed)) {
-					throw new IllegalArgumentException("Removed lemma is not in the current revision.");
-				}
-			}
-		}
-		lemmas = update;
+		TermUpdateBuilder combined = getBaseRevision() != null
+				? TermUpdateBuilder.forTerms(getBaseRevision().getLemmas().values())
+				: TermUpdateBuilder.create();
+		combined.apply(lemmas);
+		combined.apply(update);
+		lemmas = combined.build();
 		return this;
 	}
 
@@ -185,16 +198,18 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 */
 	public LexemeUpdateBuilder addSense(SenseDocument sense) {
 		Objects.requireNonNull(sense, "Sense cannot be null.");
-		if (sense.getEntityId().isValid())
+		if (sense.getEntityId().isValid()) {
 			sense = sense.withEntityId(SenseIdValue.NULL);
+		}
 		addedSenses.add(sense);
 		return this;
 	}
 
 	/**
-	 * Updates existing sense in the lexeme. Calling this method overrides any
-	 * previous changes made to the same sense ID by this method or
-	 * {@link #removeSense(SenseIdValue)}.
+	 * Updates existing sense in the lexeme. If this method is called multiple
+	 * times, changes are accumulated. If base entity revision was provided, the
+	 * update is checked against it and redundant changes are silently ignored,
+	 * resulting in empty update.
 	 * 
 	 * @param update
 	 *            update of existing sense
@@ -202,25 +217,39 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code update} refers to sense ID that does not exist in
-	 *             current version of the lexeme document (if available)
+	 *             if the sense does not exist in base revision (if available) or
+	 *             the update cannot be applied to it
+	 * @throws IllegalStateException
+	 *             if the sense was removed by calling
+	 *             {@link #removeSense(SenseIdValue)}
 	 */
 	public LexemeUpdateBuilder updateSense(SenseUpdate update) {
 		Objects.requireNonNull(update, "Sense update cannot be null.");
-		if (getBaseRevision() != null && getBaseRevision().getSenses().stream()
-				.noneMatch(s -> s.getEntityId().equals(update.getEntityId()))) {
-			throw new IllegalArgumentException("Cannot update sense that is not in the current revision.");
+		SenseIdValue id = update.getEntityId();
+		Validate.validState(!removedSenses.contains(id), "Cannot update removed sense.");
+		SenseUpdateBuilder combined;
+		if (getBaseRevision() != null) {
+			SenseDocument original = getBaseRevision().getSenses().stream()
+					.filter(s -> s.getEntityId().equals(id))
+					.findFirst().orElse(null);
+			Validate.isTrue(original != null, "Cannot update sense that is not in the base revision.");
+			combined = SenseUpdateBuilder.forBaseRevision(original);
+		} else {
+			combined = SenseUpdateBuilder.forEntityId(id);
 		}
-		updatedSenses.put(update.getEntityId(), update);
-		removedSenses.remove(update.getEntityId());
+		SenseUpdate prior = updatedSenses.get(id);
+		if (prior != null) {
+			combined.apply(prior);
+		}
+		combined.apply(update);
+		updatedSenses.put(id, combined.build());
 		return this;
 	}
 
 	/**
-	 * Removes existing sense from the lexeme. Calling this method overrides any
-	 * previous changes made to the same sense ID by
-	 * {@link #updateSense(SenseUpdate)}. Removing the same sense ID twice is
-	 * silently tolerated.
+	 * Removes existing sense from the lexeme. Removing the same sense ID twice is
+	 * silently tolerated. Any prior changes made by calling
+	 * {@link #updateSense(SenseUpdate)} are discarded.
 	 * 
 	 * @param senseId
 	 *            ID of the removed sense
@@ -229,14 +258,14 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 *             if {@code senseId} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if {@code senseId} is not valid or if such ID does not exist in
-	 *             current version of the lexeme document (if available)
+	 *             base revision (if available)
 	 */
 	public LexemeUpdateBuilder removeSense(SenseIdValue senseId) {
 		Objects.requireNonNull(senseId, "Sense ID cannot be null.");
 		Validate.isTrue(senseId.isValid(), "ID of removed sense must be valid.");
-		if (getBaseRevision() != null
-				&& getBaseRevision().getSenses().stream().noneMatch(s -> s.getEntityId().equals(senseId))) {
-			throw new IllegalArgumentException("Cannot remove sense that is not in the current revision.");
+		if (getBaseRevision() != null) {
+			Validate.isTrue(getBaseRevision().getSenses().stream().anyMatch(s -> s.getEntityId().equals(senseId)),
+					"Cannot remove sense that is not in the base revision.");
 		}
 		removedSenses.add(senseId);
 		updatedSenses.remove(senseId);
@@ -263,9 +292,10 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	/**
-	 * Updates existing form in the lexeme. Calling this method overrides any
-	 * previous changes made to the same form ID by this method or
-	 * {@link #removeForm(SenseIdValue)}.
+	 * Updates existing form in the lexeme. If this method is called multiple times,
+	 * changes are accumulated. If base entity revision was provided, the update is
+	 * checked against it and redundant changes are silently ignored, resulting in
+	 * empty update.
 	 * 
 	 * @param update
 	 *            update of existing form
@@ -273,17 +303,32 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code update} refers to form ID that does not exist in
-	 *             current version of the lexeme document (if available)
+	 *             if the form does not exist in base revision (if available) or the
+	 *             update cannot be applied to it
+	 * @throws IllegalStateException
+	 *             if the form was removed by calling
+	 *             {@link #removeForm(FormIdValue)}
 	 */
 	public LexemeUpdateBuilder updateForm(FormUpdate update) {
 		Objects.requireNonNull(update, "Form update cannot be null.");
-		if (getBaseRevision() != null && getBaseRevision().getForms().stream()
-				.noneMatch(f -> f.getEntityId().equals(update.getEntityId()))) {
-			throw new IllegalArgumentException("Cannot update form that is not in the current revision.");
+		FormIdValue id = update.getEntityId();
+		Validate.validState(!removedForms.contains(id), "Cannot update removed form.");
+		FormUpdateBuilder combined;
+		if (getBaseRevision() != null) {
+			FormDocument original = getBaseRevision().getForms().stream()
+					.filter(s -> s.getEntityId().equals(id))
+					.findFirst().orElse(null);
+			Validate.isTrue(original != null, "Cannot update form that is not in the base revision.");
+			combined = FormUpdateBuilder.forBaseRevision(original);
+		} else {
+			combined = FormUpdateBuilder.forEntityId(id);
 		}
-		updatedForms.put(update.getEntityId(), update);
-		removedForms.remove(update.getEntityId());
+		FormUpdate prior = updatedForms.get(id);
+		if (prior != null) {
+			combined.apply(prior);
+		}
+		combined.apply(update);
+		updatedForms.put(id, combined.build());
 		return this;
 	}
 
@@ -304,12 +349,56 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	public LexemeUpdateBuilder removeForm(FormIdValue formId) {
 		Objects.requireNonNull(formId, "Form ID cannot be null.");
 		Validate.isTrue(formId.isValid(), "ID of removed form must be valid.");
-		if (getBaseRevision() != null
-				&& getBaseRevision().getForms().stream().noneMatch(f -> f.getEntityId().equals(formId))) {
-			throw new IllegalArgumentException("Cannot remove form that is not in the current revision.");
+		if (getBaseRevision() != null) {
+			Validate.isTrue(getBaseRevision().getForms().stream().anyMatch(s -> s.getEntityId().equals(formId)),
+					"Cannot remove form that is not in the base revision.");
 		}
 		removedForms.add(formId);
 		updatedForms.remove(formId);
+		return this;
+	}
+
+	/**
+	 * Replays all changes in provided update into this builder object. Changes from
+	 * the update are added on top of changes already present in this builder
+	 * object.
+	 * 
+	 * @param update
+	 *            lexeme update to replay
+	 * @return {@code this} (fluent method)
+	 * @throws NullPointerException
+	 *             if {@code update} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code update} cannot be applied to base entity revision (if
+	 *             available)
+	 */
+	public LexemeUpdateBuilder apply(LexemeUpdate update) {
+		super.apply(update);
+		if (update.getLanguage().isPresent()) {
+			setLanguage(update.getLanguage().get());
+		}
+		if (update.getLexicalCategory().isPresent()) {
+			setLexicalCategory(update.getLexicalCategory().get());
+		}
+		updateLemmas(update.getLemmas());
+		for (SenseDocument sense : update.getAddedSenses()) {
+			addSense(sense);
+		}
+		for (SenseUpdate sense : update.getUpdatedSenses().values()) {
+			updateSense(sense);
+		}
+		for (SenseIdValue senseId : update.getRemovedSenses()) {
+			removeSense(senseId);
+		}
+		for (FormDocument form : update.getAddedForms()) {
+			addForm(form);
+		}
+		for (FormUpdate form : update.getUpdatedForms().values()) {
+			updateForm(form);
+		}
+		for (FormIdValue formId : update.getRemovedForms()) {
+			removeForm(formId);
+		}
 		return this;
 	}
 

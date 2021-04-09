@@ -449,7 +449,8 @@ public class WikibaseDataEditor {
 
 	/**
 	 * Updates {@link EntityDocument} entity. ID of the entity to update is taken
-	 * from the update object. Its site IRI is ignored.
+	 * from the update object. Its site IRI is ignored. No action is taken if the
+	 * update is empty.
 	 * <p>
 	 * If the update object references base revision of the document, its revision
 	 * ID is used to specify the base revision in the API request, enabling the API
@@ -478,6 +479,8 @@ public class WikibaseDataEditor {
 	public void editEntityDocument(
 			EntityUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
+		if (update.isEmpty())
+			return;
 		long revisionId = update.getBaseRevision() != null ? update.getBaseRevision().getRevisionId() : 0;
 		if (update instanceof StatementDocumentUpdate) {
 			StatementDocumentUpdate typed = (StatementDocumentUpdate) update;
@@ -486,7 +489,7 @@ public class WikibaseDataEditor {
 						? StatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
 						: StatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
 				Statement statement = typed.getStatements().getAddedStatements().stream().findFirst().get();
-				builder.updateStatements(new StatementUpdateBuilder()
+				builder.updateStatements(StatementUpdateBuilder.create()
 						.addStatement(statement)
 						.build());
 				if (builder.build().equals(update)) {
@@ -502,7 +505,7 @@ public class WikibaseDataEditor {
 						? StatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
 						: StatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
 				Statement statement = typed.getStatements().getReplacedStatements().values().stream().findFirst().get();
-				builder.updateStatements(new StatementUpdateBuilder()
+				builder.updateStatements(StatementUpdateBuilder.create()
 						.replaceStatement(statement)
 						.build());
 				if (builder.build().equals(update)) {
@@ -517,7 +520,7 @@ public class WikibaseDataEditor {
 						? StatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
 						: StatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
 				List<String> statementIds = new ArrayList<>(typed.getStatements().getRemovedStatements());
-				StatementUpdateBuilder statementBuilder = new StatementUpdateBuilder();
+				StatementUpdateBuilder statementBuilder = StatementUpdateBuilder.create();
 				for (String statementId : statementIds)
 					statementBuilder.removeStatement(statementId);
 				builder.updateStatements(statementBuilder.build());
@@ -534,7 +537,7 @@ public class WikibaseDataEditor {
 						? LabeledStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
 						: LabeledStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
 				MonolingualTextValue label = typed.getLabels().getModifiedTerms().values().stream().findFirst().get();
-				builder.updateLabels(new TermUpdateBuilder()
+				builder.updateLabels(TermUpdateBuilder.create()
 						.setTerm(label)
 						.build());
 				if (builder.build().equals(update)) {
@@ -548,7 +551,7 @@ public class WikibaseDataEditor {
 						? LabeledStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
 						: LabeledStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
 				String language = typed.getLabels().getRemovedTerms().stream().findFirst().get();
-				builder.updateLabels(new TermUpdateBuilder()
+				builder.updateLabels(TermUpdateBuilder.create()
 						.removeTerm(language)
 						.build());
 				if (builder.build().equals(update)) {
@@ -566,7 +569,7 @@ public class WikibaseDataEditor {
 						: TermedStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
 				MonolingualTextValue description = typed.getDescriptions().getModifiedTerms()
 						.values().stream().findFirst().get();
-				builder.updateDescriptions(new TermUpdateBuilder()
+				builder.updateDescriptions(TermUpdateBuilder.create()
 						.setTerm(description)
 						.build());
 				if (builder.build().equals(update)) {
@@ -580,7 +583,7 @@ public class WikibaseDataEditor {
 						? TermedStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
 						: TermedStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
 				String language = typed.getDescriptions().getRemovedTerms().stream().findFirst().get();
-				builder.updateDescriptions(new TermUpdateBuilder()
+				builder.updateDescriptions(TermUpdateBuilder.create()
 						.removeTerm(language)
 						.build());
 				if (builder.build().equals(update)) {

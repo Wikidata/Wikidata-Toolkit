@@ -28,10 +28,10 @@ import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocumentUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
 
 /**
@@ -136,28 +136,30 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	}
 
 	/**
-	 * Updates entity labels. Any previous changes to labels are discarded.
+	 * Updates entity labels. If this method is called multiple times, changes are
+	 * accumulated. If base entity revision was provided, redundant changes are
+	 * silently ignored, resulting in empty update.
 	 * 
 	 * @param update
-	 *            changes to entity labels
+	 *            changes in entity labels
 	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
-	 * @throws IllegalArgumentException
-	 *             if removed label is not present in base entity revision (if
-	 *             available)
 	 */
 	public LabeledStatementDocumentUpdateBuilder updateLabels(TermUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
-		if (getBaseRevision() != null) {
-			for (String removed : update.getRemovedTerms()) {
-				if (!getBaseRevision().getLabels().containsKey(removed)) {
-					throw new IllegalArgumentException("Removed label is not in the current revision.");
-				}
-			}
-		}
-		labels = update;
+		TermUpdateBuilder combined = getBaseRevision() != null
+				? TermUpdateBuilder.forTerms(getBaseRevision().getLabels().values())
+				: TermUpdateBuilder.create();
+		combined.apply(labels);
+		combined.apply(update);
+		labels = combined.build();
 		return this;
+	}
+
+	void apply(LabeledStatementDocumentUpdate update) {
+		super.apply(update);
+		updateLabels(update.getLabels());
 	}
 
 	/**

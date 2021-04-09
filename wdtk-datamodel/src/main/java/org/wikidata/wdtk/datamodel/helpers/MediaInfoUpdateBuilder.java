@@ -22,8 +22,8 @@ package org.wikidata.wdtk.datamodel.helpers;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 /**
  * Builder for incremental construction of {@link MediaInfoUpdate} objects.
@@ -92,6 +92,25 @@ public class MediaInfoUpdateBuilder extends LabeledStatementDocumentUpdateBuilde
 	@Override
 	public MediaInfoUpdateBuilder updateLabels(TermUpdate update) {
 		super.updateLabels(update);
+		return this;
+	}
+
+	/**
+	 * Replays all changes in provided update into this builder object. Changes from
+	 * the update are added on top of changes already present in this builder
+	 * object.
+	 * 
+	 * @param update
+	 *            media update to replay
+	 * @return {@code this} (fluent method)
+	 * @throws NullPointerException
+	 *             if {@code update} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code update} cannot be applied to base entity revision (if
+	 *             available)
+	 */
+	public MediaInfoUpdateBuilder apply(MediaInfoUpdate update) {
+		super.apply(update);
 		return this;
 	}
 
