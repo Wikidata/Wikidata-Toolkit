@@ -47,6 +47,12 @@ public class StatementUpdateBuilder {
 	private final Set<String> removed = new HashSet<>();
 
 	/**
+	 * Creates new empty builder.
+	 */
+	public StatementUpdateBuilder() {
+	}
+
+	/**
 	 * Adds statement to the entity. If {@code statement} has an ID (perhaps because
 	 * it is a modified copy of another statement), its ID is stripped to ensure the
 	 * statement is added and no other statement is modified.

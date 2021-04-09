@@ -41,6 +41,12 @@ public class TermUpdateBuilder {
 	private final Set<String> removed = new HashSet<>();
 
 	/**
+	 * Creates new empty builder.
+	 */
+	public TermUpdateBuilder() {
+	}
+
+	/**
 	 * Adds or changes term. If there is no term for the language code, new term is
 	 * added. If a term with this language code already exists, it is replaced.
 	 * Terms with other language codes are not touched. Calling this method
