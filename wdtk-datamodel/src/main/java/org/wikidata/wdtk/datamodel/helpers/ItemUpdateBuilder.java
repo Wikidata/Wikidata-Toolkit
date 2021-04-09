@@ -204,7 +204,7 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 
 	@Override
 	public ItemUpdate build() {
-		return factory.getItemUpdate(getEntityId(), getBaseRevision(), labels, descriptions, aliases, statements,
+		return Datamodel.makeItemUpdate(getEntityId(), getBaseRevision(), labels, descriptions, aliases, statements,
 				modifiedSiteLinks.values(), removedSiteLinks);
 	}
 

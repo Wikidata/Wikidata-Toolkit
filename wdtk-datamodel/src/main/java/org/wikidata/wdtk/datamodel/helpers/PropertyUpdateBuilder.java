@@ -130,7 +130,7 @@ public class PropertyUpdateBuilder extends TermedStatementDocumentUpdateBuilder 
 
 	@Override
 	public PropertyUpdate build() {
-		return factory.getPropertyUpdate(getEntityId(), getBaseRevision(), labels, descriptions, aliases, statements);
+		return Datamodel.makePropertyUpdate(getEntityId(), getBaseRevision(), labels, descriptions, aliases, statements);
 	}
 
 }

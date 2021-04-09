@@ -116,7 +116,7 @@ public class MediaInfoUpdateBuilder extends LabeledStatementDocumentUpdateBuilde
 
 	@Override
 	public MediaInfoUpdate build() {
-		return factory.getMediaInfoUpdate(getEntityId(), getBaseRevision(), labels, statements);
+		return Datamodel.makeMediaInfoUpdate(getEntityId(), getBaseRevision(), labels, statements);
 	}
 
 }

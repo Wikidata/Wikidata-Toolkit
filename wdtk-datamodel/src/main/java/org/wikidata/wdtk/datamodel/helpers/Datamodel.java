@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.helpers;
  */
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -896,4 +897,252 @@ public class Datamodel {
 												List<StatementGroup> statementGroups) {
 		return factory.getMediaInfoDocument(mediaInfoIdValue, labels, statementGroups, 0);
 	}
+
+	/**
+	 * Creates new {@link TermUpdate}. It might be more convenient to
+	 * use {@link TermUpdateBuilder}.
+	 * 
+	 * @param modified
+	 *            added or changed values
+	 * @param removed
+	 *            language codes of removed values
+	 * @return new {@link TermUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	public static TermUpdate makeTermUpdate(
+			Collection<MonolingualTextValue> modified,
+			Collection<String> removed) {
+		return factory.getTermUpdate(modified, removed);
+	}
+
+	/**
+	 * Creates new {@link StatementUpdate}. It might be more convenient to use
+	 * {@link StatementUpdateBuilder}.
+	 * 
+	 * @param added
+	 *            added statements
+	 * @param replaced
+	 *            replaced statements
+	 * @param removed
+	 *            IDs of removed statements
+	 * @return new {@link StatementUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	public static StatementUpdate makeStatementUpdate(
+			Collection<Statement> added,
+			Collection<Statement> replaced,
+			Collection<String> removed) {
+		return factory.getStatementUpdate(added, replaced, removed);
+	}
+
+	/**
+	 * Creates new {@link SenseUpdate}. It might be more convenient to use
+	 * {@link SenseUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the sense that is to be updated
+	 * @param document
+	 *            sense revision to be updated or {@code null} if not available
+	 * @param glosses
+	 *            changes in sense glosses or {@code null} for no change
+	 * @param statements
+	 *            changes in entity statements, possibly empty
+	 * @return new {@link SenseUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	public static SenseUpdate makeSenseUpdate(
+			SenseIdValue entityId,
+			SenseDocument document,
+			TermUpdate glosses,
+			StatementUpdate statements) {
+		return factory.getSenseUpdate(entityId, document, glosses, statements);
+	}
+
+	/**
+	 * Creates new {@link FormUpdate}. It might be more convenient to use
+	 * {@link FormUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the form that is to be updated
+	 * @param document
+	 *            form revision to be updated or {@code null} if not available
+	 * @param representations
+	 *            changes in form representations or {@code null} for no change
+	 * @param grammaticalFeatures
+	 *            new grammatical features of the form or {@code null} for no change
+	 * @param statements
+	 *            changes in entity statements, possibly empty
+	 * @return new {@link FormUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	public static FormUpdate makeFormUpdate(
+			FormIdValue entityId,
+			FormDocument document,
+			TermUpdate representations,
+			Collection<ItemIdValue> grammaticalFeatures,
+			StatementUpdate statements) {
+		return factory.getFormUpdate(entityId, document, representations, grammaticalFeatures, statements);
+	}
+
+	/**
+	 * Creates new {@link LexemeUpdate}. It might be more convenient to use
+	 * {@link LexemeUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the lexeme that is to be updated
+	 * @param document
+	 *            lexeme revision to be updated or {@code null} if not available
+	 * @param language
+	 *            new lexeme language or {@code null} for no change
+	 * @param lexicalCategory
+	 *            new lexical category of the lexeme or {@code null} for no change
+	 * @param lemmas
+	 *            changes in lemmas or {@code null} for no change
+	 * @param statements
+	 *            changes in entity statements, possibly empty
+	 * @param addedSenses
+	 *            added senses
+	 * @param updatedSenses
+	 *            updated senses
+	 * @param removedSenses
+	 *            IDs of removed senses
+	 * @param addedForms
+	 *            added forms
+	 * @param updatedForms
+	 *            updated forms
+	 * @param removedForms
+	 *            IDs of removed forms
+	 * @return new {@link LexemeUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	public static LexemeUpdate makeLexemeUpdate(
+			LexemeIdValue entityId,
+			LexemeDocument document,
+			ItemIdValue language,
+			ItemIdValue lexicalCategory,
+			TermUpdate lemmas,
+			StatementUpdate statements,
+			Collection<SenseDocument> addedSenses,
+			Collection<SenseUpdate> updatedSenses,
+			Collection<SenseIdValue> removedSenses,
+			Collection<FormDocument> addedForms,
+			Collection<FormUpdate> updatedForms,
+			Collection<FormIdValue> removedForms) {
+		return factory.getLexemeUpdate(entityId, document, language, lexicalCategory, lemmas, statements,
+				addedSenses, updatedSenses, removedSenses, addedForms, updatedForms, removedForms);
+	}
+
+	/**
+	 * Creates new {@link MediaInfoUpdate}. It might be more convenient to use
+	 * {@link MediaInfoUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the media that is to be updated
+	 * @param document
+	 *            media revision to be updated or {@code null} if not available
+	 * @param labels
+	 *            changes in entity labels or {@code null} for no change
+	 * @param statements
+	 *            changes in entity statements, possibly empty
+	 * @return new {@link MediaInfoUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	public static MediaInfoUpdate makeMediaInfoUpdate(
+			MediaInfoIdValue entityId,
+			MediaInfoDocument document,
+			TermUpdate labels,
+			StatementUpdate statements) {
+		return factory.getMediaInfoUpdate(entityId, document, labels, statements);
+	}
+
+	/**
+	 * Creates new {@link ItemUpdate}. It might be more convenient to use
+	 * {@link ItemUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the item that is to be updated
+	 * @param document
+	 *            item revision to be updated or {@code null} if not available
+	 * @param labels
+	 *            changes in entity labels or {@code null} for no change
+	 * @param descriptions
+	 *            changes in entity descriptions or {@code null} for no change
+	 * @param aliases
+	 *            changes in entity aliases, possibly empty
+	 * @param statements
+	 *            changes in entity statements, possibly empty
+	 * @param modifiedSiteLinks
+	 *            added or replaced site links
+	 * @param removedSiteLinks
+	 *            site keys of removed site links
+	 * @return new {@link ItemUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	public static ItemUpdate makeItemUpdate(
+			ItemIdValue entityId,
+			ItemDocument document,
+			TermUpdate labels,
+			TermUpdate descriptions,
+			Map<String, List<MonolingualTextValue>> aliases,
+			StatementUpdate statements,
+			Collection<SiteLink> modifiedSiteLinks,
+			Collection<String> removedSiteLinks) {
+		return factory.getItemUpdate(entityId, document, labels, descriptions, aliases,
+				statements, modifiedSiteLinks, removedSiteLinks);
+	}
+
+	/**
+	 * Creates new {@link PropertyUpdate}. It might be more convenient to use
+	 * {@link PropertyUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the property entity that is to be updated
+	 * @param document
+	 *            property entity revision to be updated or {@code null} if not
+	 *            available
+	 * @param labels
+	 *            changes in entity labels or {@code null} for no change
+	 * @param descriptions
+	 *            changes in entity descriptions or {@code null} for no change
+	 * @param aliases
+	 *            changes in entity aliases, possibly empty
+	 * @param statements
+	 *            changes in entity statements, possibly empty
+	 * @return new {@link PropertyUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	public static PropertyUpdate makePropertyUpdate(
+			PropertyIdValue entityId,
+			PropertyDocument document,
+			TermUpdate labels,
+			TermUpdate descriptions,
+			Map<String, List<MonolingualTextValue>> aliases,
+			StatementUpdate statements) {
+		return factory.getPropertyUpdate(entityId, document, labels, descriptions, aliases, statements);
+	}
+
 }

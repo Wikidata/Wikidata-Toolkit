@@ -137,7 +137,7 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	@Override
 	public SenseUpdate build() {
-		return factory.getSenseUpdate(getEntityId(), getBaseRevision(), glosses, statements);
+		return Datamodel.makeSenseUpdate(getEntityId(), getBaseRevision(), glosses, statements);
 	}
 
 }

@@ -22,8 +22,6 @@ package org.wikidata.wdtk.datamodel.helpers;
 import java.util.Objects;
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
@@ -45,8 +43,6 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
  * Builder for incremental construction of {@link EntityUpdate} objects.
  */
 public abstract class EntityUpdateBuilder {
-
-	static DataObjectFactory factory = new DataObjectFactoryImpl();
 
 	private final EntityIdValue entityId;
 	private final EntityDocument baseRevision;

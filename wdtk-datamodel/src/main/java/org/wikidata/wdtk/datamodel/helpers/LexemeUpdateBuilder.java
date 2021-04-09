@@ -404,7 +404,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	@Override
 	public LexemeUpdate build() {
-		return factory.getLexemeUpdate(getEntityId(), getBaseRevision(),
+		return Datamodel.makeLexemeUpdate(getEntityId(), getBaseRevision(),
 				language, lexicalCategory, lemmas, statements,
 				addedSenses, updatedSenses.values(), removedSenses,
 				addedForms, updatedForms.values(), removedForms);

@@ -29,8 +29,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
@@ -39,8 +37,6 @@ import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
  * Builder for incremental construction of {@link TermUpdate} objects.
  */
 public class TermUpdateBuilder {
-
-	private static DataObjectFactory factory = new DataObjectFactoryImpl();
 
 	private final Map<String, MonolingualTextValue> base;
 	private final Map<String, MonolingualTextValue> modified = new HashMap<>();
@@ -171,7 +167,7 @@ public class TermUpdateBuilder {
 	 * @return constructed object
 	 */
 	public TermUpdate build() {
-		return factory.getTermUpdate(modified.values(), removed);
+		return Datamodel.makeTermUpdate(modified.values(), removed);
 	}
 
 }

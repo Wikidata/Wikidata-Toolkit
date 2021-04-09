@@ -32,8 +32,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
@@ -44,8 +42,6 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
  * @see StatementDocumentUpdateBuilder
  */
 public class StatementUpdateBuilder {
-
-	private static DataObjectFactory factory = new DataObjectFactoryImpl();
 
 	private final Map<String, Statement> base;
 	private final List<Statement> added = new ArrayList<>();
@@ -237,7 +233,7 @@ public class StatementUpdateBuilder {
 	 * @return constructed object
 	 */
 	public StatementUpdate build() {
-		return factory.getStatementUpdate(added, replaced.values(), removed);
+		return Datamodel.makeStatementUpdate(added, replaced.values(), removed);
 	}
 
 }

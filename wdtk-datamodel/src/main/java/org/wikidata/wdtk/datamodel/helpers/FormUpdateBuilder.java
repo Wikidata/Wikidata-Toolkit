@@ -178,7 +178,7 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	@Override
 	public FormUpdate build() {
-		return factory.getFormUpdate(getEntityId(), getBaseRevision(),
+		return Datamodel.makeFormUpdate(getEntityId(), getBaseRevision(),
 				representations, grammaticalFeatures, statements);
 	}
 
