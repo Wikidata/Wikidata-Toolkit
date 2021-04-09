@@ -28,6 +28,7 @@ import java.util.List;
 import org.wikidata.wdtk.datamodel.helpers.EntityUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
 import org.wikidata.wdtk.datamodel.helpers.LabeledStatementDocumentUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.LexemeUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementDocumentUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.TermUpdateBuilder;
@@ -35,15 +36,18 @@ import org.wikidata.wdtk.datamodel.helpers.TermedStatementDocumentUpdateBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocumentUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocumentUpdate;
@@ -479,148 +483,185 @@ public class WikibaseDataEditor {
 	public void editEntityDocument(
 			EntityUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		if (update.isEmpty())
-			return;
 		long revisionId = update.getBaseRevision() != null ? update.getBaseRevision().getRevisionId() : 0;
-		if (update instanceof StatementDocumentUpdate) {
-			StatementDocumentUpdate typed = (StatementDocumentUpdate) update;
-			if (typed.getStatements().getAddedStatements().size() == 1) {
-				StatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-						? StatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-						: StatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
-				Statement statement = typed.getStatements().getAddedStatements().stream().findFirst().get();
-				builder.updateStatements(StatementUpdateBuilder.create()
-						.addStatement(statement)
-						.build());
-				if (builder.build().equals(update)) {
-					String statementId = new RandomGuidGenerator().freshStatementId(typed.getEntityId().getId());
-					Statement prepared = statement.withStatementId(statementId);
-					wbEditingAction.wbSetClaim(JsonSerializer.getJsonString(prepared),
-							editAsBot, revisionId, summary, tags);
-					return;
-				}
-			}
-			if (typed.getStatements().getReplacedStatements().size() == 1) {
-				StatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-						? StatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-						: StatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
-				Statement statement = typed.getStatements().getReplacedStatements().values().stream().findFirst().get();
-				builder.updateStatements(StatementUpdateBuilder.create()
-						.replaceStatement(statement)
-						.build());
-				if (builder.build().equals(update)) {
-					wbEditingAction.wbSetClaim(JsonSerializer.getJsonString(statement),
-							editAsBot, revisionId, summary, tags);
-					return;
-				}
-			}
-			if (!typed.getStatements().getRemovedStatements().isEmpty()
-					&& typed.getStatements().getRemovedStatements().size() <= 50) {
-				StatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-						? StatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-						: StatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
-				List<String> statementIds = new ArrayList<>(typed.getStatements().getRemovedStatements());
-				StatementUpdateBuilder statementBuilder = StatementUpdateBuilder.create();
-				for (String statementId : statementIds)
-					statementBuilder.removeStatement(statementId);
-				builder.updateStatements(statementBuilder.build());
-				if (builder.build().equals(update)) {
-					wbEditingAction.wbRemoveClaims(statementIds, editAsBot, revisionId, summary, tags);
-					return;
-				}
-			}
-		}
-		if (update instanceof LabeledStatementDocumentUpdate) {
-			LabeledStatementDocumentUpdate typed = (LabeledStatementDocumentUpdate) update;
-			if (typed.getLabels().getModifiedTerms().size() == 1) {
-				LabeledStatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-						? LabeledStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-						: LabeledStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
-				MonolingualTextValue label = typed.getLabels().getModifiedTerms().values().stream().findFirst().get();
-				builder.updateLabels(TermUpdateBuilder.create()
-						.setTerm(label)
-						.build());
-				if (builder.build().equals(update)) {
-					wbEditingAction.wbSetLabel(update.getEntityId().getId(), null, null, null,
-							label.getLanguageCode(), label.getText(), editAsBot, revisionId, summary, tags);
-					return;
-				}
-			}
-			if (typed.getLabels().getRemovedTerms().size() == 1) {
-				LabeledStatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-						? LabeledStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-						: LabeledStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
-				String language = typed.getLabels().getRemovedTerms().stream().findFirst().get();
-				builder.updateLabels(TermUpdateBuilder.create()
-						.removeTerm(language)
-						.build());
-				if (builder.build().equals(update)) {
-					wbEditingAction.wbSetLabel(update.getEntityId().getId(), null, null, null,
-							language, null, editAsBot, revisionId, summary, tags);
-					return;
-				}
-			}
-		}
-		if (update instanceof TermedStatementDocumentUpdate) {
-			TermedStatementDocumentUpdate typed = (TermedStatementDocumentUpdate) update;
-			if (typed.getDescriptions().getModifiedTerms().size() == 1) {
-				TermedStatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-						? TermedStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-						: TermedStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
-				MonolingualTextValue description = typed.getDescriptions().getModifiedTerms()
-						.values().stream().findFirst().get();
-				builder.updateDescriptions(TermUpdateBuilder.create()
-						.setTerm(description)
-						.build());
-				if (builder.build().equals(update)) {
-					wbEditingAction.wbSetDescription(update.getEntityId().getId(), null, null, null,
-							description.getLanguageCode(), description.getText(), editAsBot, revisionId, summary, tags);
-					return;
-				}
-			}
-			if (typed.getDescriptions().getRemovedTerms().size() == 1) {
-				TermedStatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-						? TermedStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-						: TermedStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
-				String language = typed.getDescriptions().getRemovedTerms().stream().findFirst().get();
-				builder.updateDescriptions(TermUpdateBuilder.create()
-						.removeTerm(language)
-						.build());
-				if (builder.build().equals(update)) {
-					wbEditingAction.wbSetDescription(update.getEntityId().getId(), null, null, null,
-							language, null, editAsBot, revisionId, summary, tags);
-					return;
-				}
-			}
-			if (typed.getAliases().size() == 1) {
-				TermedStatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-						? TermedStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-						: TermedStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
-				String language = typed.getAliases().keySet().stream().findFirst().get();
-				List<String> aliases = typed.getAliases().get(language).stream()
-						.map(v -> v.getText())
-						.collect(toList());
-				builder.setAliases(language, aliases);
-				if (builder.build().equals(update)) {
-					if (typed.getBaseRevision() != null && typed.getBaseRevision().getAliases().containsKey(language)) {
-						List<String> original = typed.getBaseRevision().getAliases().get(language).stream()
-								.map(v -> v.getText())
-								.collect(toList());
-						List<String> added = aliases.stream().filter(a -> !original.contains(a)).collect(toList());
-						List<String> removed = original.stream().filter(a -> !aliases.contains(a)).collect(toList());
-						List<String> simulated = new ArrayList<>(original);
-						for (String alias : removed)
-							simulated.remove(alias);
-						simulated.addAll(added);
-						if (simulated.equals(aliases)) {
-							wbEditingAction.wbSetAliases(update.getEntityId().getId(), null, null, null,
-									language, added, removed, null, editAsBot, revisionId, summary, tags);
-							return;
-						}
+		if (!clear) {
+			if (update.isEmpty())
+				return;
+			if (update instanceof StatementDocumentUpdate) {
+				StatementDocumentUpdate typed = (StatementDocumentUpdate) update;
+				if (typed.getStatements().getAddedStatements().size() == 1) {
+					StatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
+							? StatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
+							: StatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					Statement statement = typed.getStatements().getAddedStatements().stream().findFirst().get();
+					builder.updateStatements(StatementUpdateBuilder.create()
+							.addStatement(statement)
+							.build());
+					if (builder.build().equals(update)) {
+						String statementId = new RandomGuidGenerator().freshStatementId(typed.getEntityId().getId());
+						Statement prepared = statement.withStatementId(statementId);
+						wbEditingAction.wbSetClaim(JsonSerializer.getJsonString(prepared),
+								editAsBot, revisionId, summary, tags);
+						return;
 					}
-					wbEditingAction.wbSetAliases(update.getEntityId().getId(), null, null, null,
-							language, null, null, aliases, editAsBot, revisionId, summary, tags);
-					return;
+				}
+				if (typed.getStatements().getReplacedStatements().size() == 1) {
+					StatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
+							? StatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
+							: StatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					Statement statement = typed.getStatements().getReplacedStatements()
+							.values().stream().findFirst().get();
+					builder.updateStatements(StatementUpdateBuilder.create()
+							.replaceStatement(statement)
+							.build());
+					if (builder.build().equals(update)) {
+						wbEditingAction.wbSetClaim(JsonSerializer.getJsonString(statement),
+								editAsBot, revisionId, summary, tags);
+						return;
+					}
+				}
+				if (!typed.getStatements().getRemovedStatements().isEmpty()
+						&& typed.getStatements().getRemovedStatements().size() <= 50) {
+					StatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
+							? StatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
+							: StatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					List<String> statementIds = new ArrayList<>(typed.getStatements().getRemovedStatements());
+					StatementUpdateBuilder statementBuilder = StatementUpdateBuilder.create();
+					for (String statementId : statementIds) {
+						statementBuilder.removeStatement(statementId);
+					}
+					builder.updateStatements(statementBuilder.build());
+					if (builder.build().equals(update)) {
+						wbEditingAction.wbRemoveClaims(statementIds, editAsBot, revisionId, summary, tags);
+						return;
+					}
+				}
+			}
+			if (update instanceof LabeledStatementDocumentUpdate) {
+				LabeledStatementDocumentUpdate typed = (LabeledStatementDocumentUpdate) update;
+				if (typed.getLabels().getModifiedTerms().size() == 1) {
+					LabeledStatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
+							? LabeledStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
+							: LabeledStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					MonolingualTextValue label = typed.getLabels().getModifiedTerms()
+							.values().stream().findFirst().get();
+					builder.updateLabels(TermUpdateBuilder.create()
+							.setTerm(label)
+							.build());
+					if (builder.build().equals(update)) {
+						wbEditingAction.wbSetLabel(update.getEntityId().getId(), null, null, null,
+								label.getLanguageCode(), label.getText(), editAsBot, revisionId, summary, tags);
+						return;
+					}
+				}
+				if (typed.getLabels().getRemovedTerms().size() == 1) {
+					LabeledStatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
+							? LabeledStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
+							: LabeledStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					String language = typed.getLabels().getRemovedTerms().stream().findFirst().get();
+					builder.updateLabels(TermUpdateBuilder.create()
+							.removeTerm(language)
+							.build());
+					if (builder.build().equals(update)) {
+						wbEditingAction.wbSetLabel(update.getEntityId().getId(), null, null, null,
+								language, null, editAsBot, revisionId, summary, tags);
+						return;
+					}
+				}
+			}
+			if (update instanceof TermedStatementDocumentUpdate) {
+				TermedStatementDocumentUpdate typed = (TermedStatementDocumentUpdate) update;
+				if (typed.getDescriptions().getModifiedTerms().size() == 1) {
+					TermedStatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
+							? TermedStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
+							: TermedStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					MonolingualTextValue description = typed.getDescriptions().getModifiedTerms()
+							.values().stream().findFirst().get();
+					builder.updateDescriptions(TermUpdateBuilder.create()
+							.setTerm(description)
+							.build());
+					if (builder.build().equals(update)) {
+						wbEditingAction.wbSetDescription(update.getEntityId().getId(), null, null, null,
+								description.getLanguageCode(), description.getText(),
+								editAsBot, revisionId, summary, tags);
+						return;
+					}
+				}
+				if (typed.getDescriptions().getRemovedTerms().size() == 1) {
+					TermedStatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
+							? TermedStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
+							: TermedStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					String language = typed.getDescriptions().getRemovedTerms().stream().findFirst().get();
+					builder.updateDescriptions(TermUpdateBuilder.create()
+							.removeTerm(language)
+							.build());
+					if (builder.build().equals(update)) {
+						wbEditingAction.wbSetDescription(update.getEntityId().getId(), null, null, null,
+								language, null, editAsBot, revisionId, summary, tags);
+						return;
+					}
+				}
+				if (typed.getAliases().size() == 1) {
+					TermedStatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
+							? TermedStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
+							: TermedStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					String language = typed.getAliases().keySet().stream().findFirst().get();
+					List<String> aliases = typed.getAliases().get(language).stream()
+							.map(v -> v.getText())
+							.collect(toList());
+					builder.setAliases(language, aliases);
+					if (builder.build().equals(update)) {
+						if (typed.getBaseRevision() != null
+								&& typed.getBaseRevision().getAliases().containsKey(language)) {
+							List<String> original = typed.getBaseRevision().getAliases().get(language).stream()
+									.map(v -> v.getText())
+									.collect(toList());
+							List<String> added = aliases.stream()
+									.filter(a -> !original.contains(a))
+									.collect(toList());
+							List<String> removed = original.stream()
+									.filter(a -> !aliases.contains(a))
+									.collect(toList());
+							List<String> simulated = new ArrayList<>(original);
+							for (String alias : removed) {
+								simulated.remove(alias);
+							}
+							simulated.addAll(added);
+							if (simulated.equals(aliases)) {
+								wbEditingAction.wbSetAliases(update.getEntityId().getId(), null, null, null,
+										language, added, removed, null, editAsBot, revisionId, summary, tags);
+								return;
+							}
+						}
+						wbEditingAction.wbSetAliases(update.getEntityId().getId(), null, null, null,
+								language, null, null, aliases, editAsBot, revisionId, summary, tags);
+						return;
+					}
+				}
+			}
+			if (update instanceof LexemeUpdate) {
+				LexemeUpdate typed = (LexemeUpdate) update;
+				if (typed.getUpdatedSenses().size() == 1) {
+					LexemeUpdateBuilder builder = typed.getBaseRevision() != null
+							? LexemeUpdateBuilder.forBaseRevision(typed.getBaseRevision())
+							: LexemeUpdateBuilder.forEntityId(typed.getEntityId());
+					SenseUpdate sense = typed.getUpdatedSenses().values().stream().findFirst().get();
+					builder.updateSense(sense);
+					if (builder.build().equals(update)) {
+						editEntityDocument(sense, false, summary, tags);
+						return;
+					}
+				}
+				if (typed.getUpdatedForms().size() == 1) {
+					LexemeUpdateBuilder builder = typed.getBaseRevision() != null
+							? LexemeUpdateBuilder.forBaseRevision(typed.getBaseRevision())
+							: LexemeUpdateBuilder.forEntityId(typed.getEntityId());
+					FormUpdate form = typed.getUpdatedForms().values().stream().findFirst().get();
+					builder.updateForm(form);
+					if (builder.build().equals(update)) {
+						editEntityDocument(form, false, summary, tags);
+						return;
+					}
 				}
 			}
 		}
