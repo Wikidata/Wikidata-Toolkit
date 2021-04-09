@@ -227,22 +227,27 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 		Objects.requireNonNull(update, "Sense update cannot be null.");
 		SenseIdValue id = update.getEntityId();
 		Validate.validState(!removedSenses.contains(id), "Cannot update removed sense.");
-		SenseUpdateBuilder combined;
+		SenseUpdateBuilder builder;
 		if (getBaseRevision() != null) {
 			SenseDocument original = getBaseRevision().getSenses().stream()
 					.filter(s -> s.getEntityId().equals(id))
 					.findFirst().orElse(null);
 			Validate.isTrue(original != null, "Cannot update sense that is not in the base revision.");
-			combined = SenseUpdateBuilder.forBaseRevision(original);
+			builder = SenseUpdateBuilder.forBaseRevision(original);
 		} else {
-			combined = SenseUpdateBuilder.forEntityId(id);
+			builder = SenseUpdateBuilder.forEntityId(id);
 		}
 		SenseUpdate prior = updatedSenses.get(id);
 		if (prior != null) {
-			combined.apply(prior);
+			builder.apply(prior);
 		}
-		combined.apply(update);
-		updatedSenses.put(id, combined.build());
+		builder.apply(update);
+		SenseUpdate combined = builder.build();
+		if (!combined.isEmpty()) {
+			updatedSenses.put(id, combined);
+		} else {
+			updatedSenses.remove(id);
+		}
 		return this;
 	}
 
@@ -313,22 +318,27 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 		Objects.requireNonNull(update, "Form update cannot be null.");
 		FormIdValue id = update.getEntityId();
 		Validate.validState(!removedForms.contains(id), "Cannot update removed form.");
-		FormUpdateBuilder combined;
+		FormUpdateBuilder builder;
 		if (getBaseRevision() != null) {
 			FormDocument original = getBaseRevision().getForms().stream()
 					.filter(s -> s.getEntityId().equals(id))
 					.findFirst().orElse(null);
 			Validate.isTrue(original != null, "Cannot update form that is not in the base revision.");
-			combined = FormUpdateBuilder.forBaseRevision(original);
+			builder = FormUpdateBuilder.forBaseRevision(original);
 		} else {
-			combined = FormUpdateBuilder.forEntityId(id);
+			builder = FormUpdateBuilder.forEntityId(id);
 		}
 		FormUpdate prior = updatedForms.get(id);
 		if (prior != null) {
-			combined.apply(prior);
+			builder.apply(prior);
 		}
-		combined.apply(update);
-		updatedForms.put(id, combined.build());
+		builder.apply(update);
+		FormUpdate combined = builder.build();
+		if (!combined.isEmpty()) {
+			updatedForms.put(id, combined);
+		} else {
+			updatedForms.remove(id);
+		}
 		return this;
 	}
 
