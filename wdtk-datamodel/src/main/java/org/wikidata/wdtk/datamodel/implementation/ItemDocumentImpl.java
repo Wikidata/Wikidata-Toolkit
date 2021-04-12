@@ -29,7 +29,6 @@ import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -142,11 +141,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	@JsonIgnore
 	@Override
 	public ItemIdValue getEntityId() {
-		if (!EntityIdValue.SITE_LOCAL.equals(siteIri)) {
-			return new ItemIdValueImpl(entityId, siteIri);
-		} else {
-			return ItemIdValue.NULL;
-		}
+		return new ItemIdValueImpl(entityId, siteIri);
 	}
 
 	@JsonProperty("sitelinks")

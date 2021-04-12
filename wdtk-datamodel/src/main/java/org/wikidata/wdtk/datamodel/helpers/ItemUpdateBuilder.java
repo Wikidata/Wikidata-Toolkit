@@ -60,7 +60,7 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code itemId} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code itemId} is not valid
+	 *             if {@code itemId} is a placeholder ID
 	 */
 	public static ItemUpdateBuilder forEntityId(ItemIdValue itemId) {
 		return new ItemUpdateBuilder(itemId);
@@ -79,7 +79,7 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code revision} does not have valid ID
+	 *             if {@code revision} has placeholder ID
 	 */
 	public static ItemUpdateBuilder forBaseRevision(ItemDocument revision) {
 		return new ItemUpdateBuilder(revision);

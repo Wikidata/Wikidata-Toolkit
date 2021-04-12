@@ -50,7 +50,7 @@ public class PropertyUpdateBuilder extends TermedStatementDocumentUpdateBuilder 
 	 * @throws NullPointerException
 	 *             if {@code propertyId} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code propertyId} is not valid
+	 *             if {@code propertyId} is a placeholder ID
 	 */
 	public static PropertyUpdateBuilder forEntityId(PropertyIdValue propertyId) {
 		return new PropertyUpdateBuilder(propertyId);
@@ -69,7 +69,7 @@ public class PropertyUpdateBuilder extends TermedStatementDocumentUpdateBuilder 
 	 * @throws NullPointerException
 	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code revision} does not have valid ID
+	 *             if {@code revision} has placeholder ID
 	 */
 	public static PropertyUpdateBuilder forBaseRevision(PropertyDocument revision) {
 		return new PropertyUpdateBuilder(revision);

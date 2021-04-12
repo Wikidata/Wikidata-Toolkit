@@ -58,7 +58,7 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code formId} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code formId} is not valid
+	 *             if {@code formId} is a placeholder ID
 	 */
 	public static FormUpdateBuilder forEntityId(FormIdValue formId) {
 		return new FormUpdateBuilder(formId);
@@ -77,7 +77,7 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code revision} does not have valid ID
+	 *             if {@code revision} has placeholder ID
 	 */
 	public static FormUpdateBuilder forBaseRevision(FormDocument revision) {
 		return new FormUpdateBuilder(revision);
@@ -134,14 +134,14 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code features} or any of its items is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if any item ID in {@code features} is invalid or if there are
-	 *             duplicate features
+	 *             if any item ID in {@code features} is a placeholder ID or if
+	 *             there are duplicate features
 	 */
 	public FormUpdateBuilder setGrammaticalFeatures(Collection<ItemIdValue> features) {
 		Objects.requireNonNull(features, "Collection of grammatical features cannot be null.");
 		for (ItemIdValue id : features) {
 			Objects.requireNonNull(id, "Grammatical feature IDs must not be null.");
-			Validate.isTrue(id.isValid(), "Grammatical feature ID must be valid.");
+			Validate.isTrue(!id.isPlaceholder(), "Grammatical feature ID cannot be a placeholder ID.");
 		}
 		Set<ItemIdValue> set = new HashSet<>(features);
 		Validate.isTrue(set.size() == features.size(), "Every grammatical feature must be unique.");

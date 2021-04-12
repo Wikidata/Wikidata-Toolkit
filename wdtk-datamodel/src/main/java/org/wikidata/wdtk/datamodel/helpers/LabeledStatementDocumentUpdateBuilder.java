@@ -51,7 +51,7 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	 * @throws NullPointerException
 	 *             if {@code entityId} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code entityId} is not a valid ID
+	 *             if {@code entityId} is a placeholder ID
 	 */
 	protected LabeledStatementDocumentUpdateBuilder(EntityIdValue entityId) {
 		super(entityId);
@@ -66,7 +66,7 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	 * @throws NullPointerException
 	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code revision} does not have valid ID
+	 *             if {@code revision} has placeholder ID
 	 */
 	protected LabeledStatementDocumentUpdateBuilder(LabeledStatementDocument revision) {
 		super(revision);
@@ -84,7 +84,8 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	 * @throws NullPointerException
 	 *             if {@code entityId} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code entityId} is of unrecognized type or it is not valid
+	 *             if {@code entityId} is of unrecognized type or it is a
+	 *             placeholder ID
 	 */
 	public static LabeledStatementDocumentUpdateBuilder forEntityId(EntityIdValue entityId) {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
@@ -110,8 +111,8 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	 * @throws NullPointerException
 	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code revision} is of unrecognized type or it does not have
-	 *             valid ID
+	 *             if {@code revision} is of unrecognized type or its ID is a
+	 *             placeholder ID
 	 */
 	public static LabeledStatementDocumentUpdateBuilder forBaseRevision(LabeledStatementDocument revision) {
 		Objects.requireNonNull(revision, "Entity document cannot be null.");

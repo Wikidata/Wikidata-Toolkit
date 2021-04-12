@@ -58,7 +58,7 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	 * @throws NullPointerException
 	 *             if {@code entityId} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code entityId} is not a valid ID
+	 *             if {@code entityId} is a placeholder ID
 	 */
 	protected StatementDocumentUpdateBuilder(EntityIdValue entityId) {
 		super(entityId);
@@ -73,7 +73,7 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	 * @throws NullPointerException
 	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code revision} does not have valid ID
+	 *             if {@code revision} has placeholder ID
 	 */
 	protected StatementDocumentUpdateBuilder(StatementDocument revision) {
 		super(revision);
@@ -92,7 +92,8 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	 * @throws NullPointerException
 	 *             if {@code entityId} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code entityId} is of unrecognized type or it is not valid
+	 *             if {@code entityId} is of unrecognized type or it is a
+	 *             placeholder ID
 	 */
 	public static StatementDocumentUpdateBuilder forEntityId(EntityIdValue entityId) {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
@@ -125,8 +126,8 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	 * @throws NullPointerException
 	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code revision} is of unrecognized type or it does not have
-	 *             valid ID
+	 *             if {@code revision} is of unrecognized type or its ID is a
+	 *             placeholder ID
 	 */
 	public static StatementDocumentUpdateBuilder forBaseRevision(StatementDocument revision) {
 		Objects.requireNonNull(revision, "Entity document cannot be null.");

@@ -151,7 +151,7 @@ public class UnsupportedEntityIdValueImpl extends ValueImpl implements Unsupport
 
 	@JsonIgnore
 	@Override
-	public boolean isValid() {
+	public boolean isPlaceholder() {
 		return false;
 	}
 

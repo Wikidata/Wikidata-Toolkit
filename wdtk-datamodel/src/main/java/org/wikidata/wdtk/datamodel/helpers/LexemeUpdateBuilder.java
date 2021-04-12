@@ -74,7 +74,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code lexemeId} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code lexemeId} is not valid
+	 *             if {@code lexemeId} is a placeholder ID
 	 */
 	public static LexemeUpdateBuilder forEntityId(LexemeIdValue lexemeId) {
 		return new LexemeUpdateBuilder(lexemeId);
@@ -93,7 +93,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code revision} does not have valid ID
+	 *             if {@code revision} has placeholder ID
 	 */
 	public static LexemeUpdateBuilder forBaseRevision(LexemeDocument revision) {
 		return new LexemeUpdateBuilder(revision);
@@ -130,7 +130,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 */
 	public LexemeUpdateBuilder setLanguage(ItemIdValue language) {
 		Objects.requireNonNull(language, "Language cannot be null.");
-		Validate.isTrue(language.isValid(), "Language ID is not valid.");
+		Validate.isTrue(!language.isPlaceholder(), "Language ID cannot be a placeholder ID.");
 		if (getBaseRevision() != null && getBaseRevision().getLanguage().equals(language)) {
 			this.language = null;
 			return this;
@@ -154,7 +154,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 */
 	public LexemeUpdateBuilder setLexicalCategory(ItemIdValue category) {
 		Objects.requireNonNull(category, "Lexical category cannot be null.");
-		Validate.isTrue(category.isValid(), "Lexical category ID is not valid.");
+		Validate.isTrue(!category.isPlaceholder(), "Lexical category ID cannot be a placeholder ID.");
 		if (getBaseRevision() != null && getBaseRevision().getLexicalCategory().equals(category)) {
 			lexicalCategory = null;
 			return this;
@@ -198,7 +198,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 */
 	public LexemeUpdateBuilder addSense(SenseDocument sense) {
 		Objects.requireNonNull(sense, "Sense cannot be null.");
-		if (sense.getEntityId().isValid()) {
+		if (!sense.getEntityId().isPlaceholder()) {
 			sense = sense.withEntityId(SenseIdValue.NULL);
 		}
 		addedSenses.add(sense);
@@ -267,7 +267,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 */
 	public LexemeUpdateBuilder removeSense(SenseIdValue senseId) {
 		Objects.requireNonNull(senseId, "Sense ID cannot be null.");
-		Validate.isTrue(senseId.isValid(), "ID of removed sense must be valid.");
+		Validate.isTrue(!senseId.isPlaceholder(), "ID of removed sense cannot be a placeholder ID.");
 		if (getBaseRevision() != null) {
 			Validate.isTrue(getBaseRevision().getSenses().stream().anyMatch(s -> s.getEntityId().equals(senseId)),
 					"Cannot remove sense that is not in the base revision.");
@@ -290,7 +290,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 */
 	public LexemeUpdateBuilder addForm(FormDocument form) {
 		Objects.requireNonNull(form, "Form cannot be null.");
-		if (form.getEntityId().isValid())
+		if (!form.getEntityId().isPlaceholder())
 			form = form.withEntityId(FormIdValue.NULL);
 		addedForms.add(form);
 		return this;
@@ -358,7 +358,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 */
 	public LexemeUpdateBuilder removeForm(FormIdValue formId) {
 		Objects.requireNonNull(formId, "Form ID cannot be null.");
-		Validate.isTrue(formId.isValid(), "ID of removed form must be valid.");
+		Validate.isTrue(!formId.isPlaceholder(), "ID of removed form cannot be a placeholder ID.");
 		if (getBaseRevision() != null) {
 			Validate.isTrue(getBaseRevision().getForms().stream().anyMatch(s -> s.getEntityId().equals(formId)),
 					"Cannot remove form that is not in the base revision.");

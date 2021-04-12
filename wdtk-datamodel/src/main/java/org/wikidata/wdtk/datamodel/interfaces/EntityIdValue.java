@@ -108,14 +108,11 @@ public interface EntityIdValue extends IriIdentifiedValue {
 	String getSiteIri();
 
 	/**
-	 * Checks whether this entity ID is valid. Invalid IDs are commonly used as
-	 * placeholders when creating new entitites.
+	 * Checks whether this is a placeholder ID. Placeholder IDs, for example
+	 * {@link ItemIdValue#NULL}, are often used when creating new entities.
 	 * 
-	 * @return {@code true} if this is a valid ID, {@code false} for placeholder or
-	 *         otherwise invalid ID
+	 * @return {@code true} if this is a placeholder ID, {@code false} otherwise
 	 */
-	default boolean isValid() {
-		return !getSiteIri().equals(SITE_LOCAL);
-	}
+	boolean isPlaceholder();
 
 }

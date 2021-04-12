@@ -28,7 +28,6 @@ import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -143,11 +142,7 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	@JsonIgnore
 	@Override
 	public PropertyIdValue getEntityId() {
-		if (!EntityIdValue.SITE_LOCAL.equals(siteIri)) {
-			return new PropertyIdValueImpl(entityId, siteIri);
-		} else {
-			return PropertyIdValue.NULL;
-		}
+		return new PropertyIdValueImpl(entityId, siteIri);
 	}
 
 	@JsonIgnore

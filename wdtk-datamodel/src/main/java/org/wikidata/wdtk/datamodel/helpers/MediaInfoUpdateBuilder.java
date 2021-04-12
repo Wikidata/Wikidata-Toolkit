@@ -48,7 +48,7 @@ public class MediaInfoUpdateBuilder extends LabeledStatementDocumentUpdateBuilde
 	 * @throws NullPointerException
 	 *             if {@code mediaInfoId} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code mediaInfoId} is not valid
+	 *             if {@code mediaInfoId} is a placeholder ID
 	 */
 	public static MediaInfoUpdateBuilder forEntityId(MediaInfoIdValue mediaInfoId) {
 		return new MediaInfoUpdateBuilder(mediaInfoId);
@@ -67,7 +67,7 @@ public class MediaInfoUpdateBuilder extends LabeledStatementDocumentUpdateBuilde
 	 * @throws NullPointerException
 	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code revision} does not have valid ID
+	 *             if {@code revision} has placeholder ID
 	 */
 	public static MediaInfoUpdateBuilder forBaseRevision(MediaInfoDocument revision) {
 		return new MediaInfoUpdateBuilder(revision);

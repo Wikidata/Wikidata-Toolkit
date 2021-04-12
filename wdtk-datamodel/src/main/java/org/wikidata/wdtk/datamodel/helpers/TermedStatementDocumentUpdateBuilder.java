@@ -57,7 +57,7 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	 * @throws NullPointerException
 	 *             if {@code entityId} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code entityId} is not a valid ID
+	 *             if {@code entityId} is a placeholder ID
 	 */
 	protected TermedStatementDocumentUpdateBuilder(EntityIdValue entityId) {
 		super(entityId);
@@ -72,7 +72,7 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	 * @throws NullPointerException
 	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code revision} does not have valid ID
+	 *             if {@code revision} has placeholder ID
 	 */
 	protected TermedStatementDocumentUpdateBuilder(TermedStatementDocument revision) {
 		super(revision);
@@ -89,7 +89,8 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	 * @throws NullPointerException
 	 *             if {@code entityId} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code entityId} is of unrecognized type or it is not valid
+	 *             if {@code entityId} is of unrecognized type or it is a
+	 *             placeholder ID
 	 */
 	public static TermedStatementDocumentUpdateBuilder forEntityId(EntityIdValue entityId) {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
@@ -118,8 +119,8 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	 * @throws NullPointerException
 	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code revision} is of unrecognized type or it does not have
-	 *             valid ID
+	 *             if {@code revision} is of unrecognized type or its ID is a
+	 *             placeholder ID
 	 */
 	public static TermedStatementDocumentUpdateBuilder forBaseRevision(TermedStatementDocument revision) {
 		Objects.requireNonNull(revision, "Entity document cannot be null.");

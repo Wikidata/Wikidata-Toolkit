@@ -44,7 +44,10 @@ import java.util.regex.Pattern;
 @JsonDeserialize()
 public class SenseIdValueImpl extends ValueImpl implements SenseIdValue {
 
-	private static final Pattern PATTERN = Pattern.compile("^L[1-9]\\d*-S[1-9]\\d*$");
+	/*
+	 * Allow L0-S0 from SenseIdValue.NULL.
+	 */
+	private static final Pattern PATTERN = Pattern.compile("L[1-9]\\d*-S[1-9]\\d*|L0-S0");
 
 	private final String id;
 	private final String siteIri;
@@ -105,8 +108,8 @@ public class SenseIdValueImpl extends ValueImpl implements SenseIdValue {
 
 	@JsonIgnore
 	@Override
-	public boolean isValid() {
-		return SenseIdValue.super.isValid();
+	public boolean isPlaceholder() {
+		return id.equals("L0-S0");
 	}
 
 	/**

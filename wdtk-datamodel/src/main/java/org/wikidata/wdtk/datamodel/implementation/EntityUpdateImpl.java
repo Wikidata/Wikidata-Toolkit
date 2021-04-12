@@ -50,12 +50,12 @@ public abstract class EntityUpdateImpl implements EntityUpdate {
 	 * @throws NullPointerException
 	 *             if {@code entityId} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code entityId} is not a valid ID or it does not match base
+	 *             if {@code entityId} is a placeholder ID or it does not match base
 	 *             revision document ID (if provided)
 	 */
 	protected EntityUpdateImpl(EntityIdValue entityId, EntityDocument revision) {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
-		Validate.isTrue(entityId.isValid(), "Entity ID must be valid.");
+		Validate.isTrue(!entityId.isPlaceholder(), "Cannot create update for placeholder entity ID.");
 		if (revision != null) {
 			Validate.isTrue(entityId.equals(revision.getEntityId()),
 					"Entity ID must be the same as ID of the base revision document.");

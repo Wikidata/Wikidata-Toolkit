@@ -94,6 +94,11 @@ public class DatamodelConverterTest {
 			return valueVisitor.visit(this);
 		}
 
+		@Override
+		public boolean isPlaceholder() {
+			return false;
+		}
+
 	}
 
 	private Statement getBrokenStatement() {

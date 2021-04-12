@@ -125,11 +125,7 @@ public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDoc
 	@JsonIgnore
 	@Override
 	public SenseIdValue getEntityId() {
-		if (!EntityIdValue.SITE_LOCAL.equals(siteIri)) {
-			return new SenseIdValueImpl(entityId, siteIri);
-		} else {
-			return SenseIdValue.NULL;
-		}
+		return new SenseIdValueImpl(entityId, siteIri);
 	}
 
 	@JsonProperty("type")

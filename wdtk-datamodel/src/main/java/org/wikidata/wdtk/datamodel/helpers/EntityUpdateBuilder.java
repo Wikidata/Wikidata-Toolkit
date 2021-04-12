@@ -56,11 +56,11 @@ public abstract class EntityUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code entityId} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code entityId} is not a valid ID
+	 *             if {@code entityId} is as placeholder ID
 	 */
 	protected EntityUpdateBuilder(EntityIdValue entityId) {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
-		Validate.isTrue(entityId.isValid(), "Entity ID must be valid.");
+		Validate.isTrue(!entityId.isPlaceholder(), "Cannot create update for placeholder entity ID.");
 		this.entityId = entityId;
 		baseRevision = null;
 	}
@@ -74,11 +74,11 @@ public abstract class EntityUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code revision} does not have valid ID
+	 *             if {@code revision} has a placeholder ID
 	 */
 	protected EntityUpdateBuilder(EntityDocument revision) {
 		Objects.requireNonNull(revision, "Base entity revision cannot be null.");
-		Validate.isTrue(revision.getEntityId().isValid(), "Entity ID must be valid.");
+		Validate.isTrue(!revision.getEntityId().isPlaceholder(), "Cannot create update for placeholder entity ID.");
 		entityId = revision.getEntityId();
 		baseRevision = revision;
 	}
@@ -96,7 +96,8 @@ public abstract class EntityUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code entityId} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code entityId} is of unrecognized type
+	 *             if {@code entityId} is of unrecognized type or it's a placeholder
+	 *             ID
 	 */
 	public static EntityUpdateBuilder forEntityId(EntityIdValue entityId) {
 		return StatementDocumentUpdateBuilder.forEntityId(entityId);
@@ -119,7 +120,8 @@ public abstract class EntityUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code revision} is of unrecognized type
+	 *             if {@code revision} is of unrecognized type or its ID is a
+	 *             placeholder ID
 	 */
 	public static EntityUpdateBuilder forBaseRevision(EntityDocument revision) {
 		if (revision instanceof StatementDocument) {

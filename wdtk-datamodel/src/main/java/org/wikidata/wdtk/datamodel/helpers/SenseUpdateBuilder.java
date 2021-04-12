@@ -52,7 +52,7 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code senseId} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code senseId} is not valid
+	 *             if {@code senseId} is a placeholder ID
 	 */
 	public static SenseUpdateBuilder forEntityId(SenseIdValue senseId) {
 		return new SenseUpdateBuilder(senseId);
@@ -71,7 +71,7 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code revision} does not have valid ID
+	 *             if {@code revision} has placeholder ID
 	 */
 	public static SenseUpdateBuilder forBaseRevision(SenseDocument revision) {
 		return new SenseUpdateBuilder(revision);

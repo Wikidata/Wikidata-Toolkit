@@ -85,6 +85,11 @@ public interface FormIdValue extends EntityIdValue {
 			return Hash.hashCode(this);
 		}
 
+		@Override
+		public boolean isPlaceholder() {
+			return true;
+		}
+
 	};
 
 }
