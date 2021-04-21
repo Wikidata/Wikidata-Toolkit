@@ -32,6 +32,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
@@ -44,17 +45,30 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 public class StatementUpdateBuilder {
 
 	private final Map<String, Statement> base;
+	private EntityIdValue subject;
 	private final List<Statement> added = new ArrayList<>();
 	private final Map<String, Statement> replaced = new HashMap<>();
 	private final Set<String> removed = new HashSet<>();
 
 	private StatementUpdateBuilder(Collection<Statement> base) {
 		if (base != null) {
+			Validate.noNullElements(base, "Base document statements cannot be null.");
 			for (Statement statement : base) {
-				Validate.notNull(statement, "Base document statement cannot be null.");
+				Validate.isTrue(
+						!statement.getSubject().isPlaceholder(),
+						"Statement subject cannot have placeholder ID.");
 				Validate.notBlank(statement.getStatementId(), "Base document statement must have valid ID.");
 			}
+			Validate.isTrue(
+					base.stream().map(s -> s.getSubject()).distinct().count() == 1,
+					"Base document statements must all refer to the same subject.");
+			Validate.isTrue(
+					base.stream().map(s -> s.getStatementId()).distinct().count() == base.size(),
+					"Base document statements must have unique IDs.");
 			this.base = base.stream().collect(toMap(s -> s.getStatementId(), s -> s));
+			if (!base.isEmpty()) {
+				subject = base.stream().findFirst().get().getSubject();
+			}
 		} else {
 			this.base = null;
 		}
@@ -81,9 +95,9 @@ public class StatementUpdateBuilder {
 	 *            statements from base revision of the document
 	 * @return update builder object
 	 * @throws NullPointerException
-	 *             if {@code statements} or any of its items is {@code null}
+	 *             if {@code statements} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if any statement is missing statement ID
+	 *             if any statement is {@code null} or it is missing statement ID
 	 */
 	public static StatementUpdateBuilder forStatements(Collection<Statement> statements) {
 		Objects.requireNonNull(statements, "Base document statement collection cannot be null.");
@@ -103,12 +117,14 @@ public class StatementUpdateBuilder {
 	 *            statement groups from base revision of the document
 	 * @return update builder object
 	 * @throws NullPointerException
-	 *             if {@code groups} or any of its items is {@code null}
+	 *             if {@code groups} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if any statement is missing statement ID
+	 *             if any group is {@code null} or any statement is missing
+	 *             statement ID
 	 */
 	public static StatementUpdateBuilder forStatementGroups(Collection<StatementGroup> groups) {
 		Objects.requireNonNull(groups, "Base document statement group collection cannot be null.");
+		Validate.noNullElements(groups, "Base document statement groups cannot be null.");
 		return new StatementUpdateBuilder(groups.stream().flatMap(g -> g.getStatements().stream()).collect(toList()));
 	}
 
@@ -122,13 +138,21 @@ public class StatementUpdateBuilder {
 	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code statement} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if statement's subject is inconsistent with other statements
 	 */
 	public StatementUpdateBuilder addStatement(Statement statement) {
 		Objects.requireNonNull(statement, "Statement cannot be null.");
+		if (subject != null) {
+			Validate.isTrue(subject.equals(statement.getSubject()), "Inconsistent statement subject.");
+		}
 		if (!statement.getStatementId().isEmpty()) {
 			statement = statement.withStatementId("");
 		}
 		added.add(statement);
+		if (subject == null) {
+			subject = statement.getSubject();
+		}
 		return this;
 	}
 
@@ -149,11 +173,15 @@ public class StatementUpdateBuilder {
 	 *             if {@code statement} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if {@code statement} does not have statement ID or it is not
-	 *             among base revision statements (if available)
+	 *             among base revision statements (if available) or its subject is
+	 *             inconsistent with other statements
 	 */
 	public StatementUpdateBuilder replaceStatement(Statement statement) {
 		Objects.requireNonNull(statement, "Statement cannot be null.");
 		Validate.notEmpty(statement.getStatementId(), "Statement must have an ID.");
+		if (subject != null) {
+			Validate.isTrue(subject.equals(statement.getSubject()), "Inconsistent statement subject.");
+		}
 		if (base != null) {
 			Statement original = base.get(statement.getStatementId());
 			Validate.isTrue(original != null, "Replaced statement is not in base revision.");
@@ -165,6 +193,9 @@ public class StatementUpdateBuilder {
 		}
 		replaced.put(statement.getStatementId(), statement);
 		removed.remove(statement.getStatementId());
+		if (subject == null) {
+			subject = statement.getSubject();
+		}
 		return this;
 	}
 
