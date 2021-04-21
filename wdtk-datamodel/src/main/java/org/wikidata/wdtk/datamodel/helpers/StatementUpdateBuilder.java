@@ -60,7 +60,7 @@ public class StatementUpdateBuilder {
 				Validate.notBlank(statement.getStatementId(), "Base document statement must have valid ID.");
 			}
 			Validate.isTrue(
-					base.stream().map(s -> s.getSubject()).distinct().count() == 1,
+					base.stream().map(s -> s.getSubject()).distinct().count() <= 1,
 					"Base document statements must all refer to the same subject.");
 			Validate.isTrue(
 					base.stream().map(s -> s.getStatementId()).distinct().count() == base.size(),

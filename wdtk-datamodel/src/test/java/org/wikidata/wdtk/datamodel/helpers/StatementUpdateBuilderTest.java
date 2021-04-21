@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -114,6 +115,8 @@ public class StatementUpdateBuilderTest {
 		// inconsistent statement subject
 		assertThrows(IllegalArgumentException.class, () -> StatementUpdateBuilder
 				.forStatements(Arrays.asList(johnAlreadyHasBrownHair, ritaAlreadyHasBrownHair)));
+		// no base statements
+		StatementUpdateBuilder.forStatements(Collections.emptyList());
 		StatementUpdate update = StatementUpdateBuilder
 				.forStatements(Arrays.asList(johnAlreadyHasBrownHair, johnAlreadyHasBrownEyes))
 				.build();
@@ -129,6 +132,8 @@ public class StatementUpdateBuilderTest {
 				Arrays.asList(johnAlreadyHasBrownHair, johnAlreadyHasSilverHair));
 		assertThrows(IllegalArgumentException.class,
 				() -> StatementUpdateBuilder.forStatementGroups(Arrays.asList(johnAlreadyHasBrownAndSilverHair, null)));
+		// no statement groups
+		StatementUpdateBuilder.forStatementGroups(Collections.emptyList());
 		StatementUpdate update = StatementUpdateBuilder
 				.forStatementGroups(Arrays.asList(johnAlreadyHasBrownAndSilverHair))
 				.build();
