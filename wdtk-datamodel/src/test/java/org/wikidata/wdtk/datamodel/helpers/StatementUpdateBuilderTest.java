@@ -101,7 +101,7 @@ public class StatementUpdateBuilderTest {
 	@Test
 	public void testForStatements() {
 		assertThrows(NullPointerException.class, () -> StatementUpdateBuilder.forStatements(null));
-		assertThrows(IllegalArgumentException.class,
+		assertThrows(NullPointerException.class,
 				() -> StatementUpdateBuilder.forStatements(Arrays.asList(johnAlreadyHasBrownHair, null)));
 		// no statement subject
 		assertThrows(IllegalArgumentException.class,

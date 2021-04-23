@@ -53,7 +53,7 @@ public class TermUpdateBuilderTest {
 	@Test
 	public void testForTerms() {
 		assertThrows(NullPointerException.class, () -> TermUpdateBuilder.forTerms(null));
-		assertThrows(IllegalArgumentException.class, () -> TermUpdateBuilder.forTerms(Arrays.asList(sk, null)));
+		assertThrows(NullPointerException.class, () -> TermUpdateBuilder.forTerms(Arrays.asList(sk, null)));
 		assertThrows(IllegalArgumentException.class, () -> TermUpdateBuilder.forTerms(Arrays.asList(sk, sk)));
 		TermUpdate update = TermUpdateBuilder.forTerms(Arrays.asList(sk, en)).build();
 		assertThat(update.getModifiedTerms(), is(anEmptyMap()));

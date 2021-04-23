@@ -44,7 +44,9 @@ public class TermUpdateBuilder {
 
 	private TermUpdateBuilder(Collection<MonolingualTextValue> base) {
 		if (base != null) {
-			Validate.noNullElements(base, "Base document terms cannot be null.");
+			for (MonolingualTextValue value : base) {
+				Objects.requireNonNull(value, "Base document terms cannot be null.");
+			}
 			Validate.isTrue(
 					base.stream().map(v -> v.getLanguageCode()).distinct().count() == base.size(),
 					"Base document terms must have unique language codes.");
@@ -74,9 +76,9 @@ public class TermUpdateBuilder {
 	 *            terms from base revision of the document
 	 * @return update builder object
 	 * @throws NullPointerException
-	 *             if {@code terms} is {@code null}
+	 *             if {@code terms} or any of its items is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if any items in {@code terms} are {@code null} or duplicate
+	 *             if there are duplicate items in {@code terms}
 	 */
 	public static TermUpdateBuilder forTerms(Collection<MonolingualTextValue> terms) {
 		Objects.requireNonNull(terms, "Base document term collection cannot be null.");

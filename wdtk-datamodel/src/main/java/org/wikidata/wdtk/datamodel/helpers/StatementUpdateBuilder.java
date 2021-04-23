@@ -52,8 +52,8 @@ public class StatementUpdateBuilder {
 
 	private StatementUpdateBuilder(Collection<Statement> base) {
 		if (base != null) {
-			Validate.noNullElements(base, "Base document statements cannot be null.");
 			for (Statement statement : base) {
+				Objects.requireNonNull(statement, "Base document statements cannot be null.");
 				Validate.isTrue(
 						!statement.getSubject().isPlaceholder(),
 						"Statement subject cannot have placeholder ID.");
@@ -95,9 +95,9 @@ public class StatementUpdateBuilder {
 	 *            statements from base revision of the document
 	 * @return update builder object
 	 * @throws NullPointerException
-	 *             if {@code statements} is {@code null}
+	 *             if {@code statements} or any of its items is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if any statement is {@code null} or it is missing statement ID
+	 *             if any statement is missing statement ID
 	 */
 	public static StatementUpdateBuilder forStatements(Collection<Statement> statements) {
 		Objects.requireNonNull(statements, "Base document statement collection cannot be null.");
