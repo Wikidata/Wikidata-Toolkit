@@ -124,6 +124,7 @@ public abstract class EntityUpdateBuilder {
 	 *             placeholder ID
 	 */
 	public static EntityUpdateBuilder forBaseRevision(EntityDocument revision) {
+		Objects.requireNonNull(revision, "Base entity revision cannot be null.");
 		if (revision instanceof StatementDocument) {
 			return StatementDocumentUpdateBuilder.forBaseRevision((StatementDocument) revision);
 		}

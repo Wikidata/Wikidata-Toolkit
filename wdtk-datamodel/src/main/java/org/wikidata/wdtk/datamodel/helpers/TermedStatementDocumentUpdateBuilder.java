@@ -123,7 +123,7 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	 *             placeholder ID
 	 */
 	public static TermedStatementDocumentUpdateBuilder forBaseRevision(TermedStatementDocument revision) {
-		Objects.requireNonNull(revision, "Entity document cannot be null.");
+		Objects.requireNonNull(revision, "Base entity revision cannot be null.");
 		if (revision instanceof ItemDocument) {
 			return ItemUpdateBuilder.forBaseRevision((ItemDocument) revision);
 		}

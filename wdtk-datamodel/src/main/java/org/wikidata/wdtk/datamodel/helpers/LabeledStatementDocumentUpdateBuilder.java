@@ -115,7 +115,7 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	 *             placeholder ID
 	 */
 	public static LabeledStatementDocumentUpdateBuilder forBaseRevision(LabeledStatementDocument revision) {
-		Objects.requireNonNull(revision, "Entity document cannot be null.");
+		Objects.requireNonNull(revision, "Base entity revision cannot be null.");
 		if (revision instanceof MediaInfoDocument) {
 			return MediaInfoUpdateBuilder.forBaseRevision((MediaInfoDocument) revision);
 		}

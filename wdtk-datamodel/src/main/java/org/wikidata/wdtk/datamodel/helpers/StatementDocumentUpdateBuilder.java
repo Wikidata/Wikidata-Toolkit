@@ -130,7 +130,7 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	 *             placeholder ID
 	 */
 	public static StatementDocumentUpdateBuilder forBaseRevision(StatementDocument revision) {
-		Objects.requireNonNull(revision, "Entity document cannot be null.");
+		Objects.requireNonNull(revision, "Base entity revision cannot be null.");
 		if (revision instanceof SenseDocument) {
 			return SenseUpdateBuilder.forBaseRevision((SenseDocument) revision);
 		}
