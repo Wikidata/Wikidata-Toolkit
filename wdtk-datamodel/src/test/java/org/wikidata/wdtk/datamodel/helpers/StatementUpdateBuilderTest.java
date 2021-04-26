@@ -41,54 +41,59 @@ import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 
 public class StatementUpdateBuilderTest {
 
-	private final EntityIdValue john = Datamodel.makeWikidataItemIdValue("Q1");
-	private final EntityIdValue rita = Datamodel.makeWikidataItemIdValue("Q2");
-	private final PropertyIdValue hair = Datamodel.makeWikidataPropertyIdValue("P1");
-	private final PropertyIdValue eyes = Datamodel.makeWikidataPropertyIdValue("P2");
-	private final PropertyIdValue shirt = Datamodel.makeWikidataPropertyIdValue("P3");
-	private final PropertyIdValue trousers = Datamodel.makeWikidataPropertyIdValue("P4");
-	private final StringValue brown = Datamodel.makeStringValue("brown");
-	private final StringValue silver = Datamodel.makeStringValue("silver");
-	private final StringValue blue = Datamodel.makeStringValue("blue");
-	private final Statement nobodyHasBrownHair = StatementBuilder
-			.forSubjectAndProperty(ItemIdValue.NULL, hair)
-			.withValue(brown)
+	static final EntityIdValue JOHN = Datamodel.makeWikidataItemIdValue("Q1");
+	static final EntityIdValue RITA = Datamodel.makeWikidataItemIdValue("Q2");
+	static final PropertyIdValue HAIR = Datamodel.makeWikidataPropertyIdValue("P1");
+	static final PropertyIdValue EYES = Datamodel.makeWikidataPropertyIdValue("P2");
+	static final PropertyIdValue SHIRT = Datamodel.makeWikidataPropertyIdValue("P3");
+	static final PropertyIdValue TROUSERS = Datamodel.makeWikidataPropertyIdValue("P4");
+	static final StringValue BROWN = Datamodel.makeStringValue("brown");
+	static final StringValue SILVER = Datamodel.makeStringValue("silver");
+	static final StringValue BLUE = Datamodel.makeStringValue("blue");
+	static final Statement NOBODY_HAS_BROWN_HAIR = StatementBuilder
+			.forSubjectAndProperty(ItemIdValue.NULL, HAIR)
+			.withValue(BROWN)
 			.build();
-	private final Statement nobodyAlreadyHasBrownHair = nobodyHasBrownHair.withStatementId("ID1");
-	private final Statement johnHasBrownHair = StatementBuilder
-			.forSubjectAndProperty(john, hair)
-			.withValue(brown)
+	static final Statement NOBODY_ALREADY_HAS_BROWN_HAIR = NOBODY_HAS_BROWN_HAIR.withStatementId("ID1");
+	static final Statement JOHN_HAS_BROWN_HAIR = StatementBuilder
+			.forSubjectAndProperty(JOHN, HAIR)
+			.withValue(BROWN)
 			.build();
-	private final Statement johnAlreadyHasBrownHair = johnHasBrownHair.withStatementId("ID2");
-	private final Statement ritaHasBrownHair = StatementBuilder
-			.forSubjectAndProperty(rita, hair)
-			.withValue(brown)
+	static final Statement JOHN_ALREADY_HAS_BROWN_HAIR = JOHN_HAS_BROWN_HAIR.withStatementId("ID2");
+	static final Statement RITA_HAS_BROWN_HAIR = StatementBuilder
+			.forSubjectAndProperty(RITA, HAIR)
+			.withValue(BROWN)
 			.build();
-	private final Statement ritaAlreadyHasBrownHair = ritaHasBrownHair.withStatementId("ID3");
-	private final Statement johnHasBrownEyes = StatementBuilder
-			.forSubjectAndProperty(john, eyes)
-			.withValue(brown)
+	static final Statement RITA_ALREADY_HAS_BROWN_HAIR = RITA_HAS_BROWN_HAIR.withStatementId("ID3");
+	static final Statement JOHN_HAS_BROWN_EYES = StatementBuilder
+			.forSubjectAndProperty(JOHN, EYES)
+			.withValue(BROWN)
 			.build();
-	private final Statement johnAlreadyHasBrownEyes = johnHasBrownEyes.withStatementId("ID4");
-	private final Statement johnHasSilverHair = StatementBuilder
-			.forSubjectAndProperty(john, hair)
-			.withValue(silver)
+	static final Statement JOHN_ALREADY_HAS_BROWN_EYES = JOHN_HAS_BROWN_EYES.withStatementId("ID4");
+	static final Statement JOHN_HAS_SILVER_HAIR = StatementBuilder
+			.forSubjectAndProperty(JOHN, HAIR)
+			.withValue(SILVER)
 			.build();
-	private final Statement johnAlreadyHasSilverHair = johnHasSilverHair.withStatementId("ID5");
-	private final Statement johnHasBlueShirt = StatementBuilder
-			.forSubjectAndProperty(john, shirt)
-			.withValue(blue)
+	static final Statement JOHN_ALREADY_HAS_SILVER_HAIR = JOHN_HAS_SILVER_HAIR.withStatementId("ID5");
+	static final Statement JOHN_HAS_BLUE_SHIRT = StatementBuilder
+			.forSubjectAndProperty(JOHN, SHIRT)
+			.withValue(BLUE)
 			.build();
-	private final Statement johnAlreadyHasBlueShirt = johnHasBlueShirt.withStatementId("ID6");
-	private final Statement johnHasBrownTrousers = StatementBuilder
-			.forSubjectAndProperty(john, trousers)
-			.withValue(brown)
+	static final Statement JOHN_ALREADY_HAS_BLUE_SHIRT = JOHN_HAS_BLUE_SHIRT.withStatementId("ID6");
+	static final Statement JOHN_HAS_BROWN_TROUSERS = StatementBuilder
+			.forSubjectAndProperty(JOHN, TROUSERS)
+			.withValue(BROWN)
 			.build();
-	private final Statement johnAlreadyHasBrownTrousers = johnHasBrownTrousers.withStatementId("ID7");
-	private final Statement johnHasBlueTrousers = StatementBuilder
-			.forSubjectAndProperty(john, trousers)
-			.withValue(blue)
+	static final Statement JOHN_ALREADY_HAS_BROWN_TROUSERS = JOHN_HAS_BROWN_TROUSERS.withStatementId("ID7");
+	static final Statement JOHN_HAS_BLUE_TROUSERS = StatementBuilder
+			.forSubjectAndProperty(JOHN, TROUSERS)
+			.withValue(BLUE)
 			.build();
+	static final Statement JOHN_HAS_BLUE_EYES = StatementBuilder
+			.forSubjectAndProperty(JOHN, EYES)
+			.withValue(BLUE)
+			.build();
+	static final Statement JOHN_ALREADY_HAS_BLUE_EYES = JOHN_HAS_BLUE_EYES.withStatementId("ID8");
 
 	@Test
 	public void testCreate() {
@@ -102,23 +107,23 @@ public class StatementUpdateBuilderTest {
 	public void testForStatements() {
 		assertThrows(NullPointerException.class, () -> StatementUpdateBuilder.forStatements(null));
 		assertThrows(NullPointerException.class,
-				() -> StatementUpdateBuilder.forStatements(Arrays.asList(johnAlreadyHasBrownHair, null)));
+				() -> StatementUpdateBuilder.forStatements(Arrays.asList(JOHN_ALREADY_HAS_BROWN_HAIR, null)));
 		// no statement subject
 		assertThrows(IllegalArgumentException.class,
-				() -> StatementUpdateBuilder.forStatements(Arrays.asList(nobodyAlreadyHasBrownHair)));
+				() -> StatementUpdateBuilder.forStatements(Arrays.asList(NOBODY_ALREADY_HAS_BROWN_HAIR)));
 		// no statement ID
 		assertThrows(IllegalArgumentException.class,
-				() -> StatementUpdateBuilder.forStatements(Arrays.asList(johnHasBrownHair)));
+				() -> StatementUpdateBuilder.forStatements(Arrays.asList(JOHN_HAS_BROWN_HAIR)));
 		// duplicate statement ID
 		assertThrows(IllegalArgumentException.class, () -> StatementUpdateBuilder
-				.forStatements(Arrays.asList(johnAlreadyHasBrownHair, johnAlreadyHasBrownHair)));
+				.forStatements(Arrays.asList(JOHN_ALREADY_HAS_BROWN_HAIR, JOHN_ALREADY_HAS_BROWN_HAIR)));
 		// inconsistent statement subject
 		assertThrows(IllegalArgumentException.class, () -> StatementUpdateBuilder
-				.forStatements(Arrays.asList(johnAlreadyHasBrownHair, ritaAlreadyHasBrownHair)));
+				.forStatements(Arrays.asList(JOHN_ALREADY_HAS_BROWN_HAIR, RITA_ALREADY_HAS_BROWN_HAIR)));
 		// no base statements
 		StatementUpdateBuilder.forStatements(Collections.emptyList());
 		StatementUpdate update = StatementUpdateBuilder
-				.forStatements(Arrays.asList(johnAlreadyHasBrownHair, johnAlreadyHasBrownEyes))
+				.forStatements(Arrays.asList(JOHN_ALREADY_HAS_BROWN_HAIR, JOHN_ALREADY_HAS_BROWN_EYES))
 				.build();
 		assertThat(update.getAddedStatements(), is(empty()));
 		assertThat(update.getReplacedStatements(), is(anEmptyMap()));
@@ -129,7 +134,7 @@ public class StatementUpdateBuilderTest {
 	public void testForStatementGroups() {
 		assertThrows(NullPointerException.class, () -> StatementUpdateBuilder.forStatementGroups(null));
 		StatementGroup johnAlreadyHasBrownAndSilverHair = Datamodel.makeStatementGroup(
-				Arrays.asList(johnAlreadyHasBrownHair, johnAlreadyHasSilverHair));
+				Arrays.asList(JOHN_ALREADY_HAS_BROWN_HAIR, JOHN_ALREADY_HAS_SILVER_HAIR));
 		assertThrows(IllegalArgumentException.class,
 				() -> StatementUpdateBuilder.forStatementGroups(Arrays.asList(johnAlreadyHasBrownAndSilverHair, null)));
 		// no statement groups
@@ -146,32 +151,33 @@ public class StatementUpdateBuilderTest {
 	public void testBlindAddition() {
 		StatementUpdateBuilder builder = StatementUpdateBuilder.create();
 		assertThrows(NullPointerException.class, () -> builder.addStatement(null));
-		builder.addStatement(johnHasBrownHair); // simple case
-		builder.addStatement(johnHasBrownHair); // duplicates allowed
-		builder.addStatement(johnAlreadyHasBrownEyes); // strip ID
+		builder.addStatement(JOHN_HAS_BROWN_HAIR); // simple case
+		builder.addStatement(JOHN_HAS_BROWN_HAIR); // duplicates allowed
+		builder.addStatement(JOHN_ALREADY_HAS_BROWN_EYES); // strip ID
 		// inconsistent subject
-		assertThrows(IllegalArgumentException.class, () -> builder.addStatement(ritaHasBrownHair));
+		assertThrows(IllegalArgumentException.class, () -> builder.addStatement(RITA_HAS_BROWN_HAIR));
 		StatementUpdate update = builder.build();
-		assertEquals(update.getAddedStatements(), Arrays.asList(johnHasBrownHair, johnHasBrownHair, johnHasBrownEyes));
+		assertEquals(update.getAddedStatements(),
+				Arrays.asList(JOHN_HAS_BROWN_HAIR, JOHN_HAS_BROWN_HAIR, JOHN_HAS_BROWN_EYES));
 	}
 
 	@Test
 	public void testBlindReplacement() {
 		StatementUpdateBuilder builder = StatementUpdateBuilder.create();
 		assertThrows(NullPointerException.class, () -> builder.replaceStatement(null));
-		builder.removeStatement(johnAlreadyHasBrownEyes.getStatementId());
-		builder.replaceStatement(johnAlreadyHasBrownHair); // simple case
-		builder.replaceStatement(johnAlreadyHasBrownEyes); // previously removed
-		builder.replaceStatement(johnAlreadyHasBrownHair); // replace twice
+		builder.removeStatement(JOHN_ALREADY_HAS_BROWN_EYES.getStatementId());
+		builder.replaceStatement(JOHN_ALREADY_HAS_BROWN_HAIR); // simple case
+		builder.replaceStatement(JOHN_ALREADY_HAS_BROWN_EYES); // previously removed
+		builder.replaceStatement(JOHN_ALREADY_HAS_BROWN_HAIR); // replace twice
 		// inconsistent subject
-		assertThrows(IllegalArgumentException.class, () -> builder.replaceStatement(ritaAlreadyHasBrownHair));
+		assertThrows(IllegalArgumentException.class, () -> builder.replaceStatement(RITA_ALREADY_HAS_BROWN_HAIR));
 		// no statement ID
-		assertThrows(IllegalArgumentException.class, () -> builder.replaceStatement(johnHasSilverHair));
+		assertThrows(IllegalArgumentException.class, () -> builder.replaceStatement(JOHN_HAS_SILVER_HAIR));
 		StatementUpdate update = builder.build();
 		assertThat(update.getRemovedStatements(), is(empty()));
 		assertThat(
 				update.getReplacedStatements().values(),
-				containsInAnyOrder(johnAlreadyHasBrownHair, johnAlreadyHasBrownEyes));
+				containsInAnyOrder(JOHN_ALREADY_HAS_BROWN_HAIR, JOHN_ALREADY_HAS_BROWN_EYES));
 	}
 
 	@Test
@@ -179,50 +185,51 @@ public class StatementUpdateBuilderTest {
 		StatementUpdateBuilder builder = StatementUpdateBuilder.create();
 		assertThrows(NullPointerException.class, () -> builder.removeStatement(null));
 		assertThrows(IllegalArgumentException.class, () -> builder.removeStatement(""));
-		builder.replaceStatement(johnAlreadyHasBrownEyes);
-		builder.removeStatement(johnAlreadyHasBrownHair.getStatementId()); // simple case
-		builder.removeStatement(johnAlreadyHasBrownEyes.getStatementId()); // previously replaced
+		builder.replaceStatement(JOHN_ALREADY_HAS_BROWN_EYES);
+		builder.removeStatement(JOHN_ALREADY_HAS_BROWN_HAIR.getStatementId()); // simple case
+		builder.removeStatement(JOHN_ALREADY_HAS_BROWN_EYES.getStatementId()); // previously replaced
 		StatementUpdate update = builder.build();
 		assertThat(update.getReplacedStatements(), is(anEmptyMap()));
-		assertThat(
-				update.getRemovedStatements(),
-				containsInAnyOrder(johnAlreadyHasBrownHair.getStatementId(), johnAlreadyHasBrownEyes.getStatementId()));
+		assertThat(update.getRemovedStatements(), containsInAnyOrder(
+				JOHN_ALREADY_HAS_BROWN_HAIR.getStatementId(),
+				JOHN_ALREADY_HAS_BROWN_EYES.getStatementId()));
 	}
 
 	@Test
 	public void testBaseAddition() {
-		StatementUpdateBuilder builder = StatementUpdateBuilder.forStatements(Arrays.asList(johnAlreadyHasBrownHair));
+		StatementUpdateBuilder builder = StatementUpdateBuilder
+				.forStatements(Arrays.asList(JOHN_ALREADY_HAS_BROWN_HAIR));
 		// inconsistent subject
-		assertThrows(IllegalArgumentException.class, () -> builder.addStatement(ritaHasBrownHair));
-		builder.addStatement(johnHasBrownEyes); // simple case
-		builder.addStatement(johnAlreadyHasBrownHair); // duplicating existing statements is allowed
+		assertThrows(IllegalArgumentException.class, () -> builder.addStatement(RITA_HAS_BROWN_HAIR));
+		builder.addStatement(JOHN_HAS_BROWN_EYES); // simple case
+		builder.addStatement(JOHN_ALREADY_HAS_BROWN_HAIR); // duplicating existing statements is allowed
 		StatementUpdate update = builder.build();
-		assertEquals(update.getAddedStatements(), Arrays.asList(johnHasBrownEyes, johnHasBrownHair));
+		assertEquals(update.getAddedStatements(), Arrays.asList(JOHN_HAS_BROWN_EYES, JOHN_HAS_BROWN_HAIR));
 	}
 
 	@Test
 	public void testBaseReplacement() {
 		StatementUpdateBuilder builder = StatementUpdateBuilder.forStatements(Arrays.asList(
-				johnAlreadyHasBrownHair,
-				johnAlreadyHasBrownEyes,
-				johnAlreadyHasBlueShirt,
-				johnAlreadyHasBrownTrousers));
-		builder.removeStatement(johnAlreadyHasBrownEyes.getStatementId());
-		Statement johnChangesBrownTrousersToBlueTrousers = johnHasBlueTrousers
-				.withStatementId(johnAlreadyHasBrownTrousers.getStatementId());
+				JOHN_ALREADY_HAS_BROWN_HAIR,
+				JOHN_ALREADY_HAS_BROWN_EYES,
+				JOHN_ALREADY_HAS_BLUE_SHIRT,
+				JOHN_ALREADY_HAS_BROWN_TROUSERS));
+		builder.removeStatement(JOHN_ALREADY_HAS_BROWN_EYES.getStatementId());
+		Statement johnChangesBrownTrousersToBlueTrousers = JOHN_HAS_BLUE_TROUSERS
+				.withStatementId(JOHN_ALREADY_HAS_BROWN_TROUSERS.getStatementId());
 		builder.replaceStatement(johnChangesBrownTrousersToBlueTrousers);
 		// inconsistent subject
-		assertThrows(IllegalArgumentException.class, () -> builder
-				.replaceStatement(ritaAlreadyHasBrownHair.withStatementId(johnAlreadyHasBrownEyes.getStatementId())));
+		assertThrows(IllegalArgumentException.class, () -> builder.replaceStatement(
+				RITA_ALREADY_HAS_BROWN_HAIR.withStatementId(JOHN_ALREADY_HAS_BROWN_EYES.getStatementId())));
 		// unknown ID
 		assertThrows(IllegalArgumentException.class,
-				() -> builder.replaceStatement(johnAlreadyHasBrownHair.withStatementId("ID999")));
-		Statement johnChangesBrownHairToSilverHair = johnHasSilverHair
-				.withStatementId(johnAlreadyHasBrownHair.getStatementId());
+				() -> builder.replaceStatement(JOHN_ALREADY_HAS_BROWN_HAIR.withStatementId("ID999")));
+		Statement johnChangesBrownHairToSilverHair = JOHN_HAS_SILVER_HAIR
+				.withStatementId(JOHN_ALREADY_HAS_BROWN_HAIR.getStatementId());
 		builder.replaceStatement(johnChangesBrownHairToSilverHair); // simple case
-		builder.replaceStatement(johnAlreadyHasBlueShirt); // no change
-		builder.replaceStatement(johnAlreadyHasBrownEyes); // restore deleted
-		builder.replaceStatement(johnAlreadyHasBrownTrousers); // restore replaced
+		builder.replaceStatement(JOHN_ALREADY_HAS_BLUE_SHIRT); // no change
+		builder.replaceStatement(JOHN_ALREADY_HAS_BROWN_EYES); // restore deleted
+		builder.replaceStatement(JOHN_ALREADY_HAS_BROWN_TROUSERS); // restore replaced
 		StatementUpdate update = builder.build();
 		assertThat(update.getRemovedStatements(), is(empty()));
 		assertThat(update.getReplacedStatements().values(), containsInAnyOrder(johnChangesBrownHairToSilverHair));
@@ -230,11 +237,33 @@ public class StatementUpdateBuilderTest {
 
 	@Test
 	public void testBaseRemoval() {
-		StatementUpdateBuilder builder = StatementUpdateBuilder.forStatements(Arrays.asList(johnAlreadyHasBrownHair));
+		StatementUpdateBuilder builder = StatementUpdateBuilder
+				.forStatements(Arrays.asList(JOHN_ALREADY_HAS_BROWN_HAIR));
 		assertThrows(IllegalArgumentException.class, () -> builder.removeStatement("ID999")); // unknown ID
-		builder.removeStatement(johnAlreadyHasBrownHair.getStatementId()); // simple case
+		builder.removeStatement(JOHN_ALREADY_HAS_BROWN_HAIR.getStatementId()); // simple case
 		StatementUpdate update = builder.build();
-		assertThat(update.getRemovedStatements(), containsInAnyOrder(johnAlreadyHasBrownHair.getStatementId()));
+		assertThat(update.getRemovedStatements(), containsInAnyOrder(JOHN_ALREADY_HAS_BROWN_HAIR.getStatementId()));
+	}
+
+	@Test
+	public void testMerge() {
+		assertThrows(NullPointerException.class, () -> StatementUpdateBuilder.create().apply(null));
+		StatementUpdate update = StatementUpdateBuilder.create()
+				.addStatement(JOHN_HAS_BROWN_EYES) // prior addition
+				.replaceStatement(JOHN_ALREADY_HAS_SILVER_HAIR) // prior replacement
+				.removeStatement(JOHN_ALREADY_HAS_BLUE_SHIRT.getStatementId()) // prior removal
+				.apply(StatementUpdateBuilder.create()
+						.addStatement(JOHN_HAS_BROWN_TROUSERS) // another addition
+						.replaceStatement(JOHN_ALREADY_HAS_BROWN_HAIR) // another replacement
+						.removeStatement(JOHN_ALREADY_HAS_BLUE_EYES.getStatementId()) // another removal
+						.build())
+				.build();
+		assertEquals(update.getAddedStatements(), Arrays.asList(JOHN_HAS_BROWN_EYES, JOHN_HAS_BROWN_TROUSERS));
+		assertThat(update.getReplacedStatements().values(),
+				containsInAnyOrder(JOHN_ALREADY_HAS_SILVER_HAIR, JOHN_ALREADY_HAS_BROWN_HAIR));
+		assertThat(update.getRemovedStatements(), containsInAnyOrder(
+				JOHN_ALREADY_HAS_BLUE_SHIRT.getStatementId(),
+				JOHN_ALREADY_HAS_BLUE_EYES.getStatementId()));
 	}
 
 }

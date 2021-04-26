@@ -47,38 +47,38 @@ import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 
 public class EntityUpdateBuilderTest {
 
-	private final ItemIdValue q1 = Datamodel.makeWikidataItemIdValue("Q1");
-	private final PropertyIdValue p1 = Datamodel.makeWikidataPropertyIdValue("P1");
-	private final MediaInfoIdValue m1 = Datamodel.makeWikimediaCommonsMediaInfoIdValue("M1");
-	private final LexemeIdValue l1 = Datamodel.makeWikidataLexemeIdValue("L1");
-	private final FormIdValue f1 = Datamodel.makeWikidataFormIdValue("L1-F1");
-	private final SenseIdValue s1 = Datamodel.makeWikidataSenseIdValue("L1-S1");
-	private final ItemDocument item = Datamodel.makeItemDocument(q1);
-	private final PropertyDocument property = Datamodel.makePropertyDocument(
-			p1, Datamodel.makeDatatypeIdValue(DatatypeIdValue.DT_ITEM));
-	private final MediaInfoDocument media = Datamodel.makeMediaInfoDocument(m1);
-	private final LexemeDocument lexeme = Datamodel.makeLexemeDocument(l1, q1, q1,
+	static final ItemIdValue Q1 = Datamodel.makeWikidataItemIdValue("Q1");
+	static final PropertyIdValue P1 = Datamodel.makeWikidataPropertyIdValue("P1");
+	static final MediaInfoIdValue M1 = Datamodel.makeWikimediaCommonsMediaInfoIdValue("M1");
+	static final LexemeIdValue L1 = Datamodel.makeWikidataLexemeIdValue("L1");
+	static final FormIdValue F1 = Datamodel.makeWikidataFormIdValue("L1-F1");
+	static final SenseIdValue S1 = Datamodel.makeWikidataSenseIdValue("L1-S1");
+	static final ItemDocument ITEM = Datamodel.makeItemDocument(Q1);
+	static final PropertyDocument PROPERTY = Datamodel.makePropertyDocument(
+			P1, Datamodel.makeDatatypeIdValue(DatatypeIdValue.DT_ITEM));
+	static final MediaInfoDocument MEDIA = Datamodel.makeMediaInfoDocument(M1);
+	static final LexemeDocument LEXEME = Datamodel.makeLexemeDocument(L1, Q1, Q1,
 			Arrays.asList(Datamodel.makeMonolingualTextValue("hello", "en")));
-	private final FormDocument form = Datamodel.makeFormDocument(
-			f1,
+	static final FormDocument FORM = Datamodel.makeFormDocument(
+			F1,
 			Arrays.asList(Datamodel.makeMonolingualTextValue("hello", "en")),
 			Collections.emptyList(),
 			Collections.emptyList());
-	private final SenseDocument sense = Datamodel.makeSenseDocument(
-			s1, Arrays.asList(Datamodel.makeMonolingualTextValue("something", "en")), Collections.emptyList());
+	static final SenseDocument SENSE = Datamodel.makeSenseDocument(
+			S1, Arrays.asList(Datamodel.makeMonolingualTextValue("something", "en")), Collections.emptyList());
 
 	@Test
 	public void testForEntityId() {
 		assertThrows(NullPointerException.class, () -> EntityUpdateBuilder.forEntityId(null));
 		assertThrows(IllegalArgumentException.class, () -> EntityUpdateBuilder.forEntityId(ItemIdValue.NULL));
-		assertThat(EntityUpdateBuilder.forEntityId(q1), is(instanceOf(ItemUpdateBuilder.class)));
-		assertThat(EntityUpdateBuilder.forEntityId(p1), is(instanceOf(PropertyUpdateBuilder.class)));
-		assertThat(EntityUpdateBuilder.forEntityId(m1), is(instanceOf(MediaInfoUpdateBuilder.class)));
-		assertThat(EntityUpdateBuilder.forEntityId(l1), is(instanceOf(LexemeUpdateBuilder.class)));
-		assertThat(EntityUpdateBuilder.forEntityId(f1), is(instanceOf(FormUpdateBuilder.class)));
-		assertThat(EntityUpdateBuilder.forEntityId(s1), is(instanceOf(SenseUpdateBuilder.class)));
-		EntityUpdateBuilder builder = EntityUpdateBuilder.forEntityId(q1);
-		assertEquals(q1, builder.getEntityId());
+		assertThat(EntityUpdateBuilder.forEntityId(Q1), is(instanceOf(ItemUpdateBuilder.class)));
+		assertThat(EntityUpdateBuilder.forEntityId(P1), is(instanceOf(PropertyUpdateBuilder.class)));
+		assertThat(EntityUpdateBuilder.forEntityId(M1), is(instanceOf(MediaInfoUpdateBuilder.class)));
+		assertThat(EntityUpdateBuilder.forEntityId(L1), is(instanceOf(LexemeUpdateBuilder.class)));
+		assertThat(EntityUpdateBuilder.forEntityId(F1), is(instanceOf(FormUpdateBuilder.class)));
+		assertThat(EntityUpdateBuilder.forEntityId(S1), is(instanceOf(SenseUpdateBuilder.class)));
+		EntityUpdateBuilder builder = EntityUpdateBuilder.forEntityId(Q1);
+		assertEquals(Q1, builder.getEntityId());
 		assertNull(builder.getBaseRevision());
 	}
 
@@ -87,15 +87,15 @@ public class EntityUpdateBuilderTest {
 		assertThrows(NullPointerException.class, () -> EntityUpdateBuilder.forBaseRevision(null));
 		assertThrows(IllegalArgumentException.class,
 				() -> EntityUpdateBuilder.forBaseRevision(Datamodel.makeItemDocument(ItemIdValue.NULL)));
-		assertThat(EntityUpdateBuilder.forBaseRevision(item), is(instanceOf(ItemUpdateBuilder.class)));
-		assertThat(EntityUpdateBuilder.forBaseRevision(property), is(instanceOf(PropertyUpdateBuilder.class)));
-		assertThat(EntityUpdateBuilder.forBaseRevision(media), is(instanceOf(MediaInfoUpdateBuilder.class)));
-		assertThat(EntityUpdateBuilder.forBaseRevision(lexeme), is(instanceOf(LexemeUpdateBuilder.class)));
-		assertThat(EntityUpdateBuilder.forBaseRevision(form), is(instanceOf(FormUpdateBuilder.class)));
-		assertThat(EntityUpdateBuilder.forBaseRevision(sense), is(instanceOf(SenseUpdateBuilder.class)));
-		EntityUpdateBuilder builder = EntityUpdateBuilder.forBaseRevision(item);
-		assertEquals(q1, builder.getEntityId());
-		assertSame(item, builder.getBaseRevision());
+		assertThat(EntityUpdateBuilder.forBaseRevision(ITEM), is(instanceOf(ItemUpdateBuilder.class)));
+		assertThat(EntityUpdateBuilder.forBaseRevision(PROPERTY), is(instanceOf(PropertyUpdateBuilder.class)));
+		assertThat(EntityUpdateBuilder.forBaseRevision(MEDIA), is(instanceOf(MediaInfoUpdateBuilder.class)));
+		assertThat(EntityUpdateBuilder.forBaseRevision(LEXEME), is(instanceOf(LexemeUpdateBuilder.class)));
+		assertThat(EntityUpdateBuilder.forBaseRevision(FORM), is(instanceOf(FormUpdateBuilder.class)));
+		assertThat(EntityUpdateBuilder.forBaseRevision(SENSE), is(instanceOf(SenseUpdateBuilder.class)));
+		EntityUpdateBuilder builder = EntityUpdateBuilder.forBaseRevision(ITEM);
+		assertEquals(Q1, builder.getEntityId());
+		assertSame(ITEM, builder.getBaseRevision());
 	}
 
 }
