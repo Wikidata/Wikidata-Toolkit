@@ -95,13 +95,11 @@ public class StatementDocumentUpdateBuilderTest {
 						.replaceStatement(JOHN_ALREADY_HAS_BROWN_HAIR)
 						.build())
 				.updateStatements(StatementUpdateBuilder.create()
-						.removeStatement(JOHN_ALREADY_HAS_BLUE_EYES.getStatementId())
+						.replaceStatement(JOHN_ALREADY_HAS_BLUE_EYES)
 						.build())
 				.build();
 		assertThat(update.getStatements().getReplacedStatements().values(),
-				containsInAnyOrder(JOHN_ALREADY_HAS_BROWN_HAIR));
-		assertThat(update.getStatements().getRemovedStatements(),
-				containsInAnyOrder(JOHN_ALREADY_HAS_BLUE_EYES.getStatementId()));
+				containsInAnyOrder(JOHN_ALREADY_HAS_BROWN_HAIR, JOHN_ALREADY_HAS_BLUE_EYES));
 	}
 
 	@Test
@@ -129,14 +127,12 @@ public class StatementDocumentUpdateBuilderTest {
 						.build());
 		builder.apply(StatementDocumentUpdateBuilder.forEntityId(Q1)
 				.updateStatements(StatementUpdateBuilder.create()
-						.removeStatement(JOHN_ALREADY_HAS_BLUE_EYES.getStatementId())
+						.replaceStatement(JOHN_ALREADY_HAS_BLUE_EYES)
 						.build())
 				.build());
 		StatementDocumentUpdate update = builder.build();
 		assertThat(update.getStatements().getReplacedStatements().values(),
-				containsInAnyOrder(JOHN_ALREADY_HAS_BROWN_HAIR));
-		assertThat(update.getStatements().getRemovedStatements(),
-				containsInAnyOrder(JOHN_ALREADY_HAS_BLUE_EYES.getStatementId()));
+				containsInAnyOrder(JOHN_ALREADY_HAS_BROWN_HAIR, JOHN_ALREADY_HAS_BLUE_EYES));
 	}
 
 }
