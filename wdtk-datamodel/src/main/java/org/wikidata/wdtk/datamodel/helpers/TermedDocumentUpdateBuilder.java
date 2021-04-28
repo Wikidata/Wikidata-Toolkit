@@ -43,7 +43,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
  * Builder for incremental construction of {@link TermedStatementDocumentUpdate}
  * objects.
  */
-public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatementDocumentUpdateBuilder {
+public abstract class TermedDocumentUpdateBuilder extends LabeledDocumentUpdateBuilder {
 
 	TermUpdate descriptions = TermUpdate.NULL;
 	final Map<String, List<MonolingualTextValue>> aliases = new HashMap<>();
@@ -59,7 +59,7 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	 * @throws IllegalArgumentException
 	 *             if {@code entityId} is a placeholder ID
 	 */
-	protected TermedStatementDocumentUpdateBuilder(EntityIdValue entityId) {
+	protected TermedDocumentUpdateBuilder(EntityIdValue entityId) {
 		super(entityId);
 	}
 
@@ -74,7 +74,7 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	 * @throws IllegalArgumentException
 	 *             if {@code revision} has placeholder ID
 	 */
-	protected TermedStatementDocumentUpdateBuilder(TermedStatementDocument revision) {
+	protected TermedDocumentUpdateBuilder(TermedStatementDocument revision) {
 		super(revision);
 	}
 
@@ -92,7 +92,7 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	 *             if {@code entityId} is of unrecognized type or it is a
 	 *             placeholder ID
 	 */
-	public static TermedStatementDocumentUpdateBuilder forEntityId(EntityIdValue entityId) {
+	public static TermedDocumentUpdateBuilder forEntityId(EntityIdValue entityId) {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
 		if (entityId instanceof ItemIdValue) {
 			return ItemUpdateBuilder.forEntityId((ItemIdValue) entityId);
@@ -122,7 +122,7 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	 *             if {@code revision} is of unrecognized type or its ID is a
 	 *             placeholder ID
 	 */
-	public static TermedStatementDocumentUpdateBuilder forBaseRevision(TermedStatementDocument revision) {
+	public static TermedDocumentUpdateBuilder forBaseRevision(TermedStatementDocument revision) {
 		Objects.requireNonNull(revision, "Base entity revision cannot be null.");
 		if (revision instanceof ItemDocument) {
 			return ItemUpdateBuilder.forBaseRevision((ItemDocument) revision);
@@ -139,13 +139,13 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	}
 
 	@Override
-	public TermedStatementDocumentUpdateBuilder updateStatements(StatementUpdate update) {
+	public TermedDocumentUpdateBuilder updateStatements(StatementUpdate update) {
 		super.updateStatements(update);
 		return this;
 	}
 
 	@Override
-	public TermedStatementDocumentUpdateBuilder updateLabels(TermUpdate update) {
+	public TermedDocumentUpdateBuilder updateLabels(TermUpdate update) {
 		super.updateLabels(update);
 		return this;
 	}
@@ -161,7 +161,7 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
 	 */
-	public TermedStatementDocumentUpdateBuilder updateDescriptions(TermUpdate update) {
+	public TermedDocumentUpdateBuilder updateDescriptions(TermUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
 		TermUpdateBuilder combined = getBaseRevision() != null
 				? TermUpdateBuilder.forTerms(getBaseRevision().getDescriptions().values())
@@ -189,7 +189,7 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	 * @throws IllegalArgumentException
 	 *             if {@code aliases} contains duplicates
 	 */
-	public TermedStatementDocumentUpdateBuilder setAliases(String language, List<String> aliases) {
+	public TermedDocumentUpdateBuilder setAliases(String language, List<String> aliases) {
 		Objects.requireNonNull(language, "Language code cannot be null.");
 		Objects.requireNonNull(aliases, "Alias list cannot be null.");
 		Validate.noNullElements(aliases, "Aliases cannot be null.");

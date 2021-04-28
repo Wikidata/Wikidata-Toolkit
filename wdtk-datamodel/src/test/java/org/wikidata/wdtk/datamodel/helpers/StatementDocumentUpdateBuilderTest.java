@@ -88,6 +88,8 @@ public class StatementDocumentUpdateBuilderTest {
 
 	@Test
 	public void testBlindStatementUpdate() {
+		assertThrows(NullPointerException.class,
+				() -> StatementDocumentUpdateBuilder.forEntityId(Q1).updateStatements(null));
 		StatementDocumentUpdate update = StatementDocumentUpdateBuilder.forEntityId(Q1)
 				.updateStatements(StatementUpdateBuilder.create()
 						.replaceStatement(JOHN_ALREADY_HAS_BROWN_HAIR)
@@ -120,6 +122,7 @@ public class StatementDocumentUpdateBuilderTest {
 
 	@Test
 	public void testMerge() {
+		assertThrows(NullPointerException.class, () -> StatementDocumentUpdateBuilder.forEntityId(Q1).apply(null));
 		StatementDocumentUpdateBuilder builder = StatementDocumentUpdateBuilder.forEntityId(Q1)
 				.updateStatements(StatementUpdateBuilder.create()
 						.replaceStatement(JOHN_ALREADY_HAS_BROWN_HAIR)

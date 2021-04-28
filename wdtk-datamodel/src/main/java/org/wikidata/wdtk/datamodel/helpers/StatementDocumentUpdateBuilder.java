@@ -106,7 +106,7 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 		if (entityId instanceof LexemeIdValue) {
 			return LexemeUpdateBuilder.forEntityId((LexemeIdValue) entityId);
 		}
-		return LabeledStatementDocumentUpdateBuilder.forEntityId(entityId);
+		return LabeledDocumentUpdateBuilder.forEntityId(entityId);
 	}
 
 	/**
@@ -141,7 +141,7 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 			return LexemeUpdateBuilder.forBaseRevision((LexemeDocument) revision);
 		}
 		if (revision instanceof LabeledStatementDocument) {
-			return LabeledStatementDocumentUpdateBuilder
+			return LabeledDocumentUpdateBuilder
 					.forBaseRevision((LabeledStatementDocument) revision);
 		}
 		throw new IllegalArgumentException("Unrecognized entity document type.");

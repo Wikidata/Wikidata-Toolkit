@@ -37,7 +37,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 /**
  * Builder for incremental construction of {@link ItemUpdate} objects.
  */
-public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
+public class ItemUpdateBuilder extends TermedDocumentUpdateBuilder {
 
 	private final Map<String, SiteLink> modifiedSiteLinks = new HashMap<>();
 	private final Set<String> removedSiteLinks = new HashSet<>();

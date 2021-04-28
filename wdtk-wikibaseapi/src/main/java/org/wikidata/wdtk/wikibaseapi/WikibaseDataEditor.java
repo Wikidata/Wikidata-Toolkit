@@ -27,12 +27,12 @@ import java.util.List;
 
 import org.wikidata.wdtk.datamodel.helpers.EntityUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
-import org.wikidata.wdtk.datamodel.helpers.LabeledStatementDocumentUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.LabeledDocumentUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.LexemeUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementDocumentUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.TermUpdateBuilder;
-import org.wikidata.wdtk.datamodel.helpers.TermedStatementDocumentUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.TermedDocumentUpdateBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
@@ -540,9 +540,9 @@ public class WikibaseDataEditor {
 			if (update instanceof LabeledStatementDocumentUpdate) {
 				LabeledStatementDocumentUpdate typed = (LabeledStatementDocumentUpdate) update;
 				if (typed.getLabels().getModifiedTerms().size() == 1) {
-					LabeledStatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-							? LabeledStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-							: LabeledStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					LabeledDocumentUpdateBuilder builder = typed.getBaseRevision() != null
+							? LabeledDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
+							: LabeledDocumentUpdateBuilder.forEntityId(typed.getEntityId());
 					MonolingualTextValue label = typed.getLabels().getModifiedTerms()
 							.values().stream().findFirst().get();
 					builder.updateLabels(TermUpdateBuilder.create()
@@ -555,9 +555,9 @@ public class WikibaseDataEditor {
 					}
 				}
 				if (typed.getLabels().getRemovedTerms().size() == 1) {
-					LabeledStatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-							? LabeledStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-							: LabeledStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					LabeledDocumentUpdateBuilder builder = typed.getBaseRevision() != null
+							? LabeledDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
+							: LabeledDocumentUpdateBuilder.forEntityId(typed.getEntityId());
 					String language = typed.getLabels().getRemovedTerms().stream().findFirst().get();
 					builder.updateLabels(TermUpdateBuilder.create()
 							.removeTerm(language)
@@ -572,9 +572,9 @@ public class WikibaseDataEditor {
 			if (update instanceof TermedStatementDocumentUpdate) {
 				TermedStatementDocumentUpdate typed = (TermedStatementDocumentUpdate) update;
 				if (typed.getDescriptions().getModifiedTerms().size() == 1) {
-					TermedStatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-							? TermedStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-							: TermedStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					TermedDocumentUpdateBuilder builder = typed.getBaseRevision() != null
+							? TermedDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
+							: TermedDocumentUpdateBuilder.forEntityId(typed.getEntityId());
 					MonolingualTextValue description = typed.getDescriptions().getModifiedTerms()
 							.values().stream().findFirst().get();
 					builder.updateDescriptions(TermUpdateBuilder.create()
@@ -588,9 +588,9 @@ public class WikibaseDataEditor {
 					}
 				}
 				if (typed.getDescriptions().getRemovedTerms().size() == 1) {
-					TermedStatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-							? TermedStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-							: TermedStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					TermedDocumentUpdateBuilder builder = typed.getBaseRevision() != null
+							? TermedDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
+							: TermedDocumentUpdateBuilder.forEntityId(typed.getEntityId());
 					String language = typed.getDescriptions().getRemovedTerms().stream().findFirst().get();
 					builder.updateDescriptions(TermUpdateBuilder.create()
 							.removeTerm(language)
@@ -602,9 +602,9 @@ public class WikibaseDataEditor {
 					}
 				}
 				if (typed.getAliases().size() == 1) {
-					TermedStatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-							? TermedStatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-							: TermedStatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					TermedDocumentUpdateBuilder builder = typed.getBaseRevision() != null
+							? TermedDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
+							: TermedDocumentUpdateBuilder.forEntityId(typed.getEntityId());
 					String language = typed.getAliases().keySet().stream().findFirst().get();
 					List<String> aliases = typed.getAliases().get(language).stream()
 							.map(v -> v.getText())

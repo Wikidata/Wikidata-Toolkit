@@ -38,7 +38,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
  * Builder for incremental construction of
  * {@link LabeledStatementDocumentUpdate} objects.
  */
-public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDocumentUpdateBuilder {
+public abstract class LabeledDocumentUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	TermUpdate labels = TermUpdate.NULL;
 
@@ -53,7 +53,7 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	 * @throws IllegalArgumentException
 	 *             if {@code entityId} is a placeholder ID
 	 */
-	protected LabeledStatementDocumentUpdateBuilder(EntityIdValue entityId) {
+	protected LabeledDocumentUpdateBuilder(EntityIdValue entityId) {
 		super(entityId);
 	}
 
@@ -68,7 +68,7 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	 * @throws IllegalArgumentException
 	 *             if {@code revision} has placeholder ID
 	 */
-	protected LabeledStatementDocumentUpdateBuilder(LabeledStatementDocument revision) {
+	protected LabeledDocumentUpdateBuilder(LabeledStatementDocument revision) {
 		super(revision);
 	}
 
@@ -87,12 +87,12 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	 *             if {@code entityId} is of unrecognized type or it is a
 	 *             placeholder ID
 	 */
-	public static LabeledStatementDocumentUpdateBuilder forEntityId(EntityIdValue entityId) {
+	public static LabeledDocumentUpdateBuilder forEntityId(EntityIdValue entityId) {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
 		if (entityId instanceof MediaInfoIdValue) {
 			return MediaInfoUpdateBuilder.forEntityId((MediaInfoIdValue) entityId);
 		}
-		return TermedStatementDocumentUpdateBuilder.forEntityId(entityId);
+		return TermedDocumentUpdateBuilder.forEntityId(entityId);
 	}
 
 	/**
@@ -114,13 +114,13 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	 *             if {@code revision} is of unrecognized type or its ID is a
 	 *             placeholder ID
 	 */
-	public static LabeledStatementDocumentUpdateBuilder forBaseRevision(LabeledStatementDocument revision) {
+	public static LabeledDocumentUpdateBuilder forBaseRevision(LabeledStatementDocument revision) {
 		Objects.requireNonNull(revision, "Base entity revision cannot be null.");
 		if (revision instanceof MediaInfoDocument) {
 			return MediaInfoUpdateBuilder.forBaseRevision((MediaInfoDocument) revision);
 		}
 		if (revision instanceof TermedStatementDocument) {
-			return TermedStatementDocumentUpdateBuilder.forBaseRevision((TermedStatementDocument) revision);
+			return TermedDocumentUpdateBuilder.forBaseRevision((TermedStatementDocument) revision);
 		}
 		throw new IllegalArgumentException("Unrecognized entity document type.");
 	}
@@ -131,7 +131,7 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	}
 
 	@Override
-	public LabeledStatementDocumentUpdateBuilder updateStatements(StatementUpdate update) {
+	public LabeledDocumentUpdateBuilder updateStatements(StatementUpdate update) {
 		super.updateStatements(update);
 		return this;
 	}
@@ -147,7 +147,7 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
 	 */
-	public LabeledStatementDocumentUpdateBuilder updateLabels(TermUpdate update) {
+	public LabeledDocumentUpdateBuilder updateLabels(TermUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
 		TermUpdateBuilder combined = getBaseRevision() != null
 				? TermUpdateBuilder.forTerms(getBaseRevision().getLabels().values())

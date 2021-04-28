@@ -30,7 +30,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 /**
  * Builder for incremental construction of {@link PropertyUpdate} objects.
  */
-public class PropertyUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
+public class PropertyUpdateBuilder extends TermedDocumentUpdateBuilder {
 
 	private PropertyUpdateBuilder(PropertyIdValue propertyId) {
 		super(propertyId);

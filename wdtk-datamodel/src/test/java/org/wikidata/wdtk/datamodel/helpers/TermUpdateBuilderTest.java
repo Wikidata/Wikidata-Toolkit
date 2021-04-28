@@ -35,13 +35,13 @@ import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 public class TermUpdateBuilderTest {
 
-	MonolingualTextValue en = Datamodel.makeMonolingualTextValue("hello", "en");
-	MonolingualTextValue en2 = Datamodel.makeMonolingualTextValue("hi", "en");
-	MonolingualTextValue sk = Datamodel.makeMonolingualTextValue("ahoj", "sk");
-	MonolingualTextValue cs = Datamodel.makeMonolingualTextValue("nazdar", "cs");
-	MonolingualTextValue de = Datamodel.makeMonolingualTextValue("Hallo", "de");
-	MonolingualTextValue de2 = Datamodel.makeMonolingualTextValue("Guten Tag", "de");
-	MonolingualTextValue fr = Datamodel.makeMonolingualTextValue("Bonjour", "fr");
+	static final MonolingualTextValue EN = Datamodel.makeMonolingualTextValue("hello", "en");
+	static final MonolingualTextValue EN2 = Datamodel.makeMonolingualTextValue("hi", "en");
+	static final MonolingualTextValue SK = Datamodel.makeMonolingualTextValue("ahoj", "sk");
+	static final MonolingualTextValue CS = Datamodel.makeMonolingualTextValue("nazdar", "cs");
+	static final MonolingualTextValue DE = Datamodel.makeMonolingualTextValue("Hallo", "de");
+	static final MonolingualTextValue DE2 = Datamodel.makeMonolingualTextValue("Guten Tag", "de");
+	static final MonolingualTextValue FR = Datamodel.makeMonolingualTextValue("Bonjour", "fr");
 
 	@Test
 	public void testCreate() {
@@ -53,9 +53,9 @@ public class TermUpdateBuilderTest {
 	@Test
 	public void testForTerms() {
 		assertThrows(NullPointerException.class, () -> TermUpdateBuilder.forTerms(null));
-		assertThrows(NullPointerException.class, () -> TermUpdateBuilder.forTerms(Arrays.asList(sk, null)));
-		assertThrows(IllegalArgumentException.class, () -> TermUpdateBuilder.forTerms(Arrays.asList(sk, sk)));
-		TermUpdate update = TermUpdateBuilder.forTerms(Arrays.asList(sk, en)).build();
+		assertThrows(NullPointerException.class, () -> TermUpdateBuilder.forTerms(Arrays.asList(SK, null)));
+		assertThrows(IllegalArgumentException.class, () -> TermUpdateBuilder.forTerms(Arrays.asList(SK, SK)));
+		TermUpdate update = TermUpdateBuilder.forTerms(Arrays.asList(SK, EN)).build();
 		assertThat(update.getModifiedTerms(), is(anEmptyMap()));
 		assertThat(update.getRemovedTerms(), is(empty()));
 	}
@@ -66,21 +66,21 @@ public class TermUpdateBuilderTest {
 		assertThrows(NullPointerException.class, () -> builder.setTerm(null));
 		builder.removeTerm("sk");
 		builder.removeTerm("de");
-		builder.setTerm(en); // simple case
-		builder.setTerm(sk); // previously removed
+		builder.setTerm(EN); // simple case
+		builder.setTerm(SK); // previously removed
 		TermUpdate update = builder.build();
 		assertThat(update.getRemovedTerms(), containsInAnyOrder("de"));
 		assertThat(update.getModifiedTerms().keySet(), containsInAnyOrder("sk", "en"));
-		assertEquals(en, update.getModifiedTerms().get("en"));
-		assertEquals(sk, update.getModifiedTerms().get("sk"));
+		assertEquals(EN, update.getModifiedTerms().get("en"));
+		assertEquals(SK, update.getModifiedTerms().get("sk"));
 	}
 
 	@Test
 	public void testBlindRemoval() {
 		TermUpdateBuilder builder = TermUpdateBuilder.create();
 		assertThrows(NullPointerException.class, () -> builder.removeTerm(null));
-		builder.setTerm(en);
-		builder.setTerm(sk);
+		builder.setTerm(EN);
+		builder.setTerm(SK);
 		builder.removeTerm("de"); // simple case
 		builder.removeTerm("sk"); // previously assigned
 		TermUpdate update = builder.build();
@@ -90,27 +90,27 @@ public class TermUpdateBuilderTest {
 
 	@Test
 	public void testBaseAssignment() {
-		TermUpdateBuilder builder = TermUpdateBuilder.forTerms(Arrays.asList(sk, en, de, cs));
+		TermUpdateBuilder builder = TermUpdateBuilder.forTerms(Arrays.asList(SK, EN, DE, CS));
 		builder.removeTerm("sk");
 		builder.removeTerm("de");
-		builder.setTerm(fr); // new language key
-		builder.setTerm(en2); // new value
-		builder.setTerm(cs); // same value
-		builder.setTerm(sk); // same value for previously removed
-		builder.setTerm(de2); // new value for previously removed
+		builder.setTerm(FR); // new language key
+		builder.setTerm(EN2); // new value
+		builder.setTerm(CS); // same value
+		builder.setTerm(SK); // same value for previously removed
+		builder.setTerm(DE2); // new value for previously removed
 		TermUpdate update = builder.build();
 		assertThat(update.getRemovedTerms(), is(empty()));
 		assertThat(update.getModifiedTerms().keySet(), containsInAnyOrder("en", "de", "fr"));
-		assertEquals(fr, update.getModifiedTerms().get("fr"));
-		assertEquals(en2, update.getModifiedTerms().get("en"));
-		assertEquals(de2, update.getModifiedTerms().get("de"));
+		assertEquals(FR, update.getModifiedTerms().get("fr"));
+		assertEquals(EN2, update.getModifiedTerms().get("en"));
+		assertEquals(DE2, update.getModifiedTerms().get("de"));
 	}
 
 	@Test
 	public void testBaseRemoval() {
-		TermUpdateBuilder builder = TermUpdateBuilder.forTerms(Arrays.asList(en, sk, cs));
-		builder.setTerm(en2);
-		builder.setTerm(de);
+		TermUpdateBuilder builder = TermUpdateBuilder.forTerms(Arrays.asList(EN, SK, CS));
+		builder.setTerm(EN2);
+		builder.setTerm(DE);
 		builder.removeTerm("sk"); // simple case
 		builder.removeTerm("fr"); // not found
 		builder.removeTerm("en"); // previously modified
@@ -118,6 +118,21 @@ public class TermUpdateBuilderTest {
 		TermUpdate update = builder.build();
 		assertThat(update.getModifiedTerms(), anEmptyMap());
 		assertThat(update.getRemovedTerms(), containsInAnyOrder("en", "sk"));
+	}
+
+	@Test
+	public void testMerge() {
+		assertThrows(NullPointerException.class, () -> TermUpdateBuilder.create().apply(null));
+		TermUpdate update = TermUpdateBuilder.create()
+				.setTerm(EN) // prior assignment
+				.removeTerm("sk") // prior removal
+				.apply(TermUpdateBuilder.create()
+						.setTerm(DE) // another replacement
+						.removeTerm("cs") // another removal
+						.build())
+				.build();
+		assertThat(update.getModifiedTerms().values(), containsInAnyOrder(EN, DE));
+		assertThat(update.getRemovedTerms(), containsInAnyOrder("sk", "cs"));
 	}
 
 }
