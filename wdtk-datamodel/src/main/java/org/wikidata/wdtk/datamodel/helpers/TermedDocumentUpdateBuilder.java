@@ -187,12 +187,15 @@ public abstract class TermedDocumentUpdateBuilder extends LabeledDocumentUpdateB
 	 *             if {@code language}, {@code aliases}, or any of the aliases are
 	 *             {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code aliases} contains duplicates
+	 *             if {@code language} is blank or {@code aliases} contains
+	 *             duplicates
 	 */
 	public TermedDocumentUpdateBuilder setAliases(String language, List<String> aliases) {
-		Objects.requireNonNull(language, "Language code cannot be null.");
+		Validate.notBlank(language, "Specify language code.");
 		Objects.requireNonNull(aliases, "Alias list cannot be null.");
-		Validate.noNullElements(aliases, "Aliases cannot be null.");
+		for (String alias : aliases) {
+			Objects.requireNonNull(alias, "Aliases cannot be null.");
+		}
 		Validate.isTrue(new HashSet<>(aliases).size() == aliases.size(), "Aliases must be unique.");
 		List<MonolingualTextValue> values = aliases.stream()
 				.map(a -> Datamodel.makeMonolingualTextValue(a, language))

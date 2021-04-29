@@ -111,7 +111,7 @@ public class LabeledDocumentUpdateBuilderTest {
 		assertThrows(NullPointerException.class, () -> LabeledDocumentUpdateBuilder.forEntityId(Q1).apply(null));
 		LabeledDocumentUpdateBuilder builder = LabeledDocumentUpdateBuilder.forEntityId(Q1)
 				.updateStatements(StatementUpdateBuilder.create().addStatement(JOHN_HAS_BROWN_HAIR).build())
-				.updateLabels(TermUpdateBuilder.create().setTerm(EN).build());
+				.updateLabels(TermUpdateBuilder.create().removeTerm("en").build());
 		builder.apply(LabeledDocumentUpdateBuilder.forEntityId(Q1)
 				.updateStatements(StatementUpdateBuilder.create().addStatement(JOHN_HAS_BLUE_EYES).build())
 				.updateLabels(TermUpdateBuilder.create().removeTerm("sk").build())
@@ -119,8 +119,7 @@ public class LabeledDocumentUpdateBuilderTest {
 		LabeledStatementDocumentUpdate update = builder.build();
 		assertThat(update.getStatements().getAddedStatements(),
 				containsInAnyOrder(JOHN_HAS_BROWN_HAIR, JOHN_HAS_BLUE_EYES));
-		assertThat(update.getLabels().getModifiedTerms().values(), containsInAnyOrder(EN));
-		assertThat(update.getLabels().getRemovedTerms(), containsInAnyOrder("sk"));
+		assertThat(update.getLabels().getRemovedTerms(), containsInAnyOrder("en", "sk"));
 	}
 
 }
