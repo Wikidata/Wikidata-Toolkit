@@ -114,8 +114,8 @@ public class SenseDocumentImplTest {
 	}
 
 	@Test
-	public void glossesNotEmpty() {
-		assertThrows(IllegalArgumentException.class, () -> new SenseDocumentImpl(sid, Collections.emptyList(), statementGroups, 1234));
+	public void glossesEmpty() {
+		assertEquals(Collections.emptyMap(), new SenseDocumentImpl(sid, Collections.emptyList(), statementGroups, 1234).getGlosses());
 	}
 
 	@Test

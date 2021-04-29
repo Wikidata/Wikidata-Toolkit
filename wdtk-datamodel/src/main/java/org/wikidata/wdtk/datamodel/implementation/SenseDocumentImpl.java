@@ -67,9 +67,6 @@ public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDoc
 			long revisionId) {
 		super(id, statements, revisionId);
 		Validate.notNull(glosses, "Senses glosses should not be null");
-		if(glosses.isEmpty()) {
-			throw new IllegalArgumentException("Senses should have at least one gloss");
-		}
 		this.glosses = constructTermMap(glosses);
 	}
 
@@ -86,9 +83,6 @@ public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDoc
 			@JacksonInject("siteIri") String siteIri) {
 		super(jsonId, claims, revisionId, siteIri);
 		Validate.notNull(glosses, "Senses glosses should not be null");
-		if(glosses.isEmpty()) {
-			throw new IllegalArgumentException("Senses should have at least one gloss");
-		}
 		this.glosses = glosses;
 	}
 
