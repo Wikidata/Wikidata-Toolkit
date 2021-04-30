@@ -79,6 +79,7 @@ public class TermUpdateBuilderTest {
 	public void testBlindRemoval() {
 		TermUpdateBuilder builder = TermUpdateBuilder.create();
 		assertThrows(NullPointerException.class, () -> builder.removeTerm(null));
+		assertThrows(IllegalArgumentException.class, () -> builder.removeTerm(" "));
 		builder.setTerm(EN);
 		builder.setTerm(SK);
 		builder.removeTerm("de"); // simple case
