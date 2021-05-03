@@ -65,7 +65,7 @@ public class SenseUpdateBuilderTest {
 	}
 
 	@Test
-	public void testBlindSenseUpdate() {
+	public void testBlindGlossUpdate() {
 		assertThrows(NullPointerException.class, () -> SenseUpdateBuilder.forEntityId(S1).updateGlosses(null));
 		SenseUpdate update = SenseUpdateBuilder.forEntityId(S1)
 				.updateGlosses(TermUpdateBuilder.create().remove("en").build())
@@ -75,7 +75,7 @@ public class SenseUpdateBuilderTest {
 	}
 
 	@Test
-	public void testBaseSenseUpdate() {
+	public void testBaseGlossUpdate() {
 		SenseUpdate update = SenseUpdateBuilder
 				.forBaseRevision(SENSE
 						.withGloss(EN)
