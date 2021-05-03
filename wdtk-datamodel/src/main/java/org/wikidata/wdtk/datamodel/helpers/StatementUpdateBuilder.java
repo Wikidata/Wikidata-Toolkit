@@ -141,7 +141,7 @@ public class StatementUpdateBuilder {
 	 * @throws IllegalArgumentException
 	 *             if statement's subject is inconsistent with other statements
 	 */
-	public StatementUpdateBuilder addStatement(Statement statement) {
+	public StatementUpdateBuilder add(Statement statement) {
 		Objects.requireNonNull(statement, "Statement cannot be null.");
 		if (subject != null) {
 			Validate.isTrue(subject.equals(statement.getSubject()), "Inconsistent statement subject.");
@@ -160,7 +160,7 @@ public class StatementUpdateBuilder {
 	 * Replaces existing statement in the entity. Provided {@code statement} must
 	 * have statement ID identifying statement to replace. Calling this method
 	 * overrides any previous changes made to the same statement ID by this method
-	 * or {@link #removeStatement(String)}.
+	 * or {@link #remove(String)}.
 	 * <p>
 	 * If base revision statements were provided, existence of the statement is
 	 * checked. Any attempt to replace some statement with identical statement is
@@ -176,7 +176,7 @@ public class StatementUpdateBuilder {
 	 *             among base revision statements (if available) or its subject is
 	 *             inconsistent with other statements
 	 */
-	public StatementUpdateBuilder replaceStatement(Statement statement) {
+	public StatementUpdateBuilder replace(Statement statement) {
 		Objects.requireNonNull(statement, "Statement cannot be null.");
 		Validate.notEmpty(statement.getStatementId(), "Statement must have an ID.");
 		if (subject != null) {
@@ -202,8 +202,8 @@ public class StatementUpdateBuilder {
 	/**
 	 * Removes existing statement from the entity. Calling this method overrides any
 	 * previous changes made to the same statement ID by
-	 * {@link #replaceStatement(Statement)}. Removing the same statement ID twice is
-	 * silently tolerated.
+	 * {@link #replace(Statement)}. Removing the same statement ID twice is silently
+	 * tolerated.
 	 * <p>
 	 * If base revision statements were provided, this method checks that statement
 	 * with this ID exists in the base revision.
@@ -217,7 +217,7 @@ public class StatementUpdateBuilder {
 	 *             if {@code statementId} is empty or it is not among base revision
 	 *             statements (if available)
 	 */
-	public StatementUpdateBuilder removeStatement(String statementId) {
+	public StatementUpdateBuilder remove(String statementId) {
 		Validate.notBlank(statementId, "Statement ID must not be empty.");
 		if (base != null) {
 			Statement original = base.get(statementId);
@@ -230,9 +230,8 @@ public class StatementUpdateBuilder {
 
 	/**
 	 * Replays all changes in provided update into this builder object. Changes are
-	 * performed as if by calling {@link #addStatement(Statement)},
-	 * {@link #replaceStatement(Statement)}, and {@link #removeStatement(String)}
-	 * methods.
+	 * performed as if by calling {@link #add(Statement)},
+	 * {@link #replace(Statement)}, and {@link #remove(String)} methods.
 	 * 
 	 * @param update
 	 *            statement update to replay
@@ -243,16 +242,16 @@ public class StatementUpdateBuilder {
 	 *             if updated or removed statement is not among base revision
 	 *             statements (if available)
 	 */
-	public StatementUpdateBuilder apply(StatementUpdate update) {
+	public StatementUpdateBuilder append(StatementUpdate update) {
 		Objects.requireNonNull(update, "Statement update cannot be null.");
-		for (Statement statement : update.getAddedStatements()) {
-			addStatement(statement);
+		for (Statement statement : update.getAdded()) {
+			add(statement);
 		}
-		for (Statement statement : update.getReplacedStatements().values()) {
-			replaceStatement(statement);
+		for (Statement statement : update.getReplaced().values()) {
+			replace(statement);
 		}
-		for (String statementId : update.getRemovedStatements()) {
-			removeStatement(statementId);
+		for (String statementId : update.getRemoved()) {
+			remove(statementId);
 		}
 		return this;
 	}

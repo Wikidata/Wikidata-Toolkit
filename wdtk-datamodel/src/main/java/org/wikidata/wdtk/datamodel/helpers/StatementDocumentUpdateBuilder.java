@@ -172,13 +172,13 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 		StatementUpdateBuilder combined = getBaseRevision() != null
 				? StatementUpdateBuilder.forStatementGroups(getBaseRevision().getStatementGroups())
 				: StatementUpdateBuilder.create();
-		combined.apply(statements);
-		combined.apply(update);
+		combined.append(statements);
+		combined.append(update);
 		statements = combined.build();
 		return this;
 	}
 
-	void apply(StatementDocumentUpdate update) {
+	void append(StatementDocumentUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
 		updateStatements(update.getStatements());
 	}

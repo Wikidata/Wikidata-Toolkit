@@ -76,19 +76,19 @@ public class LabeledDocumentUpdateBuilderTest {
 	@Test
 	public void testStatementUpdate() {
 		LabeledStatementDocumentUpdate update = LabeledDocumentUpdateBuilder.forEntityId(Q1)
-				.updateStatements(StatementUpdateBuilder.create().addStatement(JOHN_HAS_BROWN_HAIR).build())
+				.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())
 				.build();
-		assertThat(update.getStatements().getAddedStatements(), containsInAnyOrder(JOHN_HAS_BROWN_HAIR));
+		assertThat(update.getStatements().getAdded(), containsInAnyOrder(JOHN_HAS_BROWN_HAIR));
 	}
 
 	@Test
 	public void testBlindLabelUpdate() {
 		assertThrows(NullPointerException.class, () -> LabeledDocumentUpdateBuilder.forEntityId(Q1).updateLabels(null));
 		LabeledDocumentUpdate update = LabeledDocumentUpdateBuilder.forEntityId(Q1)
-				.updateLabels(TermUpdateBuilder.create().removeTerm("en").build())
-				.updateLabels(TermUpdateBuilder.create().removeTerm("sk").build())
+				.updateLabels(TermUpdateBuilder.create().remove("en").build())
+				.updateLabels(TermUpdateBuilder.create().remove("sk").build())
 				.build();
-		assertThat(update.getLabels().getRemovedTerms(), containsInAnyOrder("en", "sk"));
+		assertThat(update.getLabels().getRemoved(), containsInAnyOrder("en", "sk"));
 	}
 
 	@Test
@@ -98,28 +98,28 @@ public class LabeledDocumentUpdateBuilderTest {
 						.withLabel(EN)
 						.withLabel(SK))
 				.updateLabels(TermUpdateBuilder.create()
-						.setTerm(SK) // ignored
-						.removeTerm("en") // checked
+						.put(SK) // ignored
+						.remove("en") // checked
 						.build())
 				.build();
-		assertThat(update.getLabels().getModifiedTerms(), is(anEmptyMap()));
-		assertThat(update.getLabels().getRemovedTerms(), containsInAnyOrder("en"));
+		assertThat(update.getLabels().getModified(), is(anEmptyMap()));
+		assertThat(update.getLabels().getRemoved(), containsInAnyOrder("en"));
 	}
 
 	@Test
 	public void testMerge() {
-		assertThrows(NullPointerException.class, () -> LabeledDocumentUpdateBuilder.forEntityId(Q1).apply(null));
+		assertThrows(NullPointerException.class, () -> LabeledDocumentUpdateBuilder.forEntityId(Q1).append(null));
 		LabeledDocumentUpdateBuilder builder = LabeledDocumentUpdateBuilder.forEntityId(Q1)
-				.updateStatements(StatementUpdateBuilder.create().addStatement(JOHN_HAS_BROWN_HAIR).build())
-				.updateLabels(TermUpdateBuilder.create().removeTerm("en").build());
-		builder.apply(LabeledDocumentUpdateBuilder.forEntityId(Q1)
-				.updateStatements(StatementUpdateBuilder.create().addStatement(JOHN_HAS_BLUE_EYES).build())
-				.updateLabels(TermUpdateBuilder.create().removeTerm("sk").build())
+				.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())
+				.updateLabels(TermUpdateBuilder.create().remove("en").build());
+		builder.append(LabeledDocumentUpdateBuilder.forEntityId(Q1)
+				.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BLUE_EYES).build())
+				.updateLabels(TermUpdateBuilder.create().remove("sk").build())
 				.build());
 		LabeledStatementDocumentUpdate update = builder.build();
-		assertThat(update.getStatements().getAddedStatements(),
+		assertThat(update.getStatements().getAdded(),
 				containsInAnyOrder(JOHN_HAS_BROWN_HAIR, JOHN_HAS_BLUE_EYES));
-		assertThat(update.getLabels().getRemovedTerms(), containsInAnyOrder("en", "sk"));
+		assertThat(update.getLabels().getRemoved(), containsInAnyOrder("en", "sk"));
 	}
 
 }

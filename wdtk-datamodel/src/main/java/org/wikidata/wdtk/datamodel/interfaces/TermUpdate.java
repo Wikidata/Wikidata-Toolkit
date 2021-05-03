@@ -49,13 +49,13 @@ public interface TermUpdate {
 	 * 
 	 * @return added or modified terms indexed by language code
 	 */
-	Map<String, MonolingualTextValue> getModifiedTerms();
+	Map<String, MonolingualTextValue> getModified();
 
 	/**
 	 * Returns language codes of terms removed in this update.
 	 * 
 	 * @return language codes of removed terms
 	 */
-	Set<String> getRemovedTerms();
+	Set<String> getRemoved();
 
 }

@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.helpers;
 
 import java.util.List;
 
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
@@ -104,8 +105,14 @@ public class PropertyUpdateBuilder extends TermedDocumentUpdateBuilder {
 	}
 
 	@Override
-	public PropertyUpdateBuilder setAliases(String language, List<String> aliases) {
-		super.setAliases(language, aliases);
+	public PropertyUpdateBuilder putAliases(String language, List<MonolingualTextValue> aliases) {
+		super.putAliases(language, aliases);
+		return this;
+	}
+
+	@Override
+	public PropertyUpdateBuilder putAliasesAsStrings(String language, List<String> aliases) {
+		super.putAliasesAsStrings(language, aliases);
 		return this;
 	}
 
@@ -123,14 +130,15 @@ public class PropertyUpdateBuilder extends TermedDocumentUpdateBuilder {
 	 *             if {@code update} cannot be applied to base entity revision (if
 	 *             available)
 	 */
-	public PropertyUpdateBuilder apply(PropertyUpdate update) {
-		super.apply(update);
+	public PropertyUpdateBuilder append(PropertyUpdate update) {
+		super.append(update);
 		return this;
 	}
 
 	@Override
 	public PropertyUpdate build() {
-		return Datamodel.makePropertyUpdate(getEntityId(), getBaseRevision(), labels, descriptions, aliases, statements);
+		return Datamodel.makePropertyUpdate(getEntityId(), getBaseRevision(),
+				labels, descriptions, aliases, statements);
 	}
 
 }

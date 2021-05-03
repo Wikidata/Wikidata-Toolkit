@@ -53,28 +53,28 @@ public class MediaInfoUpdateBuilderTest {
 	@Test
 	public void testStatementUpdate() {
 		MediaInfoUpdate update = MediaInfoUpdateBuilder.forEntityId(M1)
-				.updateStatements(StatementUpdateBuilder.create().addStatement(JOHN_HAS_BROWN_HAIR).build())
+				.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())
 				.build();
-		assertThat(update.getStatements().getAddedStatements(), containsInAnyOrder(JOHN_HAS_BROWN_HAIR));
+		assertThat(update.getStatements().getAdded(), containsInAnyOrder(JOHN_HAS_BROWN_HAIR));
 	}
 
 	@Test
 	public void testLabelUpdate() {
 		MediaInfoUpdate update = MediaInfoUpdateBuilder.forEntityId(M1)
-				.updateLabels(TermUpdateBuilder.create().removeTerm("en").build())
+				.updateLabels(TermUpdateBuilder.create().remove("en").build())
 				.build();
-		assertThat(update.getLabels().getRemovedTerms(), containsInAnyOrder("en"));
+		assertThat(update.getLabels().getRemoved(), containsInAnyOrder("en"));
 	}
 
 	@Test
 	public void testMerge() {
 		MediaInfoUpdate update = MediaInfoUpdateBuilder.forEntityId(M1)
-				.updateLabels(TermUpdateBuilder.create().removeTerm("en").build())
+				.updateLabels(TermUpdateBuilder.create().remove("en").build())
 				.apply(MediaInfoUpdateBuilder.forEntityId(M1)
-						.updateLabels(TermUpdateBuilder.create().removeTerm("sk").build())
+						.updateLabels(TermUpdateBuilder.create().remove("sk").build())
 						.build())
 				.build();
-		assertThat(update.getLabels().getRemovedTerms(), containsInAnyOrder("sk", "en"));
+		assertThat(update.getLabels().getRemoved(), containsInAnyOrder("sk", "en"));
 	}
 
 }

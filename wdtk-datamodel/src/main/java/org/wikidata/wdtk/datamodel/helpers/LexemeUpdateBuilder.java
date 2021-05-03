@@ -179,8 +179,8 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 		TermUpdateBuilder combined = getBaseRevision() != null
 				? TermUpdateBuilder.forTerms(getBaseRevision().getLemmas().values())
 				: TermUpdateBuilder.create();
-		combined.apply(lemmas);
-		combined.apply(update);
+		combined.append(lemmas);
+		combined.append(update);
 		lemmas = combined.build();
 		return this;
 	}
@@ -239,9 +239,9 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 		}
 		SenseUpdate prior = updatedSenses.get(id);
 		if (prior != null) {
-			builder.apply(prior);
+			builder.append(prior);
 		}
-		builder.apply(update);
+		builder.append(update);
 		SenseUpdate combined = builder.build();
 		if (!combined.isEmpty()) {
 			updatedSenses.put(id, combined);
@@ -330,9 +330,9 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 		}
 		FormUpdate prior = updatedForms.get(id);
 		if (prior != null) {
-			builder.apply(prior);
+			builder.append(prior);
 		}
-		builder.apply(update);
+		builder.append(update);
 		FormUpdate combined = builder.build();
 		if (!combined.isEmpty()) {
 			updatedForms.put(id, combined);
@@ -382,8 +382,8 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 *             if {@code update} cannot be applied to base entity revision (if
 	 *             available)
 	 */
-	public LexemeUpdateBuilder apply(LexemeUpdate update) {
-		super.apply(update);
+	public LexemeUpdateBuilder append(LexemeUpdate update) {
+		super.append(update);
 		if (update.getLanguage().isPresent()) {
 			setLanguage(update.getLanguage().get());
 		}

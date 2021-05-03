@@ -110,7 +110,7 @@ public class MediaInfoUpdateBuilder extends LabeledDocumentUpdateBuilder {
 	 *             available)
 	 */
 	public MediaInfoUpdateBuilder apply(MediaInfoUpdate update) {
-		super.apply(update);
+		super.append(update);
 		return this;
 	}
 

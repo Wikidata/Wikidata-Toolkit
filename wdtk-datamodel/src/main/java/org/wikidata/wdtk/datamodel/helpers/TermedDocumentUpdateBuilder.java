@@ -166,15 +166,15 @@ public abstract class TermedDocumentUpdateBuilder extends LabeledDocumentUpdateB
 		TermUpdateBuilder combined = getBaseRevision() != null
 				? TermUpdateBuilder.forTerms(getBaseRevision().getDescriptions().values())
 				: TermUpdateBuilder.create();
-		combined.apply(descriptions);
-		combined.apply(update);
+		combined.append(descriptions);
+		combined.append(update);
 		descriptions = combined.build();
 		return this;
 	}
 
 	/**
-	 * Updates entity aliases. Any previous aliases for the language code are
-	 * discarded. To remove aliases for some language code, pass in empty alias
+	 * Adds or changes entity aliases. Any previous aliases for the language code
+	 * are discarded. To remove aliases for some language code, pass in empty alias
 	 * list. If base entity revision was provided, redundant changes are silently
 	 * ignored, resulting in empty update.
 	 * 
@@ -188,34 +188,61 @@ public abstract class TermedDocumentUpdateBuilder extends LabeledDocumentUpdateB
 	 *             {@code null}
 	 * @throws IllegalArgumentException
 	 *             if {@code language} is blank or {@code aliases} contains
+	 *             duplicates or non-matching language codes
+	 */
+	public TermedDocumentUpdateBuilder putAliases(String language, List<MonolingualTextValue> aliases) {
+		Validate.notBlank(language, "Specify language code.");
+		Objects.requireNonNull(aliases, "Alias list cannot be null.");
+		for (MonolingualTextValue alias : aliases) {
+			Objects.requireNonNull(alias, "Aliases cannot be null.");
+			Validate.isTrue(language.equals(alias.getLanguageCode()), "Aliases must have matching language code.");
+		}
+		Validate.isTrue(new HashSet<>(aliases).size() == aliases.size(), "Aliases must be unique.");
+		if (getBaseRevision() != null) {
+			List<MonolingualTextValue> original = getBaseRevision().getAliases().get(language);
+			if (aliases.equals(original) || original == null && aliases.isEmpty()) {
+				this.aliases.remove(language);
+				return this;
+			}
+		}
+		this.aliases.put(language, aliases);
+		return this;
+	}
+
+	/**
+	 * Adds or changes entity aliases as plain strings. Any previous aliases for the
+	 * language code are discarded. To remove aliases for some language code, pass
+	 * in empty alias list. If base entity revision was provided, redundant changes
+	 * are silently ignored, resulting in empty update.
+	 * 
+	 * @param language
+	 *            language code of the altered aliases
+	 * @param aliases
+	 *            new list of aliases for the language, possibly empty
+	 * @return {@code this} (fluent method)
+	 * @throws NullPointerException
+	 *             if {@code language}, {@code aliases}, or any of the aliases are
+	 *             {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code language} is blank or {@code aliases} contains
 	 *             duplicates
 	 */
-	public TermedDocumentUpdateBuilder setAliases(String language, List<String> aliases) {
+	public TermedDocumentUpdateBuilder putAliasesAsStrings(String language, List<String> aliases) {
 		Validate.notBlank(language, "Specify language code.");
 		Objects.requireNonNull(aliases, "Alias list cannot be null.");
 		for (String alias : aliases) {
 			Objects.requireNonNull(alias, "Aliases cannot be null.");
 		}
-		Validate.isTrue(new HashSet<>(aliases).size() == aliases.size(), "Aliases must be unique.");
-		List<MonolingualTextValue> values = aliases.stream()
+		return putAliases(language, aliases.stream()
 				.map(a -> Datamodel.makeMonolingualTextValue(a, language))
-				.collect(toList());
-		if (getBaseRevision() != null) {
-			List<MonolingualTextValue> original = getBaseRevision().getAliases().get(language);
-			if (values.equals(original) || original == null && values.isEmpty()) {
-				this.aliases.remove(language);
-				return this;
-			}
-		}
-		this.aliases.put(language, values);
-		return this;
+				.collect(toList()));
 	}
 
-	void apply(TermedStatementDocumentUpdate update) {
-		super.apply(update);
+	void append(TermedStatementDocumentUpdate update) {
+		super.append(update);
 		updateDescriptions(update.getDescriptions());
 		for (Map.Entry<String, List<MonolingualTextValue>> entry : update.getAliases().entrySet()) {
-			setAliases(entry.getKey(), entry.getValue().stream().map(v -> v.getText()).collect(toList()));
+			putAliases(entry.getKey(), entry.getValue());
 		}
 	}
 

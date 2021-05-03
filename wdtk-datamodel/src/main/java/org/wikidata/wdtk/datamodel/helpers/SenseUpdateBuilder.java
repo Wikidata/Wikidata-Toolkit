@@ -109,8 +109,8 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 		TermUpdateBuilder combined = getBaseRevision() != null
 				? TermUpdateBuilder.forTerms(getBaseRevision().getGlosses().values())
 				: TermUpdateBuilder.create();
-		combined.apply(glosses);
-		combined.apply(update);
+		combined.append(glosses);
+		combined.append(update);
 		glosses = combined.build();
 		return this;
 	}
@@ -129,8 +129,8 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 *             if {@code update} cannot be applied to base entity revision (if
 	 *             available)
 	 */
-	public SenseUpdateBuilder apply(SenseUpdate update) {
-		super.apply(update);
+	public SenseUpdateBuilder append(SenseUpdate update) {
+		super.append(update);
 		updateGlosses(update.getGlosses());
 		return this;
 	}

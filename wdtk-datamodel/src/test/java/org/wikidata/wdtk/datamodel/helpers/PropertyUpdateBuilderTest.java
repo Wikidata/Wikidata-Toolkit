@@ -27,6 +27,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
@@ -37,6 +38,7 @@ public class PropertyUpdateBuilderTest {
 	private static final PropertyIdValue P1 = EntityUpdateBuilderTest.P1;
 	private static final PropertyDocument PROPERTY = EntityUpdateBuilderTest.PROPERTY;
 	private static final Statement JOHN_HAS_BROWN_HAIR = StatementUpdateBuilderTest.JOHN_HAS_BROWN_HAIR;
+	private static final MonolingualTextValue SK = TermUpdateBuilderTest.SK;
 
 	@Test
 	public void testForEntityId() {
@@ -58,44 +60,45 @@ public class PropertyUpdateBuilderTest {
 	@Test
 	public void testStatementUpdate() {
 		PropertyUpdate update = PropertyUpdateBuilder.forEntityId(P1)
-				.updateStatements(StatementUpdateBuilder.create().addStatement(JOHN_HAS_BROWN_HAIR).build())
+				.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())
 				.build();
-		assertThat(update.getStatements().getAddedStatements(), containsInAnyOrder(JOHN_HAS_BROWN_HAIR));
+		assertThat(update.getStatements().getAdded(), containsInAnyOrder(JOHN_HAS_BROWN_HAIR));
 	}
 
 	@Test
 	public void testLabelUpdate() {
 		PropertyUpdate update = PropertyUpdateBuilder.forEntityId(P1)
-				.updateLabels(TermUpdateBuilder.create().removeTerm("en").build())
+				.updateLabels(TermUpdateBuilder.create().remove("en").build())
 				.build();
-		assertThat(update.getLabels().getRemovedTerms(), containsInAnyOrder("en"));
+		assertThat(update.getLabels().getRemoved(), containsInAnyOrder("en"));
 	}
 
 	@Test
 	public void testDescriptionUpdate() {
 		PropertyUpdate update = PropertyUpdateBuilder.forEntityId(P1)
-				.updateDescriptions(TermUpdateBuilder.create().removeTerm("en").build())
+				.updateDescriptions(TermUpdateBuilder.create().remove("en").build())
 				.build();
-		assertThat(update.getDescriptions().getRemovedTerms(), containsInAnyOrder("en"));
+		assertThat(update.getDescriptions().getRemoved(), containsInAnyOrder("en"));
 	}
 
 	@Test
 	public void testAliasUpdate() {
 		PropertyUpdate update = PropertyUpdateBuilder.forEntityId(P1)
-				.setAliases("en", Arrays.asList("hello"))
+				.putAliases("sk", Arrays.asList(SK))
+				.putAliasesAsStrings("en", Arrays.asList("hello"))
 				.build();
-		assertThat(update.getAliases().keySet(), containsInAnyOrder("en"));
+		assertThat(update.getAliases().keySet(), containsInAnyOrder("en", "sk"));
 	}
 
 	@Test
 	public void testMerge() {
 		PropertyUpdate update = PropertyUpdateBuilder.forEntityId(P1)
-				.updateDescriptions(TermUpdateBuilder.create().removeTerm("en").build())
-				.apply(PropertyUpdateBuilder.forEntityId(P1)
-						.updateDescriptions(TermUpdateBuilder.create().removeTerm("sk").build())
+				.updateDescriptions(TermUpdateBuilder.create().remove("en").build())
+				.append(PropertyUpdateBuilder.forEntityId(P1)
+						.updateDescriptions(TermUpdateBuilder.create().remove("sk").build())
 						.build())
 				.build();
-		assertThat(update.getDescriptions().getRemovedTerms(), containsInAnyOrder("sk", "en"));
+		assertThat(update.getDescriptions().getRemoved(), containsInAnyOrder("sk", "en"));
 	}
 
 }

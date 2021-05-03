@@ -59,19 +59,19 @@ public class SenseUpdateBuilderTest {
 	@Test
 	public void testStatementUpdate() {
 		SenseUpdate update = SenseUpdateBuilder.forEntityId(S1)
-				.updateStatements(StatementUpdateBuilder.create().addStatement(JOHN_HAS_BROWN_HAIR).build())
+				.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())
 				.build();
-		assertThat(update.getStatements().getAddedStatements(), containsInAnyOrder(JOHN_HAS_BROWN_HAIR));
+		assertThat(update.getStatements().getAdded(), containsInAnyOrder(JOHN_HAS_BROWN_HAIR));
 	}
 
 	@Test
 	public void testBlindSenseUpdate() {
 		assertThrows(NullPointerException.class, () -> SenseUpdateBuilder.forEntityId(S1).updateGlosses(null));
 		SenseUpdate update = SenseUpdateBuilder.forEntityId(S1)
-				.updateGlosses(TermUpdateBuilder.create().removeTerm("en").build())
-				.updateGlosses(TermUpdateBuilder.create().removeTerm("sk").build())
+				.updateGlosses(TermUpdateBuilder.create().remove("en").build())
+				.updateGlosses(TermUpdateBuilder.create().remove("sk").build())
 				.build();
-		assertThat(update.getGlosses().getRemovedTerms(), containsInAnyOrder("en", "sk"));
+		assertThat(update.getGlosses().getRemoved(), containsInAnyOrder("en", "sk"));
 	}
 
 	@Test
@@ -81,28 +81,28 @@ public class SenseUpdateBuilderTest {
 						.withGloss(EN)
 						.withGloss(SK))
 				.updateGlosses(TermUpdateBuilder.create()
-						.setTerm(SK) // ignored
-						.removeTerm("en") // checked
+						.put(SK) // ignored
+						.remove("en") // checked
 						.build())
 				.build();
-		assertThat(update.getGlosses().getModifiedTerms(), is(anEmptyMap()));
-		assertThat(update.getGlosses().getRemovedTerms(), containsInAnyOrder("en"));
+		assertThat(update.getGlosses().getModified(), is(anEmptyMap()));
+		assertThat(update.getGlosses().getRemoved(), containsInAnyOrder("en"));
 	}
 
 	@Test
 	public void testMerge() {
-		assertThrows(NullPointerException.class, () -> SenseUpdateBuilder.forEntityId(S1).apply(null));
+		assertThrows(NullPointerException.class, () -> SenseUpdateBuilder.forEntityId(S1).append(null));
 		SenseUpdate update = SenseUpdateBuilder.forEntityId(S1)
-				.updateStatements(StatementUpdateBuilder.create().addStatement(JOHN_HAS_BROWN_HAIR).build())
-				.updateGlosses(TermUpdateBuilder.create().removeTerm("en").build())
-				.apply(SenseUpdateBuilder.forEntityId(S1)
-						.updateStatements(StatementUpdateBuilder.create().addStatement(JOHN_HAS_BLUE_EYES).build())
-						.updateGlosses(TermUpdateBuilder.create().removeTerm("sk").build())
+				.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())
+				.updateGlosses(TermUpdateBuilder.create().remove("en").build())
+				.append(SenseUpdateBuilder.forEntityId(S1)
+						.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BLUE_EYES).build())
+						.updateGlosses(TermUpdateBuilder.create().remove("sk").build())
 						.build())
 				.build();
-		assertThat(update.getStatements().getAddedStatements(),
+		assertThat(update.getStatements().getAdded(),
 				containsInAnyOrder(JOHN_HAS_BROWN_HAIR, JOHN_HAS_BLUE_EYES));
-		assertThat(update.getGlosses().getRemovedTerms(), containsInAnyOrder("en", "sk"));
+		assertThat(update.getGlosses().getRemoved(), containsInAnyOrder("en", "sk"));
 	}
 
 }

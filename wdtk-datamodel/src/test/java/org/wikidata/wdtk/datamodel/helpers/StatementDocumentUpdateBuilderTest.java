@@ -91,14 +91,10 @@ public class StatementDocumentUpdateBuilderTest {
 		assertThrows(NullPointerException.class,
 				() -> StatementDocumentUpdateBuilder.forEntityId(Q1).updateStatements(null));
 		StatementDocumentUpdate update = StatementDocumentUpdateBuilder.forEntityId(Q1)
-				.updateStatements(StatementUpdateBuilder.create()
-						.replaceStatement(JOHN_ALREADY_HAS_BROWN_HAIR)
-						.build())
-				.updateStatements(StatementUpdateBuilder.create()
-						.replaceStatement(JOHN_ALREADY_HAS_BLUE_EYES)
-						.build())
+				.updateStatements(StatementUpdateBuilder.create().replace(JOHN_ALREADY_HAS_BROWN_HAIR).build())
+				.updateStatements(StatementUpdateBuilder.create().replace(JOHN_ALREADY_HAS_BLUE_EYES).build())
 				.build();
-		assertThat(update.getStatements().getReplacedStatements().values(),
+		assertThat(update.getStatements().getReplaced().values(),
 				containsInAnyOrder(JOHN_ALREADY_HAS_BROWN_HAIR, JOHN_ALREADY_HAS_BLUE_EYES));
 	}
 
@@ -109,29 +105,25 @@ public class StatementDocumentUpdateBuilderTest {
 						.withStatement(JOHN_ALREADY_HAS_BROWN_HAIR)
 						.withStatement(JOHN_ALREADY_HAS_BLUE_EYES))
 				.updateStatements(StatementUpdateBuilder.create()
-						.replaceStatement(JOHN_ALREADY_HAS_BROWN_HAIR) // ignored
-						.removeStatement(JOHN_ALREADY_HAS_BLUE_EYES.getStatementId()) // checked
+						.replace(JOHN_ALREADY_HAS_BROWN_HAIR) // ignored
+						.remove(JOHN_ALREADY_HAS_BLUE_EYES.getStatementId()) // checked
 						.build())
 				.build();
-		assertThat(update.getStatements().getReplacedStatements(), is(anEmptyMap()));
-		assertThat(update.getStatements().getRemovedStatements(),
+		assertThat(update.getStatements().getReplaced(), is(anEmptyMap()));
+		assertThat(update.getStatements().getRemoved(),
 				containsInAnyOrder(JOHN_ALREADY_HAS_BLUE_EYES.getStatementId()));
 	}
 
 	@Test
 	public void testMerge() {
-		assertThrows(NullPointerException.class, () -> StatementDocumentUpdateBuilder.forEntityId(Q1).apply(null));
+		assertThrows(NullPointerException.class, () -> StatementDocumentUpdateBuilder.forEntityId(Q1).append(null));
 		StatementDocumentUpdateBuilder builder = StatementDocumentUpdateBuilder.forEntityId(Q1)
-				.updateStatements(StatementUpdateBuilder.create()
-						.replaceStatement(JOHN_ALREADY_HAS_BROWN_HAIR)
-						.build());
-		builder.apply(StatementDocumentUpdateBuilder.forEntityId(Q1)
-				.updateStatements(StatementUpdateBuilder.create()
-						.replaceStatement(JOHN_ALREADY_HAS_BLUE_EYES)
-						.build())
+				.updateStatements(StatementUpdateBuilder.create().replace(JOHN_ALREADY_HAS_BROWN_HAIR).build());
+		builder.append(StatementDocumentUpdateBuilder.forEntityId(Q1)
+				.updateStatements(StatementUpdateBuilder.create().replace(JOHN_ALREADY_HAS_BLUE_EYES).build())
 				.build());
 		StatementDocumentUpdate update = builder.build();
-		assertThat(update.getStatements().getReplacedStatements().values(),
+		assertThat(update.getStatements().getReplaced().values(),
 				containsInAnyOrder(JOHN_ALREADY_HAS_BROWN_HAIR, JOHN_ALREADY_HAS_BLUE_EYES));
 	}
 

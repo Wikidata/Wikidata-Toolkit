@@ -94,7 +94,7 @@ public class TermUpdateBuilder {
 	 * this method. It is simpler to initialize the builder with {@link #create()}.
 	 * ge code already exists, it is replaced. Terms with other language codes are
 	 * not touched. Calling this method overrides any previous changes made with the
-	 * same language code by this method or {@link #removeTerm(String)}.
+	 * same language code by this method or {@link #remove(String)}.
 	 * <p>
 	 * If base revision terms were provided, attempt to overwrite some term with the
 	 * same value will be silently ignored, resulting in empty update.
@@ -105,7 +105,7 @@ public class TermUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code term} is {@code null}
 	 */
-	public TermUpdateBuilder setTerm(MonolingualTextValue term) {
+	public TermUpdateBuilder put(MonolingualTextValue term) {
 		Objects.requireNonNull(term, "Term cannot be null.");
 		if (base != null) {
 			if (term.equals(base.get(term.getLanguageCode()))) {
@@ -122,7 +122,7 @@ public class TermUpdateBuilder {
 	/**
 	 * Removes term. Terms with other language codes are not touched. Calling this
 	 * method overrides any previous changes made with the same language code by
-	 * this method or {@link #setTerm(MonolingualTextValue)}.
+	 * this method or {@link #put(MonolingualTextValue)}.
 	 * <p>
 	 * If base revision terms were provided, attempts to remove missing terms will
 	 * be silently ignored, resulting in empty update.
@@ -135,7 +135,7 @@ public class TermUpdateBuilder {
 	 * @throws IllegalArgumentException
 	 *             if {@code languageCode} is blank
 	 */
-	public TermUpdateBuilder removeTerm(String languageCode) {
+	public TermUpdateBuilder remove(String languageCode) {
 		Validate.notBlank(languageCode, "Language code must be provided.");
 		if (base != null && !base.containsKey(languageCode)) {
 			modified.remove(languageCode);
@@ -148,8 +148,8 @@ public class TermUpdateBuilder {
 
 	/**
 	 * Replays all changes in provided update into this builder object. Changes are
-	 * performed as if by calling {@link #setTerm(MonolingualTextValue)} and
-	 * {@link #removeTerm(String)} methods.
+	 * performed as if by calling {@link #put(MonolingualTextValue)} and
+	 * {@link #remove(String)} methods.
 	 * 
 	 * @param update
 	 *            term update to replay
@@ -157,13 +157,13 @@ public class TermUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
 	 */
-	public TermUpdateBuilder apply(TermUpdate update) {
+	public TermUpdateBuilder append(TermUpdate update) {
 		Objects.requireNonNull(update, "Term update cannot be null.");
-		for (MonolingualTextValue term : update.getModifiedTerms().values()) {
-			setTerm(term);
+		for (MonolingualTextValue term : update.getModified().values()) {
+			put(term);
 		}
-		for (String language : update.getRemovedTerms()) {
-			removeTerm(language);
+		for (String language : update.getRemoved()) {
+			remove(language);
 		}
 		return this;
 	}

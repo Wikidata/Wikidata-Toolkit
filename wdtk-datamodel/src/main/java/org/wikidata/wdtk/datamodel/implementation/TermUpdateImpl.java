@@ -74,13 +74,13 @@ public class TermUpdateImpl implements TermUpdate {
 
 	@JsonIgnore
 	@Override
-	public Map<String, MonolingualTextValue> getModifiedTerms() {
+	public Map<String, MonolingualTextValue> getModified() {
 		return modified;
 	}
 
 	@JsonIgnore
 	@Override
-	public Set<String> getRemovedTerms() {
+	public Set<String> getRemoved() {
 		return removed;
 	}
 

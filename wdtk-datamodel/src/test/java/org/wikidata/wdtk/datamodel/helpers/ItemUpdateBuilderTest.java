@@ -68,43 +68,44 @@ public class ItemUpdateBuilderTest {
 	@Test
 	public void testStatementUpdate() {
 		ItemUpdate update = ItemUpdateBuilder.forEntityId(Q1)
-				.updateStatements(StatementUpdateBuilder.create().addStatement(JOHN_HAS_BROWN_HAIR).build())
+				.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())
 				.build();
-		assertThat(update.getStatements().getAddedStatements(), containsInAnyOrder(JOHN_HAS_BROWN_HAIR));
+		assertThat(update.getStatements().getAdded(), containsInAnyOrder(JOHN_HAS_BROWN_HAIR));
 	}
 
 	@Test
 	public void testLabelUpdate() {
 		ItemUpdate update = ItemUpdateBuilder.forEntityId(Q1)
-				.updateLabels(TermUpdateBuilder.create().removeTerm("en").build())
+				.updateLabels(TermUpdateBuilder.create().remove("en").build())
 				.build();
-		assertThat(update.getLabels().getRemovedTerms(), containsInAnyOrder("en"));
+		assertThat(update.getLabels().getRemoved(), containsInAnyOrder("en"));
 	}
 
 	@Test
 	public void testDescriptionUpdate() {
 		ItemUpdate update = ItemUpdateBuilder.forEntityId(Q1)
-				.updateDescriptions(TermUpdateBuilder.create().removeTerm("en").build())
+				.updateDescriptions(TermUpdateBuilder.create().remove("en").build())
 				.build();
-		assertThat(update.getDescriptions().getRemovedTerms(), containsInAnyOrder("en"));
+		assertThat(update.getDescriptions().getRemoved(), containsInAnyOrder("en"));
 	}
 
 	@Test
 	public void testAliasUpdate() {
 		ItemUpdate update = ItemUpdateBuilder.forEntityId(Q1)
-				.setAliases("en", Arrays.asList("hello"))
+				.putAliases("sk", Arrays.asList(TermUpdateBuilderTest.SK))
+				.putAliasesAsStrings("en", Arrays.asList("hello"))
 				.build();
-		assertThat(update.getAliases().keySet(), containsInAnyOrder("en"));
+		assertThat(update.getAliases().keySet(), containsInAnyOrder("en", "sk"));
 	}
 
 	@Test
 	public void testBlindSiteLinkAssignment() {
 		ItemUpdateBuilder builder = ItemUpdateBuilder.forEntityId(Q1);
-		assertThrows(NullPointerException.class, () -> builder.setSiteLink(null));
+		assertThrows(NullPointerException.class, () -> builder.putSiteLink(null));
 		builder.removeSiteLink("skwiki");
 		builder.removeSiteLink("dewiki");
-		builder.setSiteLink(EN); // simple case
-		builder.setSiteLink(SK); // previously removed
+		builder.putSiteLink(EN); // simple case
+		builder.putSiteLink(SK); // previously removed
 		ItemUpdate update = builder.build();
 		assertThat(update.getRemovedSiteLinks(), containsInAnyOrder("dewiki"));
 		assertThat(update.getModifiedSiteLinks().keySet(), containsInAnyOrder("skwiki", "enwiki"));
@@ -117,8 +118,8 @@ public class ItemUpdateBuilderTest {
 		ItemUpdateBuilder builder = ItemUpdateBuilder.forEntityId(Q1);
 		assertThrows(NullPointerException.class, () -> builder.removeSiteLink(null));
 		assertThrows(IllegalArgumentException.class, () -> builder.removeSiteLink(" "));
-		builder.setSiteLink(EN);
-		builder.setSiteLink(SK);
+		builder.putSiteLink(EN);
+		builder.putSiteLink(SK);
 		builder.removeSiteLink("dewiki"); // simple case
 		builder.removeSiteLink("skwiki"); // previously assigned
 		ItemUpdate update = builder.build();
@@ -136,11 +137,11 @@ public class ItemUpdateBuilderTest {
 				.build());
 		builder.removeSiteLink("skwiki");
 		builder.removeSiteLink("dewiki");
-		builder.setSiteLink(FR); // new language key
-		builder.setSiteLink(EN2); // new value
-		builder.setSiteLink(CS); // same value
-		builder.setSiteLink(SK); // same value for previously removed
-		builder.setSiteLink(DE2); // new value for previously removed
+		builder.putSiteLink(FR); // new language key
+		builder.putSiteLink(EN2); // new value
+		builder.putSiteLink(CS); // same value
+		builder.putSiteLink(SK); // same value for previously removed
+		builder.putSiteLink(DE2); // new value for previously removed
 		ItemUpdate update = builder.build();
 		assertThat(update.getRemovedSiteLinks(), is(empty()));
 		assertThat(update.getModifiedSiteLinks().keySet(), containsInAnyOrder("enwiki", "dewiki", "frwiki"));
@@ -156,8 +157,8 @@ public class ItemUpdateBuilderTest {
 				.withSiteLink(SK)
 				.withSiteLink(CS)
 				.build());
-		builder.setSiteLink(EN2);
-		builder.setSiteLink(DE);
+		builder.putSiteLink(EN2);
+		builder.putSiteLink(DE);
 		builder.removeSiteLink("skwiki"); // simple case
 		builder.removeSiteLink("frwiki"); // not found
 		builder.removeSiteLink("enwiki"); // previously modified
@@ -170,14 +171,14 @@ public class ItemUpdateBuilderTest {
 	@Test
 	public void testMerge() {
 		ItemUpdate update = ItemUpdateBuilder.forEntityId(Q1)
-				.updateDescriptions(TermUpdateBuilder.create().removeTerm("en").build())
+				.updateDescriptions(TermUpdateBuilder.create().remove("en").build())
 				.removeSiteLink("enwiki")
-				.apply(ItemUpdateBuilder.forEntityId(Q1)
-						.updateDescriptions(TermUpdateBuilder.create().removeTerm("sk").build())
+				.append(ItemUpdateBuilder.forEntityId(Q1)
+						.updateDescriptions(TermUpdateBuilder.create().remove("sk").build())
 						.removeSiteLink("skwiki")
 						.build())
 				.build();
-		assertThat(update.getDescriptions().getRemovedTerms(), containsInAnyOrder("sk", "en"));
+		assertThat(update.getDescriptions().getRemoved(), containsInAnyOrder("sk", "en"));
 		assertThat(update.getRemovedSiteLinks(), containsInAnyOrder("skwiki", "enwiki"));
 	}
 

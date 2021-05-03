@@ -462,7 +462,7 @@ public class Hash {
 	 * @return object's hash code
 	 */
 	public static int hashCode(TermUpdate o) {
-		return Objects.hash(o.getModifiedTerms(), o.getRemovedTerms());
+		return Objects.hash(o.getModified(), o.getRemoved());
 	}
 
 	/**
@@ -474,7 +474,7 @@ public class Hash {
 	 * @return object's hash code
 	 */
 	public static int hashCode(StatementUpdate o) {
-		return Objects.hash(o.getAddedStatements(), o.getReplacedStatements(), o.getRemovedStatements());
+		return Objects.hash(o.getAdded(), o.getReplaced(), o.getRemoved());
 	}
 
 	private static int hashCodeForEntityUpdate(EntityUpdate o) {

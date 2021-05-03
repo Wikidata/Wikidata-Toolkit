@@ -82,19 +82,19 @@ public class StatementUpdateImpl implements StatementUpdate {
 
 	@JsonIgnore
 	@Override
-	public List<Statement> getAddedStatements() {
+	public List<Statement> getAdded() {
 		return added;
 	}
 
 	@JsonIgnore
 	@Override
-	public Map<String, Statement> getReplacedStatements() {
+	public Map<String, Statement> getReplaced() {
 		return replaced;
 	}
 
 	@JsonIgnore
 	@Override
-	public Set<String> getRemovedStatements() {
+	public Set<String> getRemoved() {
 		return removed;
 	}
 

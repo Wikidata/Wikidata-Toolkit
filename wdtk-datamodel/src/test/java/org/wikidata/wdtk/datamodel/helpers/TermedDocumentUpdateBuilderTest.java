@@ -57,6 +57,7 @@ public class TermedDocumentUpdateBuilderTest {
 	private static final MonolingualTextValue CS = TermUpdateBuilderTest.CS;
 	private static final MonolingualTextValue FR = TermUpdateBuilderTest.FR;
 	private static final MonolingualTextValue ES = Datamodel.makeMonolingualTextValue("hola", "es");
+	private static final MonolingualTextValue EL = Datamodel.makeMonolingualTextValue("yassou", "el");
 
 	@Test
 	public void testForEntityId() {
@@ -79,17 +80,17 @@ public class TermedDocumentUpdateBuilderTest {
 	@Test
 	public void testStatementUpdate() {
 		TermedStatementDocumentUpdate update = TermedDocumentUpdateBuilder.forEntityId(Q1)
-				.updateStatements(StatementUpdateBuilder.create().addStatement(JOHN_HAS_BROWN_HAIR).build())
+				.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())
 				.build();
-		assertThat(update.getStatements().getAddedStatements(), containsInAnyOrder(JOHN_HAS_BROWN_HAIR));
+		assertThat(update.getStatements().getAdded(), containsInAnyOrder(JOHN_HAS_BROWN_HAIR));
 	}
 
 	@Test
 	public void testLabelUpdate() {
 		TermedStatementDocumentUpdate update = TermedDocumentUpdateBuilder.forEntityId(Q1)
-				.updateLabels(TermUpdateBuilder.create().removeTerm("en").build())
+				.updateLabels(TermUpdateBuilder.create().remove("en").build())
 				.build();
-		assertThat(update.getLabels().getRemovedTerms(), containsInAnyOrder("en"));
+		assertThat(update.getLabels().getRemoved(), containsInAnyOrder("en"));
 	}
 
 	@Test
@@ -97,10 +98,10 @@ public class TermedDocumentUpdateBuilderTest {
 		assertThrows(NullPointerException.class,
 				() -> TermedDocumentUpdateBuilder.forEntityId(Q1).updateDescriptions(null));
 		TermedStatementDocumentUpdate update = TermedDocumentUpdateBuilder.forEntityId(Q1)
-				.updateDescriptions(TermUpdateBuilder.create().removeTerm("en").build())
-				.updateDescriptions(TermUpdateBuilder.create().removeTerm("sk").build())
+				.updateDescriptions(TermUpdateBuilder.create().remove("en").build())
+				.updateDescriptions(TermUpdateBuilder.create().remove("sk").build())
 				.build();
-		assertThat(update.getDescriptions().getRemovedTerms(), containsInAnyOrder("en", "sk"));
+		assertThat(update.getDescriptions().getRemoved(), containsInAnyOrder("en", "sk"));
 	}
 
 	@Test
@@ -110,28 +111,28 @@ public class TermedDocumentUpdateBuilderTest {
 						.withDescription(EN)
 						.withDescription(SK))
 				.updateDescriptions(TermUpdateBuilder.create()
-						.setTerm(SK) // ignored
-						.removeTerm("en") // checked
+						.put(SK) // ignored
+						.remove("en") // checked
 						.build())
 				.build();
-		assertThat(update.getDescriptions().getModifiedTerms(), is(anEmptyMap()));
-		assertThat(update.getDescriptions().getRemovedTerms(), containsInAnyOrder("en"));
+		assertThat(update.getDescriptions().getModified(), is(anEmptyMap()));
+		assertThat(update.getDescriptions().getRemoved(), containsInAnyOrder("en"));
 	}
 
 	@Test
 	public void testBlindAliasChanges() {
 		TermedDocumentUpdateBuilder builder = TermedDocumentUpdateBuilder.forEntityId(Q1);
-		assertThrows(NullPointerException.class, () -> builder.setAliases(null, Collections.emptyList()));
-		assertThrows(IllegalArgumentException.class, () -> builder.setAliases(" ", Collections.emptyList()));
-		assertThrows(NullPointerException.class, () -> builder.setAliases("en", null));
-		assertThrows(NullPointerException.class, () -> builder.setAliases("en", Arrays.asList("hello", null)));
-		assertThrows(IllegalArgumentException.class, () -> builder.setAliases("en", Arrays.asList("hello", "hello")));
+		assertThrows(NullPointerException.class, () -> builder.putAliases(null, Collections.emptyList()));
+		assertThrows(IllegalArgumentException.class, () -> builder.putAliases(" ", Collections.emptyList()));
+		assertThrows(NullPointerException.class, () -> builder.putAliases("en", null));
+		assertThrows(NullPointerException.class, () -> builder.putAliases("en", Arrays.asList(EN, null)));
+		assertThrows(IllegalArgumentException.class, () -> builder.putAliases("en", Arrays.asList(EN, EN)));
 		TermedStatementDocumentUpdate update = builder
-				.setAliases("sk", Arrays.asList(SK.getText())) // single value
-				.setAliases("en", Arrays.asList(EN.getText(), EN2.getText())) // multiple values
-				.setAliases("cs", Collections.emptyList()) // remove aliases
-				.setAliases("de", Arrays.asList(DE.getText()))
-				.setAliases("de", Arrays.asList(DE2.getText())) // overwrite previous value
+				.putAliases("sk", Arrays.asList(SK)) // single value
+				.putAliases("en", Arrays.asList(EN, EN2)) // multiple values
+				.putAliases("cs", Collections.emptyList()) // remove aliases
+				.putAliases("de", Arrays.asList(DE))
+				.putAliases("de", Arrays.asList(DE2)) // overwrite previous value
 				.build();
 		assertThat(update.getAliases().keySet(), containsInAnyOrder("de", "en", "cs", "sk"));
 		assertEquals(Arrays.asList(SK), update.getAliases().get("sk"));
@@ -149,17 +150,17 @@ public class TermedDocumentUpdateBuilderTest {
 				.withAliases("fr", Arrays.asList(FR))
 				.withAliases("es", Arrays.asList(ES)));
 		TermedStatementDocumentUpdate update = builder
-				.setAliases("sk", Arrays.asList(SK.getText())) // add alias
-				.setAliases("cs", Collections.emptyList()) // remove alias
-				.setAliases("de", Arrays.asList(DE2.getText())) // modify alias
-				.setAliases("pl", Collections.emptyList()) // remove non-existent
-				.setAliases("es", Arrays.asList(ES.getText())) // same value
-				.setAliases("en", Arrays.asList(EN2.getText()))
-				.setAliases("en", Arrays.asList(EN.getText())) // revert modification
-				.setAliases("fr", Collections.emptyList())
-				.setAliases("fr", Arrays.asList(FR.getText())) // revert removal
-				.setAliases("el", Arrays.asList("?"))
-				.setAliases("el", Collections.emptyList()) // revert addition
+				.putAliases("sk", Arrays.asList(SK)) // add alias
+				.putAliases("cs", Collections.emptyList()) // remove alias
+				.putAliases("de", Arrays.asList(DE2)) // modify alias
+				.putAliases("pl", Collections.emptyList()) // remove non-existent
+				.putAliases("es", Arrays.asList(ES)) // same value
+				.putAliases("en", Arrays.asList(EN2))
+				.putAliases("en", Arrays.asList(EN)) // revert modification
+				.putAliases("fr", Collections.emptyList())
+				.putAliases("fr", Arrays.asList(FR)) // revert removal
+				.putAliases("el", Arrays.asList(EL))
+				.putAliases("el", Collections.emptyList()) // revert addition
 				.build();
 		assertThat(update.getAliases().keySet(), containsInAnyOrder("de", "cs", "sk"));
 		assertEquals(Arrays.asList(DE2), update.getAliases().get("de"));
@@ -168,20 +169,36 @@ public class TermedDocumentUpdateBuilderTest {
 	}
 
 	@Test
+	public void testStringAliases() {
+		TermedDocumentUpdateBuilder builder = TermedDocumentUpdateBuilder.forEntityId(Q1);
+		assertThrows(NullPointerException.class, () -> builder.putAliasesAsStrings(null, Collections.emptyList()));
+		assertThrows(IllegalArgumentException.class, () -> builder.putAliasesAsStrings(" ", Collections.emptyList()));
+		assertThrows(NullPointerException.class, () -> builder.putAliasesAsStrings("en", null));
+		assertThrows(NullPointerException.class, () -> builder.putAliasesAsStrings("en", Arrays.asList("hello", null)));
+		TermedStatementDocumentUpdate update = builder
+				.putAliasesAsStrings("en", Arrays.asList(EN.getText(), EN2.getText()))
+				.putAliasesAsStrings("cs", Collections.emptyList())
+				.build();
+		assertThat(update.getAliases().keySet(), containsInAnyOrder("en", "cs"));
+		assertEquals(Arrays.asList(EN, EN2), update.getAliases().get("en"));
+		assertThat(update.getAliases().get("cs"), is(empty()));
+	}
+
+	@Test
 	public void testMerge() {
-		assertThrows(NullPointerException.class, () -> TermedDocumentUpdateBuilder.forEntityId(Q1).apply(null));
+		assertThrows(NullPointerException.class, () -> TermedDocumentUpdateBuilder.forEntityId(Q1).append(null));
 		TermedDocumentUpdateBuilder builder = TermedDocumentUpdateBuilder.forEntityId(Q1)
-				.updateLabels(TermUpdateBuilder.create().removeTerm("pl").build())
-				.updateDescriptions(TermUpdateBuilder.create().removeTerm("fr").build())
-				.setAliases("en", Arrays.asList(EN.getText()));
-		builder.apply(TermedDocumentUpdateBuilder.forEntityId(Q1)
-				.updateLabels(TermUpdateBuilder.create().removeTerm("sk").build())
-				.updateDescriptions(TermUpdateBuilder.create().removeTerm("es").build())
-				.setAliases("de", Arrays.asList(DE.getText()))
+				.updateLabels(TermUpdateBuilder.create().remove("pl").build())
+				.updateDescriptions(TermUpdateBuilder.create().remove("fr").build())
+				.putAliasesAsStrings("en", Arrays.asList(EN.getText()));
+		builder.append(TermedDocumentUpdateBuilder.forEntityId(Q1)
+				.updateLabels(TermUpdateBuilder.create().remove("sk").build())
+				.updateDescriptions(TermUpdateBuilder.create().remove("es").build())
+				.putAliasesAsStrings("de", Arrays.asList(DE.getText()))
 				.build());
 		TermedStatementDocumentUpdate update = builder.build();
-		assertThat(update.getLabels().getRemovedTerms(), containsInAnyOrder("sk", "pl"));
-		assertThat(update.getDescriptions().getRemovedTerms(), containsInAnyOrder("es", "fr"));
+		assertThat(update.getLabels().getRemoved(), containsInAnyOrder("sk", "pl"));
+		assertThat(update.getDescriptions().getRemoved(), containsInAnyOrder("es", "fr"));
 		assertThat(update.getAliases().keySet(), containsInAnyOrder("en", "de"));
 		assertEquals(Arrays.asList(EN), update.getAliases().get("en"));
 		assertEquals(Arrays.asList(DE), update.getAliases().get("de"));

@@ -30,6 +30,7 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
@@ -114,8 +115,14 @@ public class ItemUpdateBuilder extends TermedDocumentUpdateBuilder {
 	}
 
 	@Override
-	public ItemUpdateBuilder setAliases(String language, List<String> aliases) {
-		super.setAliases(language, aliases);
+	public ItemUpdateBuilder putAliases(String language, List<MonolingualTextValue> aliases) {
+		super.putAliases(language, aliases);
+		return this;
+	}
+
+	@Override
+	public ItemUpdateBuilder putAliasesAsStrings(String language, List<String> aliases) {
+		super.putAliasesAsStrings(language, aliases);
 		return this;
 	}
 
@@ -135,7 +142,7 @@ public class ItemUpdateBuilder extends TermedDocumentUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code link} is {@code null}
 	 */
-	public ItemUpdateBuilder setSiteLink(SiteLink link) {
+	public ItemUpdateBuilder putSiteLink(SiteLink link) {
 		Objects.requireNonNull(link, "Site link cannot be null.");
 		if (getBaseRevision() != null) {
 			SiteLink original = getBaseRevision().getSiteLinks().get(link.getSiteKey());
@@ -153,7 +160,7 @@ public class ItemUpdateBuilder extends TermedDocumentUpdateBuilder {
 	/**
 	 * Removes site link. Site links with other site keys are not touched. Calling
 	 * this method overrides any previous changes made with the same site key by
-	 * this method or {@link #setSiteLink(SiteLink)}.
+	 * this method or {@link #putSiteLink(SiteLink)}.
 	 * <p>
 	 * If base entity revision was provided, attempts to remove missing site links
 	 * will be silently ignored, resulting in empty update.
@@ -191,10 +198,10 @@ public class ItemUpdateBuilder extends TermedDocumentUpdateBuilder {
 	 *             if {@code update} cannot be applied to base entity revision (if
 	 *             available)
 	 */
-	public ItemUpdateBuilder apply(ItemUpdate update) {
-		super.apply(update);
+	public ItemUpdateBuilder append(ItemUpdate update) {
+		super.append(update);
 		for (SiteLink link : update.getModifiedSiteLinks().values()) {
-			setSiteLink(link);
+			putSiteLink(link);
 		}
 		for (String site : update.getRemovedSiteLinks()) {
 			removeSiteLink(site);

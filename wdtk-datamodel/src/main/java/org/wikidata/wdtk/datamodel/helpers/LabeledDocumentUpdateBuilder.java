@@ -152,14 +152,14 @@ public abstract class LabeledDocumentUpdateBuilder extends StatementDocumentUpda
 		TermUpdateBuilder combined = getBaseRevision() != null
 				? TermUpdateBuilder.forTerms(getBaseRevision().getLabels().values())
 				: TermUpdateBuilder.create();
-		combined.apply(labels);
-		combined.apply(update);
+		combined.append(labels);
+		combined.append(update);
 		labels = combined.build();
 		return this;
 	}
 
-	void apply(LabeledStatementDocumentUpdate update) {
-		super.apply(update);
+	void append(LabeledStatementDocumentUpdate update) {
+		super.append(update);
 		updateLabels(update.getLabels());
 	}
 

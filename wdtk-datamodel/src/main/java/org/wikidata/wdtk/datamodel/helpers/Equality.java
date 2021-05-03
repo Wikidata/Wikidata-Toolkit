@@ -659,8 +659,8 @@ public class Equality {
 			return false;
 		}
 		TermUpdate other = (TermUpdate) o2;
-		return Objects.equals(o1.getModifiedTerms(), other.getModifiedTerms())
-				&& Objects.equals(o1.getRemovedTerms(), other.getRemovedTerms());
+		return Objects.equals(o1.getModified(), other.getModified())
+				&& Objects.equals(o1.getRemoved(), other.getRemoved());
 	}
 
 	/**
@@ -682,9 +682,9 @@ public class Equality {
 			return false;
 		}
 		StatementUpdate other = (StatementUpdate) o2;
-		return Objects.equals(o1.getAddedStatements(), other.getAddedStatements())
-				&& Objects.equals(o1.getReplacedStatements(), other.getReplacedStatements())
-				&& Objects.equals(o1.getRemovedStatements(), other.getRemovedStatements());
+		return Objects.equals(o1.getAdded(), other.getAdded())
+				&& Objects.equals(o1.getReplaced(), other.getReplaced())
+				&& Objects.equals(o1.getRemoved(), other.getRemoved());
 	}
 
 	private static boolean equalsEntityUpdate(EntityUpdate o1, EntityUpdate o2) {

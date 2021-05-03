@@ -46,8 +46,8 @@ public class TermUpdateBuilderTest {
 	@Test
 	public void testCreate() {
 		TermUpdate update = TermUpdateBuilder.create().build();
-		assertThat(update.getModifiedTerms(), is(anEmptyMap()));
-		assertThat(update.getRemovedTerms(), is(empty()));
+		assertThat(update.getModified(), is(anEmptyMap()));
+		assertThat(update.getRemoved(), is(empty()));
 	}
 
 	@Test
@@ -56,84 +56,84 @@ public class TermUpdateBuilderTest {
 		assertThrows(NullPointerException.class, () -> TermUpdateBuilder.forTerms(Arrays.asList(SK, null)));
 		assertThrows(IllegalArgumentException.class, () -> TermUpdateBuilder.forTerms(Arrays.asList(SK, SK)));
 		TermUpdate update = TermUpdateBuilder.forTerms(Arrays.asList(SK, EN)).build();
-		assertThat(update.getModifiedTerms(), is(anEmptyMap()));
-		assertThat(update.getRemovedTerms(), is(empty()));
+		assertThat(update.getModified(), is(anEmptyMap()));
+		assertThat(update.getRemoved(), is(empty()));
 	}
 
 	@Test
 	public void testBlindAssignment() {
 		TermUpdateBuilder builder = TermUpdateBuilder.create();
-		assertThrows(NullPointerException.class, () -> builder.setTerm(null));
-		builder.removeTerm("sk");
-		builder.removeTerm("de");
-		builder.setTerm(EN); // simple case
-		builder.setTerm(SK); // previously removed
+		assertThrows(NullPointerException.class, () -> builder.put(null));
+		builder.remove("sk");
+		builder.remove("de");
+		builder.put(EN); // simple case
+		builder.put(SK); // previously removed
 		TermUpdate update = builder.build();
-		assertThat(update.getRemovedTerms(), containsInAnyOrder("de"));
-		assertThat(update.getModifiedTerms().keySet(), containsInAnyOrder("sk", "en"));
-		assertEquals(EN, update.getModifiedTerms().get("en"));
-		assertEquals(SK, update.getModifiedTerms().get("sk"));
+		assertThat(update.getRemoved(), containsInAnyOrder("de"));
+		assertThat(update.getModified().keySet(), containsInAnyOrder("sk", "en"));
+		assertEquals(EN, update.getModified().get("en"));
+		assertEquals(SK, update.getModified().get("sk"));
 	}
 
 	@Test
 	public void testBlindRemoval() {
 		TermUpdateBuilder builder = TermUpdateBuilder.create();
-		assertThrows(NullPointerException.class, () -> builder.removeTerm(null));
-		assertThrows(IllegalArgumentException.class, () -> builder.removeTerm(" "));
-		builder.setTerm(EN);
-		builder.setTerm(SK);
-		builder.removeTerm("de"); // simple case
-		builder.removeTerm("sk"); // previously assigned
+		assertThrows(NullPointerException.class, () -> builder.remove(null));
+		assertThrows(IllegalArgumentException.class, () -> builder.remove(" "));
+		builder.put(EN);
+		builder.put(SK);
+		builder.remove("de"); // simple case
+		builder.remove("sk"); // previously assigned
 		TermUpdate update = builder.build();
-		assertThat(update.getRemovedTerms(), containsInAnyOrder("sk", "de"));
-		assertThat(update.getModifiedTerms().keySet(), containsInAnyOrder("en"));
+		assertThat(update.getRemoved(), containsInAnyOrder("sk", "de"));
+		assertThat(update.getModified().keySet(), containsInAnyOrder("en"));
 	}
 
 	@Test
 	public void testBaseAssignment() {
 		TermUpdateBuilder builder = TermUpdateBuilder.forTerms(Arrays.asList(SK, EN, DE, CS));
-		builder.removeTerm("sk");
-		builder.removeTerm("de");
-		builder.setTerm(FR); // new language key
-		builder.setTerm(EN2); // new value
-		builder.setTerm(CS); // same value
-		builder.setTerm(SK); // same value for previously removed
-		builder.setTerm(DE2); // new value for previously removed
+		builder.remove("sk");
+		builder.remove("de");
+		builder.put(FR); // new language key
+		builder.put(EN2); // new value
+		builder.put(CS); // same value
+		builder.put(SK); // same value for previously removed
+		builder.put(DE2); // new value for previously removed
 		TermUpdate update = builder.build();
-		assertThat(update.getRemovedTerms(), is(empty()));
-		assertThat(update.getModifiedTerms().keySet(), containsInAnyOrder("en", "de", "fr"));
-		assertEquals(FR, update.getModifiedTerms().get("fr"));
-		assertEquals(EN2, update.getModifiedTerms().get("en"));
-		assertEquals(DE2, update.getModifiedTerms().get("de"));
+		assertThat(update.getRemoved(), is(empty()));
+		assertThat(update.getModified().keySet(), containsInAnyOrder("en", "de", "fr"));
+		assertEquals(FR, update.getModified().get("fr"));
+		assertEquals(EN2, update.getModified().get("en"));
+		assertEquals(DE2, update.getModified().get("de"));
 	}
 
 	@Test
 	public void testBaseRemoval() {
 		TermUpdateBuilder builder = TermUpdateBuilder.forTerms(Arrays.asList(EN, SK, CS));
-		builder.setTerm(EN2);
-		builder.setTerm(DE);
-		builder.removeTerm("sk"); // simple case
-		builder.removeTerm("fr"); // not found
-		builder.removeTerm("en"); // previously modified
-		builder.removeTerm("de"); // previously added
+		builder.put(EN2);
+		builder.put(DE);
+		builder.remove("sk"); // simple case
+		builder.remove("fr"); // not found
+		builder.remove("en"); // previously modified
+		builder.remove("de"); // previously added
 		TermUpdate update = builder.build();
-		assertThat(update.getModifiedTerms(), anEmptyMap());
-		assertThat(update.getRemovedTerms(), containsInAnyOrder("en", "sk"));
+		assertThat(update.getModified(), anEmptyMap());
+		assertThat(update.getRemoved(), containsInAnyOrder("en", "sk"));
 	}
 
 	@Test
 	public void testMerge() {
-		assertThrows(NullPointerException.class, () -> TermUpdateBuilder.create().apply(null));
+		assertThrows(NullPointerException.class, () -> TermUpdateBuilder.create().append(null));
 		TermUpdate update = TermUpdateBuilder.create()
-				.setTerm(EN) // prior assignment
-				.removeTerm("sk") // prior removal
-				.apply(TermUpdateBuilder.create()
-						.setTerm(DE) // another replacement
-						.removeTerm("cs") // another removal
+				.put(EN) // prior assignment
+				.remove("sk") // prior removal
+				.append(TermUpdateBuilder.create()
+						.put(DE) // another replacement
+						.remove("cs") // another removal
 						.build())
 				.build();
-		assertThat(update.getModifiedTerms().values(), containsInAnyOrder(EN, DE));
-		assertThat(update.getRemovedTerms(), containsInAnyOrder("sk", "cs"));
+		assertThat(update.getModified().values(), containsInAnyOrder(EN, DE));
+		assertThat(update.getRemoved(), containsInAnyOrder("sk", "cs"));
 	}
 
 }

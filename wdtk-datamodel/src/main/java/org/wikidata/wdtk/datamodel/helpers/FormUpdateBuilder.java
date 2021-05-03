@@ -115,8 +115,8 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 		TermUpdateBuilder combined = getBaseRevision() != null
 				? TermUpdateBuilder.forTerms(getBaseRevision().getRepresentations().values())
 				: TermUpdateBuilder.create();
-		combined.apply(representations);
-		combined.apply(update);
+		combined.append(representations);
+		combined.append(update);
 		representations = combined.build();
 		return this;
 	}
@@ -167,8 +167,8 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 *             if {@code update} cannot be applied to base entity revision (if
 	 *             available)
 	 */
-	public FormUpdateBuilder apply(FormUpdate update) {
-		super.apply(update);
+	public FormUpdateBuilder append(FormUpdate update) {
+		super.append(update);
 		updateRepresentations(update.getRepresentations());
 		if (update.getGrammaticalFeatures().isPresent()) {
 			setGrammaticalFeatures(update.getGrammaticalFeatures().get());

@@ -489,14 +489,12 @@ public class WikibaseDataEditor {
 				return;
 			if (update instanceof StatementDocumentUpdate) {
 				StatementDocumentUpdate typed = (StatementDocumentUpdate) update;
-				if (typed.getStatements().getAddedStatements().size() == 1) {
+				if (typed.getStatements().getAdded().size() == 1) {
 					StatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
 							? StatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
 							: StatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
-					Statement statement = typed.getStatements().getAddedStatements().stream().findFirst().get();
-					builder.updateStatements(StatementUpdateBuilder.create()
-							.addStatement(statement)
-							.build());
+					Statement statement = typed.getStatements().getAdded().stream().findFirst().get();
+					builder.updateStatements(StatementUpdateBuilder.create().add(statement).build());
 					if (builder.build().equals(update)) {
 						String statementId = new RandomGuidGenerator().freshStatementId(typed.getEntityId().getId());
 						Statement prepared = statement.withStatementId(statementId);
@@ -505,30 +503,27 @@ public class WikibaseDataEditor {
 						return;
 					}
 				}
-				if (typed.getStatements().getReplacedStatements().size() == 1) {
+				if (typed.getStatements().getReplaced().size() == 1) {
 					StatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
 							? StatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
 							: StatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
-					Statement statement = typed.getStatements().getReplacedStatements()
-							.values().stream().findFirst().get();
-					builder.updateStatements(StatementUpdateBuilder.create()
-							.replaceStatement(statement)
-							.build());
+					Statement statement = typed.getStatements().getReplaced().values().stream().findFirst().get();
+					builder.updateStatements(StatementUpdateBuilder.create().replace(statement).build());
 					if (builder.build().equals(update)) {
 						wbEditingAction.wbSetClaim(JsonSerializer.getJsonString(statement),
 								editAsBot, revisionId, summary, tags);
 						return;
 					}
 				}
-				if (!typed.getStatements().getRemovedStatements().isEmpty()
-						&& typed.getStatements().getRemovedStatements().size() <= 50) {
+				if (!typed.getStatements().getRemoved().isEmpty()
+						&& typed.getStatements().getRemoved().size() <= 50) {
 					StatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
 							? StatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
 							: StatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
-					List<String> statementIds = new ArrayList<>(typed.getStatements().getRemovedStatements());
+					List<String> statementIds = new ArrayList<>(typed.getStatements().getRemoved());
 					StatementUpdateBuilder statementBuilder = StatementUpdateBuilder.create();
 					for (String statementId : statementIds) {
-						statementBuilder.removeStatement(statementId);
+						statementBuilder.remove(statementId);
 					}
 					builder.updateStatements(statementBuilder.build());
 					if (builder.build().equals(update)) {
@@ -539,29 +534,24 @@ public class WikibaseDataEditor {
 			}
 			if (update instanceof LabeledStatementDocumentUpdate) {
 				LabeledStatementDocumentUpdate typed = (LabeledStatementDocumentUpdate) update;
-				if (typed.getLabels().getModifiedTerms().size() == 1) {
+				if (typed.getLabels().getModified().size() == 1) {
 					LabeledDocumentUpdateBuilder builder = typed.getBaseRevision() != null
 							? LabeledDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
 							: LabeledDocumentUpdateBuilder.forEntityId(typed.getEntityId());
-					MonolingualTextValue label = typed.getLabels().getModifiedTerms()
-							.values().stream().findFirst().get();
-					builder.updateLabels(TermUpdateBuilder.create()
-							.setTerm(label)
-							.build());
+					MonolingualTextValue label = typed.getLabels().getModified().values().stream().findFirst().get();
+					builder.updateLabels(TermUpdateBuilder.create().put(label).build());
 					if (builder.build().equals(update)) {
 						wbEditingAction.wbSetLabel(update.getEntityId().getId(), null, null, null,
 								label.getLanguageCode(), label.getText(), editAsBot, revisionId, summary, tags);
 						return;
 					}
 				}
-				if (typed.getLabels().getRemovedTerms().size() == 1) {
+				if (typed.getLabels().getRemoved().size() == 1) {
 					LabeledDocumentUpdateBuilder builder = typed.getBaseRevision() != null
 							? LabeledDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
 							: LabeledDocumentUpdateBuilder.forEntityId(typed.getEntityId());
-					String language = typed.getLabels().getRemovedTerms().stream().findFirst().get();
-					builder.updateLabels(TermUpdateBuilder.create()
-							.removeTerm(language)
-							.build());
+					String language = typed.getLabels().getRemoved().stream().findFirst().get();
+					builder.updateLabels(TermUpdateBuilder.create().remove(language).build());
 					if (builder.build().equals(update)) {
 						wbEditingAction.wbSetLabel(update.getEntityId().getId(), null, null, null,
 								language, null, editAsBot, revisionId, summary, tags);
@@ -571,15 +561,13 @@ public class WikibaseDataEditor {
 			}
 			if (update instanceof TermedStatementDocumentUpdate) {
 				TermedStatementDocumentUpdate typed = (TermedStatementDocumentUpdate) update;
-				if (typed.getDescriptions().getModifiedTerms().size() == 1) {
+				if (typed.getDescriptions().getModified().size() == 1) {
 					TermedDocumentUpdateBuilder builder = typed.getBaseRevision() != null
 							? TermedDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
 							: TermedDocumentUpdateBuilder.forEntityId(typed.getEntityId());
-					MonolingualTextValue description = typed.getDescriptions().getModifiedTerms()
+					MonolingualTextValue description = typed.getDescriptions().getModified()
 							.values().stream().findFirst().get();
-					builder.updateDescriptions(TermUpdateBuilder.create()
-							.setTerm(description)
-							.build());
+					builder.updateDescriptions(TermUpdateBuilder.create().put(description).build());
 					if (builder.build().equals(update)) {
 						wbEditingAction.wbSetDescription(update.getEntityId().getId(), null, null, null,
 								description.getLanguageCode(), description.getText(),
@@ -587,14 +575,12 @@ public class WikibaseDataEditor {
 						return;
 					}
 				}
-				if (typed.getDescriptions().getRemovedTerms().size() == 1) {
+				if (typed.getDescriptions().getRemoved().size() == 1) {
 					TermedDocumentUpdateBuilder builder = typed.getBaseRevision() != null
 							? TermedDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
 							: TermedDocumentUpdateBuilder.forEntityId(typed.getEntityId());
-					String language = typed.getDescriptions().getRemovedTerms().stream().findFirst().get();
-					builder.updateDescriptions(TermUpdateBuilder.create()
-							.removeTerm(language)
-							.build());
+					String language = typed.getDescriptions().getRemoved().stream().findFirst().get();
+					builder.updateDescriptions(TermUpdateBuilder.create().remove(language).build());
 					if (builder.build().equals(update)) {
 						wbEditingAction.wbSetDescription(update.getEntityId().getId(), null, null, null,
 								language, null, editAsBot, revisionId, summary, tags);
@@ -606,11 +592,11 @@ public class WikibaseDataEditor {
 							? TermedDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
 							: TermedDocumentUpdateBuilder.forEntityId(typed.getEntityId());
 					String language = typed.getAliases().keySet().stream().findFirst().get();
-					List<String> aliases = typed.getAliases().get(language).stream()
-							.map(v -> v.getText())
-							.collect(toList());
-					builder.setAliases(language, aliases);
+					builder.putAliases(language, typed.getAliases().get(language));
 					if (builder.build().equals(update)) {
+						List<String> aliases = typed.getAliases().get(language).stream()
+								.map(v -> v.getText())
+								.collect(toList());
 						if (typed.getBaseRevision() != null
 								&& typed.getBaseRevision().getAliases().containsKey(language)) {
 							List<String> original = typed.getBaseRevision().getAliases().get(language).stream()

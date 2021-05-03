@@ -52,20 +52,20 @@ public interface StatementUpdate {
 	 * 
 	 * @return list of added statements
 	 */
-	List<Statement> getAddedStatements();
+	List<Statement> getAdded();
 
 	/**
 	 * Returns entity statements modified in this update.
 	 * 
 	 * @return modified statements indexed by statement ID
 	 */
-	Map<String, Statement> getReplacedStatements();
+	Map<String, Statement> getReplaced();
 
 	/**
 	 * Returns IDs of statements removed from the entity in this update.
 	 * 
 	 * @return list of IDs of removed statements
 	 */
-	Set<String> getRemovedStatements();
+	Set<String> getRemoved();
 
 }
