@@ -78,7 +78,7 @@ public class LexemeIdValueImpl extends EntityIdValueImpl implements LexemeIdValu
 	@JsonIgnore
 	@Override
 	public boolean isPlaceholder() {
-		return getId().equals("P0");
+		return getId().equals("L0");
 	}
 
 	@Override
