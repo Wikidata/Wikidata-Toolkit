@@ -23,8 +23,6 @@ package org.wikidata.wdtk.datamodel.interfaces;
 /**
  * ValueSnaks represent property-value pairs, where the property are represented
  * by a {@link PropertyIdValue} and the value is represented by a {@link Value}.
- * Objects of this type must always return a non-null value on
- * {@link Snak#getValue()}.
  *
  * @author Markus Kroetzsch
  *
