@@ -26,7 +26,7 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-${{ matrix.java }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-${{ matrix.java }}-m2
-      - run: mvn --batch-mode --update-snapshots jacoco:prepare-agent verify jacoco:report
+      - run: mvn --batch-mode --update-snapshots -Dgpg.skip=true jacoco:prepare-agent verify jacoco:report
       - uses: codecov/codecov-action@v1
         with:
           file: ./**/target/site/jacoco/jacoco.xml
