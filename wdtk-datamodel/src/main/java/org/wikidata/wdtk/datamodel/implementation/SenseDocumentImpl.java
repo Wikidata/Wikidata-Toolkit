@@ -22,16 +22,12 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -66,8 +62,7 @@ public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDoc
 			List<StatementGroup> statements,
 			long revisionId) {
 		super(id, statements, revisionId);
-		Validate.notNull(glosses, "Senses glosses should not be null");
-		this.glosses = constructTermMap(glosses);
+		this.glosses = (glosses == null || glosses.isEmpty()) ? Collections.emptyMap() : constructTermMap(glosses);
 	}
 
 	/**
@@ -82,8 +77,7 @@ public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDoc
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {
 		super(jsonId, claims, revisionId, siteIri);
-		Validate.notNull(glosses, "Senses glosses should not be null");
-		this.glosses = glosses;
+		this.glosses = (glosses == null) ? Collections.emptyMap() : glosses;
 	}
 
 	/**

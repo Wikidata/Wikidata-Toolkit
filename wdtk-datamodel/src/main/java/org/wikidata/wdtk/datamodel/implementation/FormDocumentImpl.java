@@ -22,7 +22,6 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
@@ -68,11 +67,7 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 			List<StatementGroup> statements,
 			long revisionId) {
 		super(id, statements, revisionId);
-		Validate.notNull(representations, "Forms representations should not be null");
-		if(representations.isEmpty()) {
-			throw new IllegalArgumentException("Forms should have at least one representation");
-		}
-		this.representations = constructTermMap(representations);
+		this.representations = (representations == null || representations.isEmpty()) ? Collections.emptyMap() : constructTermMap(representations);
 		this.grammaticalFeatures = (grammaticalFeatures == null) ? Collections.emptyList() : grammaticalFeatures;
 		this.grammaticalFeatures.sort(Comparator.comparing(EntityIdValue::getId));
 	}
@@ -90,11 +85,7 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {
 		super(jsonId, claims, revisionId, siteIri);
-		Validate.notNull(representations, "Forms representations should not be null");
-		if(representations.isEmpty()) {
-			throw new IllegalArgumentException("Forms should have at least one representation");
-		}
-		this.representations = representations;
+		this.representations = (representations == null) ? Collections.emptyMap() : representations;
 		this.grammaticalFeatures = (grammaticalFeatures == null || grammaticalFeatures.isEmpty())
 				? Collections.emptyList()
 				: constructGrammaticalFeatures(grammaticalFeatures, siteIri);
