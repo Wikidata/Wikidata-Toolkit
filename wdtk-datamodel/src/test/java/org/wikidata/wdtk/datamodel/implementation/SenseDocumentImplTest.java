@@ -109,8 +109,8 @@ public class SenseDocumentImplTest {
 	}
 
 	@Test
-	public void glossesNotNull() {
-		assertThrows(NullPointerException.class, () -> new SenseDocumentImpl(sid,  null, statementGroups, 1234));
+	public void glossesNull() {
+		assertEquals(Collections.emptyMap(), new SenseDocumentImpl(sid,  null, statementGroups, 1234).getGlosses());
 	}
 
 	@Test
