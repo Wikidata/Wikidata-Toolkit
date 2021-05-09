@@ -17,7 +17,6 @@
  * limitations under the License.
  * #L%
  */
-
 package org.wikidata.wdtk.wikibaseapi;
 
 import java.io.IOException;
@@ -36,13 +35,13 @@ import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
 import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
-import org.wikidata.wdtk.datamodel.interfaces.StatementDocumentUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
@@ -57,7 +56,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * @deprecated Use {@link WikibaseDataEditor#editEntityDocument(StatementDocumentUpdate, boolean, String, List)} instead.
+ * @deprecated Use {@link WikibaseDataEditor#editEntityDocument(EntityUpdate, boolean, String, List)} instead.
  * Class to plan a statement update operation.
  *
  * @author Markus Kroetzsch
