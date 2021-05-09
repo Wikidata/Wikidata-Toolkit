@@ -57,7 +57,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * @deprecated Use {@link WikibaseDataEditor#editStatementDocument(StatementDocumentUpdate, boolean, String, List)} instead.
+ * @deprecated Use {@link WikibaseDataEditor#editEntityDocument(StatementDocumentUpdate, boolean, String, List)} instead.
  * Class to plan a statement update operation.
  *
  * @author Markus Kroetzsch

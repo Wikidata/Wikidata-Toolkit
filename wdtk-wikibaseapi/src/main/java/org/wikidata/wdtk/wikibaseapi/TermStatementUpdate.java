@@ -39,7 +39,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * @deprecated Use {@link WikibaseDataEditor#editTermedStatementDocument(TermedStatementDocumentUpdate, boolean, String, List)} instead.
+ * @deprecated Use {@link WikibaseDataEditor#editEntityDocument(TermedStatementDocumentUpdate, boolean, String, List)} instead.
  * This class extends StatementUpdate to support update to terms (labels,
  * descriptions and aliases).
  * 
