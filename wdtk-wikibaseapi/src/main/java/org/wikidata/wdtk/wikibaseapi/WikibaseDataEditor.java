@@ -763,6 +763,7 @@ public class WikibaseDataEditor {
 	}
 
 	/**
+	 * @deprecated Use {@link #editEntityDocument(EntityUpdate, boolean, String, List)} instead.
 	 * Updates the statements of the item document identified by the given item
 	 * id. The updates are computed with respect to the current data found
 	 * online, making sure that no redundant deletions or duplicate insertions
@@ -791,6 +792,7 @@ public class WikibaseDataEditor {
 	 * @throws IOException
 	 *             if there are IO problems, such as missing network connection
 	 */
+	@Deprecated
 	public ItemDocument updateStatements(ItemIdValue itemIdValue,
 			List<Statement> addStatements, List<Statement> deleteStatements,
 			String summary, List<String> tags)
@@ -805,6 +807,7 @@ public class WikibaseDataEditor {
 	
 	
 	/**
+	 * @deprecated Use {@link #editEntityDocument(EntityUpdate, boolean, String, List)} instead.
 	 * Updates the terms and statements of the item document identified by the
 	 * given item id. The updates are computed with respect to the current data
 	 * found online, making sure that no redundant deletions or duplicate insertions
@@ -844,6 +847,7 @@ public class WikibaseDataEditor {
 	 * @throws IOException
 	 *          if there are any IO errors, such as missing network connection
 	 */
+	@Deprecated
 	public ItemDocument updateTermsStatements(ItemIdValue itemIdValue,
 			List<MonolingualTextValue> addLabels,
 			List<MonolingualTextValue> addDescriptions,
@@ -862,6 +866,7 @@ public class WikibaseDataEditor {
 	}
 
 	/**
+	 * @deprecated Use {@link #editEntityDocument(EntityUpdate, boolean, String, List)} instead.
 	 * Updates the statements of the property document identified by the given
 	 * property id. The computation of updates is the same as for
 	 * {@link #updateStatements(ItemIdValue, List, List, String, List)}.
@@ -889,6 +894,7 @@ public class WikibaseDataEditor {
 	 * @throws IOException
 	 *             if there are IO problems, such as missing network connection
 	 */
+	@Deprecated
 	public PropertyDocument updateStatements(PropertyIdValue propertyIdValue,
 			List<Statement> addStatements, List<Statement> deleteStatements,
 			String summary, List<String> tags)
