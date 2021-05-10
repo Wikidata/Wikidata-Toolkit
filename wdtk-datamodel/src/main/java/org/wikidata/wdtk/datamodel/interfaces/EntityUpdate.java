@@ -37,7 +37,7 @@ public interface EntityUpdate {
 	 * base revision of the entity is optional when constructing the update. If not
 	 * provided, this method returns {@code null}.
 	 * 
-	 * @return entity revision that is being updated
+	 * @return entity revision that is being updated or {@code null}
 	 */
 	EntityDocument getBaseRevision();
 
