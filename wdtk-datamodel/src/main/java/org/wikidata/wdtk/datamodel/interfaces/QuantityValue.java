@@ -83,7 +83,7 @@ public interface QuantityValue extends Value {
 	/**
 	 * @return the unit of this quantity as an item id value, or null if there is no unit.
 	 * @throws IllegalArgumentException if the unit is not "1" (no unit) or a valid item IRI
-	 * @deprecated use {@link #getOptionalUnit()} to avoid use of null
+	 * @deprecated use {@link #getOptionalUnitItemId()} to avoid use of null
 	 */
 	@Deprecated
 	ItemIdValue getUnitItemId();
