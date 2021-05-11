@@ -44,7 +44,7 @@ public interface QuantityValue extends Value {
 	 * Returns the upper bound for the numeric value of this quantity.
 	 *
 	 * @return numeric value as a decimal value of arbitrary precision or null if not set
-	 * @deprecated use {@link QuantityValue.getOptionalLowerBound()} instead
+	 * @deprecated use {@link #getOptionalLowerBound()} instead
 	 */
 	@Deprecated
 	BigDecimal getLowerBound();
@@ -60,7 +60,7 @@ public interface QuantityValue extends Value {
 	 * Returns the upper bound for the numeric value of this quantity.
 	 *
 	 * @return numeric value as a decimal value of arbitrary precision or null if not set
-	 * @deprecated use {@link QuantityValue.getOptionalUpperBound()} instead
+	 * @deprecated use {@link #getOptionalUpperBound()} instead
 	 */
     @Deprecated
 	BigDecimal getUpperBound();
@@ -83,7 +83,7 @@ public interface QuantityValue extends Value {
 	/**
 	 * @return the unit of this quantity as an item id value, or null if there is no unit.
 	 * @throws IllegalArgumentException if the unit is not "1" (no unit) or a valid item IRI
-	 * @deprecated use {@link QuantityValue.getOptionalUnit} to avoid use of null
+	 * @deprecated use {@link #getOptionalUnit()} to avoid use of null
 	 */
 	@Deprecated
 	ItemIdValue getUnitItemId();
