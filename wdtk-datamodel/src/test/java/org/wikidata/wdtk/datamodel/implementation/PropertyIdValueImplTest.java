@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,16 +18,21 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.junit.Assert.*;
+package org.wikidata.wdtk.datamodel.implementation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.io.IOException;
+
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 
-import java.io.IOException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PropertyIdValueImplTest {
 
@@ -73,19 +76,19 @@ public class PropertyIdValueImplTest {
 		assertEquals(prop1.hashCode(), prop2.hashCode());
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void idValidatedForFirstLetter() {
-		new PropertyIdValueImpl("Q12345", "http://www.wikidata.org/entity/");
+		assertThrows(RuntimeException.class, () -> new PropertyIdValueImpl("Q12345", "http://www.wikidata.org/entity/"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void idValidatedForLength() {
-		new ItemIdValueImpl("P", "http://www.wikidata.org/entity/");
+		assertThrows(IllegalArgumentException.class, () -> new ItemIdValueImpl("P", "http://www.wikidata.org/entity/"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void idValidatedForNumber() {
-		new PropertyIdValueImpl("P34d23", "http://www.wikidata.org/entity/");
+		assertThrows(IllegalArgumentException.class, () -> new PropertyIdValueImpl("P34d23", "http://www.wikidata.org/entity/"));
 	}
 
 	@Test

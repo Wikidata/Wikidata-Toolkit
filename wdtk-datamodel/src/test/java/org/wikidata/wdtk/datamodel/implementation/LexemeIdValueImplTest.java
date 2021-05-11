@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,17 +18,21 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+package org.wikidata.wdtk.datamodel.implementation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.io.IOException;
+
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class LexemeIdValueImplTest {
 
@@ -79,29 +81,29 @@ public class LexemeIdValueImplTest {
 		assertEquals(lexeme1.hashCode(), lexeme2.hashCode());
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void idValidatedForFirstLetter() {
-		new LexemeIdValueImpl("Q12345", "http://www.wikidata.org/entity/");
+		assertThrows(RuntimeException.class, () -> new LexemeIdValueImpl("Q12345", "http://www.wikidata.org/entity/"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void idValidatedForNumber() {
-		new LexemeIdValueImpl("L34d23", "http://www.wikidata.org/entity/");
+		assertThrows(IllegalArgumentException.class, () -> new LexemeIdValueImpl("L34d23", "http://www.wikidata.org/entity/"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void idValidatedForLength() {
-		new LexemeIdValueImpl("L", "http://www.wikidata.org/entity/");
+		assertThrows(IllegalArgumentException.class, () -> new LexemeIdValueImpl("L", "http://www.wikidata.org/entity/"));
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void idNotNull() {
-		new LexemeIdValueImpl((String)null, "http://www.wikidata.org/entity/");
+		assertThrows(RuntimeException.class, () -> new LexemeIdValueImpl((String)null, "http://www.wikidata.org/entity/"));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void baseIriNotNull() {
-		new LexemeIdValueImpl("L42", null);
+		assertThrows(NullPointerException.class, () -> new LexemeIdValueImpl("L42", null));
 	}
 
 	@Test

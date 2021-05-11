@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.wikibaseapi;
-
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -20,21 +18,31 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
+package org.wikidata.wdtk.wikibaseapi;
+
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.implementation.EntityDocumentImpl;
 import org.wikidata.wdtk.datamodel.implementation.EntityIdValueImpl;
-import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -45,9 +53,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public class WbGetEntitiesAction {
-
-	static final Logger logger = LoggerFactory
-			.getLogger(WbGetEntitiesAction.class);
 
 	/**
 	 * Connection to an Wikibase API.
@@ -94,6 +99,8 @@ public class WbGetEntitiesAction {
 	 *             if the API returns an error
 	 * @throws IOException
 	 * 			   if we encounter network issues or HTTP 500 errors from Wikibase
+	 * @throws MalformedResponseException
+	 *             if one of the returned entities cannot be parsed
 	 */
 	public Map<String, EntityDocument> wbGetEntities(
 			WbGetEntitiesActionData properties)
@@ -112,8 +119,8 @@ public class WbGetEntitiesAction {
 	 * 500 for bots. This limit may also apply to the number of language codes
 	 * and sites used for filtering.
 	 * <p>
-	 * If errors occur (e.g., exceptions trying to access the Web API), then the
-	 * errors will be logged and an empty collection will be returned.
+	 * If an error occurs (e.g., exceptions trying to access the Web API),
+	 * the exception will be propagated to the caller.
 	 *
 	 * @param ids
 	 *            list of ids of entities for which data should be retrieved
@@ -150,6 +157,8 @@ public class WbGetEntitiesAction {
 	 *             if we encounter network errors, or HTTP 500 errors on Wikibase's side
 	 * @throws IllegalArgumentException
 	 *             if the given combination of parameters does not make sense
+	 * @throws MalformedResponseException
+	 *             if one of the returned entities cannot be parsed
 	 */
 	public Map<String, EntityDocument> wbGetEntities(String ids, String sites,
 			String titles, String props, String languages, String sitefilter)
@@ -190,56 +199,51 @@ public class WbGetEntitiesAction {
 
 		Map<String, EntityDocument> result = new HashMap<>();
 
-		try {
-			JsonNode root = this.connection.sendJsonRequest("POST", parameters);
+		JsonNode root = this.connection.sendJsonRequest("POST", parameters);
 
-			JsonNode entities = root.path("entities");
-			Iterator<Entry<String,JsonNode>> entitiesIterator = entities.fields();
-			int i = 0;
-			while(entitiesIterator.hasNext()) {
-				Entry<String,JsonNode> entry = entitiesIterator.next();
-				JsonNode entityNode = entry.getValue();
-				if(!entityNode.has("missing")) {
-					try {
-						EntityDocument ed = mapper.reader()
-								.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
-								.treeToValue(entityNode, EntityDocumentImpl.class);
+		JsonNode entities = root.path("entities");
+		Iterator<Entry<String,JsonNode>> entitiesIterator = entities.fields();
+		int i = 0;
+		while(entitiesIterator.hasNext()) {
+			Entry<String,JsonNode> entry = entitiesIterator.next();
+			JsonNode entityNode = entry.getValue();
+			if(!entityNode.has("missing")) {
+				try {
+					EntityDocument ed = mapper.reader()
+							.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+							.treeToValue(entityNode, EntityDocumentImpl.class);
 
-						if (titles == null) {
-							// We use the JSON key rather than the id of the value
-							// so that retrieving redirected entities works.
-							result.put(entry.getKey(), ed);
-						} else {
-							if (ed instanceof ItemDocument) {
-								SiteLink siteLink = ((ItemDocument) ed).getSiteLinks().get(sites);
-								if(siteLink != null) {
-									result.put(siteLink.getPageTitle(), ed);
-								}
-							} else if(ed instanceof MediaInfoDocument) {
-								result.put(entityNode.get("title").textValue(), ed);
+					if (titles == null) {
+						// We use the JSON key rather than the id of the value
+						// so that retrieving redirected entities works.
+						result.put(entry.getKey(), ed);
+					} else {
+						if (ed instanceof ItemDocument) {
+							SiteLink siteLink = ((ItemDocument) ed).getSiteLinks().get(sites);
+							if(siteLink != null) {
+								result.put(siteLink.getPageTitle(), ed);
 							}
+						} else if(ed instanceof MediaInfoDocument) {
+							result.put(entityNode.get("title").textValue(), ed);
 						}
-					} catch (JsonProcessingException e) {
-						logger.error("Error when reading JSON for entity "
-								+ entityNode.path("id").asText("UNKNOWN")
-								+ ": " + e.toString());
 					}
-				} else if(entityNode.has("id")) {
-					try {
-						EntityIdValue entityIdValue = EntityIdValueImpl.fromId(entityNode.get("id").asText(), siteIri);
-						if(entityIdValue instanceof MediaInfoIdValue) {
-							//TODO: bad hack, it would be much nicer if the API would return the page title
-							result.put(titlesList.get(i), Datamodel.makeMediaInfoDocument((MediaInfoIdValue) entityIdValue));
-						}
-					} catch (IllegalArgumentException e) {
-						logger.warn("Invalid entity id returned: " + entityNode.get("id").asText());
-					}
+				} catch (JsonProcessingException e) {
+					throw new MalformedResponseException(
+							"Error when reading JSON for entity " + entityNode.path("id").asText("UNKNOWN"), e);
 				}
-				i++;
+			} else if(entityNode.has("id")) {
+				try {
+					EntityIdValue entityIdValue = EntityIdValueImpl.fromId(entityNode.get("id").asText(), siteIri);
+					if(entityIdValue instanceof MediaInfoIdValue) {
+						//TODO: bad hack, it would be much nicer if the API would return the page title
+						result.put(titlesList.get(i), Datamodel.makeMediaInfoDocument((MediaInfoIdValue) entityIdValue));
+					}
+				} catch (IllegalArgumentException e) {
+					throw new MalformedResponseException(
+							"Invalid entity id returned: " + entityNode.get("id").asText(), e);
+				}
 			}
-		} catch (IOException e) {
-			logger.error("Could not retrive data: " + e.toString());
-			throw e;
+			i++;
 		}
 
 		return result;

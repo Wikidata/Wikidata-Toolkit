@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.wikidata.wdtk</groupId>
 		<artifactId>wdtk-parent</artifactId>
-		<version>0.11.1</version>
+		<version>0.12.0</version>
 	</parent>
 
 	<artifactId>wdtk-examples</artifactId>
@@ -64,7 +64,7 @@
 				<!-- example/benchmark code needs no testing. -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.6</version>
+				<version>2.7</version>
 				<configuration combine.self="override">
 					<skip>true</skip>
 					<aggregate>true</aggregate>

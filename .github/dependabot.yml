@@ -1,0 +1,17 @@
+# Documentation for all configuration options:
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+# For openrefine java deps
+- package-ecosystem: "maven"
+  directory: "/"
+  schedule:
+    interval: "daily"
+  open-pull-requests-limit: 10
+# For github actions
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: "daily"
+

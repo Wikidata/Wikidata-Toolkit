@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,11 +18,22 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.junit.Assert.*;
+package org.wikidata.wdtk.datamodel.implementation;
 
-import java.util.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
@@ -85,7 +94,6 @@ public class StatementGroupTest {
 	public void getBestStatementsEmpty() {
 		assertNull(
 				new StatementGroupImpl(Collections.singletonList(statementDeprecrated)).getBestStatements()
-
 		);
 	}
 
@@ -118,17 +126,17 @@ public class StatementGroupTest {
 		assertEquals(sg1.hashCode(), sg2.hashCode());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void statementListNotNull() {
-		new StatementGroupImpl(null);
+		assertThrows(NullPointerException.class, () -> new StatementGroupImpl(null));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void statementListNotEmpty() {
-		new StatementGroupImpl(Collections.emptyList());
+		assertThrows(IllegalArgumentException.class, () -> new StatementGroupImpl(Collections.emptyList()));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void statementListRequiresSameSubject() {
 		List<Statement> statements = new ArrayList<>();
 
@@ -141,10 +149,10 @@ public class StatementGroupTest {
 				Collections.emptyList(),  Collections.emptyList(), subject2);
 		statements.add(s2);
 
-		new StatementGroupImpl(statements);
+		assertThrows(IllegalArgumentException.class, () -> new StatementGroupImpl(statements));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void statementListRequiresSameProperty() {
 		List<Statement> statements = new ArrayList<>();
 
@@ -156,7 +164,7 @@ public class StatementGroupTest {
 			Collections.emptyList(), Collections.emptyList(), subject);
 		statements.add(s2);
 
-		new StatementGroupImpl(statements);
+		assertThrows(IllegalArgumentException.class, () -> new StatementGroupImpl(statements));
 	}
 
 	@Test

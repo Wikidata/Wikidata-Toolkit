@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.interfaces;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,9 +18,11 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
+package org.wikidata.wdtk.datamodel.interfaces;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 public class NullEntityIdsTest {
 

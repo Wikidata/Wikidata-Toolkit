@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.helpers;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,11 +18,14 @@ package org.wikidata.wdtk.datamodel.helpers;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
+package org.wikidata.wdtk.datamodel.helpers;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -75,8 +76,9 @@ public class PropertyDocumentBuilderTest {
 		assertEquals(withAlias.getAliases().get("en"), Collections.singletonList(alias));
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testInvalidSubjectId() {
-		PropertyDocumentBuilder.forPropertyIdAndDatatype(PropertyIdValue.NULL, DatatypeIdValue.DT_EXTERNAL_ID).withEntityId(ItemIdValue.NULL);
+		PropertyDocumentBuilder builder = PropertyDocumentBuilder.forPropertyIdAndDatatype(PropertyIdValue.NULL, DatatypeIdValue.DT_EXTERNAL_ID);
+		assertThrows(IllegalArgumentException.class, () -> builder.withEntityId(ItemIdValue.NULL));
 	}
 }

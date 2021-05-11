@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.helpers;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,17 +18,46 @@ package org.wikidata.wdtk.datamodel.helpers;
  * #L%
  */
 
+package org.wikidata.wdtk.datamodel.helpers;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Test;
-import org.wikidata.wdtk.datamodel.implementation.*;
-import org.wikidata.wdtk.datamodel.interfaces.*;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.implementation.GlobeCoordinatesValueImpl;
+import org.wikidata.wdtk.datamodel.implementation.ItemIdValueImpl;
+import org.wikidata.wdtk.datamodel.implementation.MonolingualTextValueImpl;
+import org.wikidata.wdtk.datamodel.implementation.PropertyIdValueImpl;
+import org.wikidata.wdtk.datamodel.implementation.QuantityValueImpl;
+import org.wikidata.wdtk.datamodel.implementation.SnakGroupImpl;
+import org.wikidata.wdtk.datamodel.implementation.StatementGroupImpl;
+import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
+import org.wikidata.wdtk.datamodel.implementation.StringValueImpl;
+import org.wikidata.wdtk.datamodel.implementation.TimeValueImpl;
+import org.wikidata.wdtk.datamodel.implementation.ValueSnakImpl;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
+import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 /**
  * Test for special aspects of {@link DatamodelConverter}. Regular operation is

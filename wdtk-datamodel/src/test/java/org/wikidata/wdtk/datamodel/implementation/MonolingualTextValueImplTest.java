@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,14 +18,19 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.junit.Assert.*;
+package org.wikidata.wdtk.datamodel.implementation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.io.IOException;
+
+import org.junit.jupiter.api.Test;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-
-import java.io.IOException;
 
 public class MonolingualTextValueImplTest {
 
@@ -63,14 +66,14 @@ public class MonolingualTextValueImplTest {
 		assertEquals(mt1.hashCode(), mt2.hashCode());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void textNotNull() {
-		new MonolingualTextValueImpl(null, "en");
+		assertThrows(NullPointerException.class, () -> new MonolingualTextValueImpl(null, "en"));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void languageCodeNotNull() {
-		new MonolingualTextValueImpl("some text", null);
+		assertThrows(NullPointerException.class, () -> new MonolingualTextValueImpl("some text", null));
 	}
 
 	@Test

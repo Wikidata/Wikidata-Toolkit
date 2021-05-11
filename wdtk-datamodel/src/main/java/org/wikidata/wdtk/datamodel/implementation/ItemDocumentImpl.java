@@ -29,8 +29,13 @@ import java.util.Set;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.interfaces.*;
-import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -136,12 +141,6 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 
 	@JsonIgnore
 	@Override
-	public ItemIdValue getItemId() {
-		return getEntityId();
-	}
-
-	@JsonIgnore
-	@Override
 	public ItemIdValue getEntityId() {
 		return new ItemIdValueImpl(this.entityId, this.siteIri);
 	}
@@ -169,7 +168,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 
 	@Override
 	public ItemDocument withRevisionId(long newRevisionId) {
-		return new ItemDocumentImpl(getItemId(),
+		return new ItemDocumentImpl(getEntityId(),
 				labels,	descriptions,
 				aliases, claims,
 				sitelinks, newRevisionId);
@@ -177,7 +176,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 
 	@Override
 	public ItemDocument withLabel(MonolingualTextValue newLabel) {
-		return new ItemDocumentImpl(getItemId(),
+		return new ItemDocumentImpl(getEntityId(),
 				withTerm(labels, newLabel), descriptions,
 				aliases, claims,
 				sitelinks, revisionId);
@@ -185,7 +184,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 
 	@Override
 	public ItemDocument withDescription(MonolingualTextValue newDescription) {
-		return new ItemDocumentImpl(getItemId(),
+		return new ItemDocumentImpl(getEntityId(),
 				labels, withTerm(descriptions, newDescription),
 				aliases, claims,
 				sitelinks, revisionId);
@@ -193,7 +192,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 
 	@Override
 	public ItemDocument withAliases(String language, List<MonolingualTextValue> aliases) {
-		return new ItemDocumentImpl(getItemId(),
+		return new ItemDocumentImpl(getEntityId(),
 				labels, descriptions,
 				withAliases(this.aliases, language, aliases), claims,
 				sitelinks, revisionId);
@@ -202,7 +201,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	@Override
 	public ItemDocument withStatement(Statement statement) {
 		Map<String, List<Statement>> newGroups = addStatementToGroups(statement, claims);
-		return new ItemDocumentImpl(getItemId(),
+		return new ItemDocumentImpl(getEntityId(),
 				labels, descriptions,
 				aliases, newGroups,
 				sitelinks, revisionId);
@@ -211,7 +210,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	@Override
 	public ItemDocument withoutStatementIds(Set<String> statementIds) {
 		Map<String, List<Statement>> newGroups = removeStatements(statementIds, claims);
-		return new ItemDocumentImpl(getItemId(),
+		return new ItemDocumentImpl(getEntityId(),
 				labels, descriptions,
 				aliases, newGroups,
 				sitelinks, revisionId);

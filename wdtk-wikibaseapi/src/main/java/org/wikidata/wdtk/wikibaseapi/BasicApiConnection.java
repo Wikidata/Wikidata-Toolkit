@@ -347,11 +347,7 @@ public class BasicApiConnection extends ApiConnection {
 			params.put("action", "logout");
 			params.put("token", getOrFetchToken("csrf"));
 			params.put("format", "json"); // reduce the output
-			try {
-				sendJsonRequest("POST", params);
-			} catch (MediaWikiApiErrorException e) {
-				throw new IOException(e.getMessage(), e); //TODO: we should throw a better exception
-			}
+			sendJsonRequest("POST", params);
 
 			this.loggedIn = false;
 			this.username = "";

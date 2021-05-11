@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*-
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,14 +18,16 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
+package org.wikidata.wdtk.datamodel.implementation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -46,7 +46,7 @@ public class UnsupportedEntityIdValueTest {
 	
 	private UnsupportedEntityIdValue firstValue, secondValue, noType;
 	
-	@Before
+	@BeforeEach
 	public void deserializeValues() throws IOException {
 		firstValue = mapper.readValue(JSON_UNSUPPORTED_VALUE_1, UnsupportedEntityIdValueImpl.class);
 		secondValue = mapper.readValue(JSON_UNSUPPORTED_VALUE_2, UnsupportedEntityIdValueImpl.class);

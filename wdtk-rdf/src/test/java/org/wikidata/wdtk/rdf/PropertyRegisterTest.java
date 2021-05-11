@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.rdf;
-
 /*
  * #%L
  * Wikidata Toolkit RDF
@@ -20,18 +18,24 @@ package org.wikidata.wdtk.rdf;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+package org.wikidata.wdtk.rdf;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.hamcrest.core.IsCollectionContaining;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Matchers;
+import org.hamcrest.core.IsIterableContaining;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.mockito.hamcrest.MockitoHamcrest;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
@@ -55,7 +59,7 @@ public class PropertyRegisterTest {
 	final TestObjectFactory objectFactory = new TestObjectFactory();
 	final DataObjectFactory dataObjectFactory = new DataObjectFactoryImpl();
 
-	@Before
+	@BeforeEach
 	public void setUp() throws MediaWikiApiErrorException, IOException {
 		Map<String, EntityDocument> mockResult = new HashMap<>();
 		List<StatementGroup> mockStatementGroups = new ArrayList<>();
@@ -131,9 +135,9 @@ public class PropertyRegisterTest {
 
 		WikibaseDataFetcher dataFetcher = Mockito
 				.mock(WikibaseDataFetcher.class);
-		Mockito.when(dataFetcher.getEntityDocuments((List<String>)Matchers.argThat(IsCollectionContaining.hasItems("P434"))))
+		Mockito.when(dataFetcher.getEntityDocuments((List<String>)MockitoHamcrest.argThat(IsIterableContaining.hasItems("P434"))))
 				.thenReturn(mockResult);
-		Mockito.when(dataFetcher.getEntityDocuments((List<String>)Matchers.argThat(IsCollectionContaining.hasItems("P508"))))
+		Mockito.when(dataFetcher.getEntityDocuments((List<String>)MockitoHamcrest.argThat(IsIterableContaining.hasItems("P508"))))
 				.thenReturn(mockResult);
 		Mockito.when(dataFetcher.getFilter()).thenReturn(
 				new DocumentDataFilter());
@@ -189,8 +193,8 @@ public class PropertyRegisterTest {
 		// Check twice to test fast failing on retry
 		assertNull(this.propertyRegister.getPropertyType(dataObjectFactory
 				.getPropertyIdValue("P10000", this.siteIri)));
-		assertEquals("no requests should be made if the property is known to be missing",
-				smallestBefore, this.propertyRegister.smallestUnfetchedPropertyIdNumber);
+		assertEquals(smallestBefore, this.propertyRegister.smallestUnfetchedPropertyIdNumber,
+				"no requests should be made if the property is known to be missing");
 	}
 
 	@Test

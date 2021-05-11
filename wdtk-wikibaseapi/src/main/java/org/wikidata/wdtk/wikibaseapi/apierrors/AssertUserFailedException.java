@@ -30,6 +30,8 @@ package org.wikidata.wdtk.wikibaseapi.apierrors;
  */
 public class AssertUserFailedException extends MediaWikiApiErrorException {
 
+	private static final long serialVersionUID = -619052434831693831L;
+
 	public AssertUserFailedException(String errorMessage) {
 		super(MediaWikiApiErrorHandler.ERROR_ASSERT_USER_FAILED, errorMessage);
 	}

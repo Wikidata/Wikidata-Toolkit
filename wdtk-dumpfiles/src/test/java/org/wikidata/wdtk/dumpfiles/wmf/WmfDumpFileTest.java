@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.dumpfiles.wmf;
-
 /*
  * #%L
  * Wikidata Toolkit Dump File Handling
@@ -20,10 +18,12 @@ package org.wikidata.wdtk.dumpfiles.wmf;
  * #L%
  */
 
-import org.junit.Test;
-import org.wikidata.wdtk.util.CompressionType;
+package org.wikidata.wdtk.dumpfiles.wmf;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+import org.wikidata.wdtk.util.CompressionType;
 
 public class WmfDumpFileTest {
 

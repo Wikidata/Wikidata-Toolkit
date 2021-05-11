@@ -1,18 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-
-import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.UnsupportedEntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Value;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -32,6 +17,23 @@ import org.wikidata.wdtk.datamodel.interfaces.Value;
  * limitations under the License.
  * #L%
  */
+
+package org.wikidata.wdtk.datamodel.implementation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
+
+import org.junit.jupiter.api.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.UnsupportedEntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -87,29 +89,29 @@ public class ItemIdValueImplTest {
 		assertEquals(item1.hashCode(), item2.hashCode());
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void idValidatedForFirstLetter() {
-		new ItemIdValueImpl("P12345", "http://www.wikidata.org/entity/");
+		assertThrows(RuntimeException.class, () -> new ItemIdValueImpl("P12345", "http://www.wikidata.org/entity/"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void idValidatedForNumber() {
-		new ItemIdValueImpl("Q34d23", "http://www.wikidata.org/entity/");
+		assertThrows(IllegalArgumentException.class, () -> new ItemIdValueImpl("Q34d23", "http://www.wikidata.org/entity/"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void idValidatedForLength() {
-		new ItemIdValueImpl("Q", "http://www.wikidata.org/entity/");
+		assertThrows(IllegalArgumentException.class, () -> new ItemIdValueImpl("Q", "http://www.wikidata.org/entity/"));
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void idNotNull() {
-		new ItemIdValueImpl((String)null, "http://www.wikidata.org/entity/");
+		assertThrows(RuntimeException.class, () -> new ItemIdValueImpl((String)null, "http://www.wikidata.org/entity/"));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void baseIriNotNull() {
-		new ItemIdValueImpl("Q42", null);
+		assertThrows(NullPointerException.class, () -> new ItemIdValueImpl("Q42", null));
 	}
 
 	@Test
@@ -145,9 +147,9 @@ public class ItemIdValueImplTest {
 		assertEquals("foo", ((UnsupportedEntityIdValue)unsupported).getEntityTypeJsonString());
 	}
 	
-	@Test(expected = JsonMappingException.class)
+	@Test
 	public void testToJavaUnsupportedWithoutId() throws IOException {
-		mapper.readValue(JSON_ITEM_ID_VALUE_UNSUPPORTED_NO_ID, ValueImpl.class);
+		assertThrows(JsonMappingException.class, () -> mapper.readValue(JSON_ITEM_ID_VALUE_UNSUPPORTED_NO_ID, ValueImpl.class));
 	}
 
 }

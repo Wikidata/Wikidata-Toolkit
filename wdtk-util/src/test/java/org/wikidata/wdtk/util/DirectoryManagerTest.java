@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.util;
-
 /*
  * #%L
  * Wikidata Toolkit Utilities
@@ -20,7 +18,10 @@ package org.wikidata.wdtk.util;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
+package org.wikidata.wdtk.util;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -35,8 +36,8 @@ import java.nio.file.Paths;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for directory manager implementation. We can only test the read-only
@@ -49,7 +50,7 @@ public class DirectoryManagerTest {
 
 	DirectoryManagerImpl dm;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		Path path = Paths.get(System.getProperty("user.dir"));
 		dm = new DirectoryManagerImpl(path, true);
@@ -61,33 +62,33 @@ public class DirectoryManagerTest {
 				dm.toString());
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void MissingSubdirectoryReadOnly() throws IOException {
-		dm.getSubdirectoryManager("1 2 3 not a subdirectory that exists in the test system, hopefully");
+		assertThrows(IOException.class, () -> dm.getSubdirectoryManager("1 2 3 not a subdirectory that exists in the test system, hopefully"));
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void OutputStreamReadOnly() throws IOException {
-		dm.getOutputStreamForFile("file.txt");
+		assertThrows(IOException.class, () -> dm.getOutputStreamForFile("file.txt"));
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void NoCreateFileStringReadOnly() throws IOException {
-		dm.createFile("new-test-file.txt", "new contents");
+		assertThrows(IOException.class, () -> dm.createFile("new-test-file.txt", "new contents"));
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void NoCreateFileInputStreamReadOnly() throws IOException {
 		ByteArrayInputStream in = new ByteArrayInputStream(
 				"new contents".getBytes(StandardCharsets.UTF_8));
-		dm.createFile("new-test-file.txt", in);
+		assertThrows(IOException.class, () -> dm.createFile("new-test-file.txt", in));
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void NoCreateFileAtomicInputStreamReadOnly() throws IOException {
 		ByteArrayInputStream in = new ByteArrayInputStream(
 				"new contents".getBytes(StandardCharsets.UTF_8));
-		dm.createFileAtomic("new-test-file.txt", in);
+		assertThrows(IOException.class, () -> dm.createFileAtomic("new-test-file.txt", in));
 	}
 
 	@Test

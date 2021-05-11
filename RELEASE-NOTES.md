@@ -1,6 +1,28 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.12.0
+--------------
+
+Bug fixes:
+* Allows empty gloss list in `SenseDocument` to parse the most recent Wikidata dumps.
+
+New features:
+* Allows fetching MediaInfo entities using `WikibaseDataFetcher`.
+* `WikibaseRevisionProcessor` now parses and exposes redirections between entities.
+* `OAuthApiConnection` to connect to Wikibase API using OAuth.
+* Allows to fetch the Wikibase edit lag.
+* Dump file compression is automatically guessed from the file name extensions.
+
+Incompatible changes:
+* More API client errors are now exposed as exception, allowing the API users to act on them. 
+* `OkHTTP` is now used in wikibaseapi-client and big revamp of the client internals with small breaking changes.
+* Deprecated methods removal across the codebase.
+
+Dependency upgrades:
+* Dropped unused Apache HTTP client dependency
+* Bump RDF4J to 3.6.4, Jackson to 2.12.3, Apache Commons IO to 2.8, Apache Commons Lang3 to 3.12.
+
 Version 0.11.1
 --------------
 

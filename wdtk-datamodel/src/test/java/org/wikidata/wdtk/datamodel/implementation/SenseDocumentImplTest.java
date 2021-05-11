@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,16 +18,34 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
-import org.wikidata.wdtk.datamodel.interfaces.*;
+package org.wikidata.wdtk.datamodel.implementation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
+import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SenseDocumentImplTest {
 
@@ -87,19 +103,19 @@ public class SenseDocumentImplTest {
 		assertEquals(sd1.hashCode(), sd2.hashCode());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void idNotNull() {
-		new SenseDocumentImpl(null, repList, statementGroups, 1234);
+		assertThrows(NullPointerException.class, () -> new SenseDocumentImpl(null, repList, statementGroups, 1234));
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void glossesNotNull() {
-		new SenseDocumentImpl(sid,  null, statementGroups, 1234);
+	@Test
+	public void glossesNull() {
+		assertEquals(Collections.emptyMap(), new SenseDocumentImpl(sid,  null, statementGroups, 1234).getGlosses());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void glossesNotEmpty() {
-		new SenseDocumentImpl(sid, Collections.emptyList(), statementGroups, 1234);
+	@Test
+	public void glossesEmpty() {
+		assertEquals(Collections.emptyMap(), new SenseDocumentImpl(sid, Collections.emptyList(), statementGroups, 1234).getGlosses());
 	}
 
 	@Test
@@ -108,9 +124,9 @@ public class SenseDocumentImplTest {
 		assertTrue(doc.getStatementGroups().isEmpty());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void statementGroupsUseSameSubject() {
-		SenseIdValue iid2 = new SenseIdValueImpl("Q23", "http://example.org/");
+		SenseIdValue iid2 = new SenseIdValueImpl("L23-S5", "http://example.org/");
 		Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL,
 				new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
 				Collections.emptyList(),  Collections.emptyList(), iid2);
@@ -120,7 +136,7 @@ public class SenseDocumentImplTest {
 		statementGroups2.add(statementGroups.get(0));
 		statementGroups2.add(sg2);
 
-		new SenseDocumentImpl(sid, repList, statementGroups2, 1234);
+		assertThrows(IllegalArgumentException.class, () -> new SenseDocumentImpl(sid, repList, statementGroups2, 1234));
 	}
 
 	@Test

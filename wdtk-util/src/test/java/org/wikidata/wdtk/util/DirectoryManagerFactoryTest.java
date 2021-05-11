@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.util;
-
 /*
  * #%L
  * Wikidata Toolkit Utilities
@@ -20,8 +18,11 @@ package org.wikidata.wdtk.util;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+package org.wikidata.wdtk.util;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,8 +31,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DirectoryManagerFactoryTest {
 
@@ -83,7 +84,7 @@ public class DirectoryManagerFactoryTest {
 		}
 	}
 
-	@Before
+	@BeforeEach
 	public void setup() throws IOException {
 		DirectoryManagerFactory
 				.setDirectoryManagerClass(DirectoryManagerImpl.class);
@@ -111,17 +112,17 @@ public class DirectoryManagerFactoryTest {
 		assertEquals(path, dmi.directory);
 	}
 
-	@Test(expected = RuntimeException.class)
-	public void createDirectoryManagerNoConstructor() throws IOException {
+	@Test
+	public void createDirectoryManagerNoConstructor() {
 		DirectoryManagerFactory
 				.setDirectoryManagerClass(TestDirectoryManager.class);
-		DirectoryManagerFactory.createDirectoryManager("/", true);
+		assertThrows(RuntimeException.class, () -> DirectoryManagerFactory.createDirectoryManager("/", true));
 	}
 
-	@Test(expected = IOException.class)
-	public void createDirectoryManagerIoException() throws IOException {
-		DirectoryManagerFactory.createDirectoryManager(
-				"/nonexisting-directory/123456789/hopefully", true);
+	@Test
+	public void createDirectoryManagerIoException() {
+		assertThrows(IOException.class, () -> DirectoryManagerFactory.createDirectoryManager(
+				"/nonexisting-directory/123456789/hopefully", true));
 	}
 
 }
