@@ -323,7 +323,7 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 		 */
 		@JsonProperty("unit")
 		String getUnitString() {
-			return unit.isEmpty() ? "1" : unit.get().getIri();
+			return unit.isPresent() ? unit.get().getIri() : "1";
 		}
 		
 		/**

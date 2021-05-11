@@ -44,7 +44,9 @@ public interface QuantityValue extends Value {
 	 * Returns the upper bound for the numeric value of this quantity.
 	 *
 	 * @return numeric value as a decimal value of arbitrary precision or null if not set
+	 * @deprecated use {@link QuantityValue.getOptionalLowerBound()} instead
 	 */
+	@Deprecated
 	BigDecimal getLowerBound();
 	
 	/**
@@ -58,7 +60,9 @@ public interface QuantityValue extends Value {
 	 * Returns the upper bound for the numeric value of this quantity.
 	 *
 	 * @return numeric value as a decimal value of arbitrary precision or null if not set
+	 * @deprecated use {@link QuantityValue.getOptionalUpperBound()} instead
 	 */
+    @Deprecated
 	BigDecimal getUpperBound();
 	
 	/**
