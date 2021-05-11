@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
 import org.wikidata.wdtk.datamodel.helpers.PropertyDocumentBuilder;
@@ -237,9 +238,22 @@ public interface DataObjectFactory {
 	 * @param unit
 	 *            the unit of this quantity, or the empty string if there is no
 	 *            unit
+	 * @deprecated use version with optional {@link ItemIdValue} instead
 	 * @return a {@link QuantityValue} corresponding to the input
 	 */
+	@Deprecated
 	QuantityValue getQuantityValue(BigDecimal numericValue, String unit);
+	
+	/**
+     * Creates a {@link QuantityValue} without bounds.
+     *
+     * @param numericValue
+     *            the numeric value of this quantity
+     * @param unit
+     *            the unit of this quantity
+     * @return a {@link QuantityValue} corresponding to the input
+     */
+    QuantityValue getQuantityValue(BigDecimal numericValue, Optional<ItemIdValue> unit);
 
 	/**
 	 * Creates a {@link QuantityValue}.
@@ -253,10 +267,29 @@ public interface DataObjectFactory {
 	 * @param unit
 	 *            the unit of this quantity, or the empty string if there is no
 	 *            unit
+	 * @deprecated use version with optional {@link ItemIdValue} instead
 	 * @return a {@link QuantityValue} corresponding to the input
 	 */
+	@Deprecated
 	QuantityValue getQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound, String unit);
+	
+	/**
+     * Creates a {@link QuantityValue}.
+     *
+     * @param numericValue
+     *            the numeric value of this quantity
+     * @param lowerBound
+     *            the lower bound of the numeric value of this quantity
+     * @param upperBound
+     *            the upper bound of the numeric value of this quantity
+     * @param unit
+     *            the unit of this quantity
+     * @return a {@link QuantityValue} corresponding to the input
+     */
+    QuantityValue getQuantityValue(BigDecimal numericValue,
+            Optional<BigDecimal> lowerBound, Optional<BigDecimal> upperBound, Optional<ItemIdValue> unit);
+
 
 	/**
 	 * Creates a {@link ValueSnak}.

@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  */
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 /**
  * A quantity value represents a number, possibly under some unit. The number
@@ -45,6 +46,13 @@ public interface QuantityValue extends Value {
 	 * @return numeric value as a decimal value of arbitrary precision or null if not set
 	 */
 	BigDecimal getLowerBound();
+	
+	/**
+     * Returns the upper bound for the numeric value of this quantity.
+     *
+     * @return numeric value as a decimal value of arbitrary precision or null if not set
+     */
+    Optional<BigDecimal> getOptionalLowerBound();
 
 	/**
 	 * Returns the upper bound for the numeric value of this quantity.
@@ -52,6 +60,13 @@ public interface QuantityValue extends Value {
 	 * @return numeric value as a decimal value of arbitrary precision or null if not set
 	 */
 	BigDecimal getUpperBound();
+	
+	/**
+     * Returns the upper bound for the numeric value of this quantity.
+     *
+     * @return numeric value as a decimal value of arbitrary precision or null if not set
+     */
+    Optional<BigDecimal> getOptionalUpperBound();
 
 	/**
 	 * Returns the unit of this quantity, or the string "1" if there is no
@@ -64,7 +79,14 @@ public interface QuantityValue extends Value {
 	/**
 	 * @return the unit of this quantity as an item id value, or null if there is no unit.
 	 * @throws IllegalArgumentException if the unit is not "1" (no unit) or a valid item IRI
+	 * @deprecated use {@link QuantityValue.getOptionalUnit} to avoid use of null
 	 */
+	@Deprecated
 	ItemIdValue getUnitItemId();
+	
+	/**
+	 * @return the unit of this quantity as an item id value.
+	 */
+	Optional<ItemIdValue> getOptionalUnitItemId();
 
 }

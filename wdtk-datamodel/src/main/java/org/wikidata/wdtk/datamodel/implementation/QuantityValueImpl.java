@@ -31,6 +31,7 @@ import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 /**
  * Jackson implementation of {@link QuantityValue}.
@@ -55,24 +56,46 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 	 * @param numericValue
 	 *            the numeric value of this quantity
 	 * @param lowerBound
-	 *            the lower bound of the numeric value of this quantity or null
-	 *            if not set
+	 *            the lower bound of the numeric value of this quantity
 	 * @param upperBound
-	 *            the upper bound of the numeric value of this quantity or null
-	 *            if not set
+	 *            the upper bound of the numeric value of this quantity
 	 * @param unit
-	 *            the unit of this quantity, or the empty string if there is no
-	 *            unit
+	 *            the unit of this quantity (optional)
 	 */
 	public QuantityValueImpl(
 			BigDecimal numericValue,
-			BigDecimal lowerBound,
-			BigDecimal upperBound,
-			String unit) {
+			Optional<BigDecimal> lowerBound,
+			Optional<BigDecimal> upperBound,
+			Optional<ItemIdValue> unit) {
 		super(JSON_VALUE_TYPE_QUANTITY);
 		this.value = new JacksonInnerQuantity(numericValue, lowerBound,
 				upperBound, unit);
 	}
+	
+	/**
+     * Deprecated constructor.
+     *
+     * @param numericValue
+     *            the numeric value of this quantity
+     * @param lowerBound
+     *            the lower bound of the numeric value of this quantity or null
+     *            if not set
+     * @param upperBound
+     *            the upper bound of the numeric value of this quantity or null
+     *            if not set
+     * @param unit
+     *            the unit of this quantity or "1" if no unit is set
+     */
+	@Deprecated
+    public QuantityValueImpl(
+            BigDecimal numericValue,
+            BigDecimal lowerBound,
+            BigDecimal upperBound,
+            String unit) {
+        super(JSON_VALUE_TYPE_QUANTITY);
+        this.value = new JacksonInnerQuantity(numericValue, lowerBound,
+                upperBound, unit);
+    }
 
 	/**
 	 * Constructor used for deserialization from JSON with Jackson.
@@ -103,30 +126,43 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 	@JsonIgnore
 	@Override
 	public BigDecimal getLowerBound() {
-		return this.value.getLowerBound();
+		return this.value.getLowerBound().orElse(null);
 	}
+	
+	@JsonIgnore
+    @Override
+    public Optional<BigDecimal> getOptionalLowerBound() {
+        return this.value.getLowerBound();
+    }
 
 	@JsonIgnore
 	@Override
 	public BigDecimal getUpperBound() {
-		return this.value.getUpperBound();
+		return this.value.getUpperBound().orElse(null);
 	}
+	
+	@JsonIgnore
+    @Override
+    public Optional<BigDecimal> getOptionalUpperBound() {
+        return this.value.getUpperBound();
+    }
 
 	@JsonIgnore
 	@Override
 	public String getUnit() {
-		return this.value.getUnit();
+		return this.value.getUnitString();
 	}
 
 	@JsonIgnore
 	@Override
 	public ItemIdValue getUnitItemId() {
-		String unit = this.value.getUnit();
-		if(unit.equals("1")) {
-			return null;
-		} else {
-			return ItemIdValueImpl.fromIri(unit);
-		}
+		return this.value.getUnit().orElse(null);
+	}
+	
+	@JsonIgnore
+	@Override
+	public Optional<ItemIdValue> getOptionalUnitItemId() {
+	    return this.value.getUnit();
 	}
 
 	@Override
@@ -156,13 +192,12 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 	static class JacksonInnerQuantity {
 
 		private final BigDecimal amount;
-		private final BigDecimal upperBound;
-		private final BigDecimal lowerBound;
-		private final String unit;
+		private final Optional<BigDecimal> upperBound;
+		private final Optional<BigDecimal> lowerBound;
+		private final Optional<ItemIdValue> unit;
 
 		/**
-		 * Constructor. The unit given here is a unit string as used in WDTK, with
-		 * the empty string meaning "no unit".
+		 * Constructor to deserialize from JSON.
 		 *
 		 * @param amount
 		 * 		the main value of this quantity
@@ -179,28 +214,55 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 				@JsonProperty("lowerBound") BigDecimal lowerBound,
 				@JsonProperty("upperBound") BigDecimal upperBound,
 				@JsonProperty("unit") String unit) {
-			Validate.notNull(amount, "Numeric value cannot be null");
-			Validate.notNull(unit, "Unit cannot be null");
-			Validate.notEmpty(unit, "Unit cannot be empty. Use \"1\" for unit-less quantities.");
-
-			if(lowerBound != null || upperBound != null) {
-				Validate.notNull(lowerBound, "Lower and upper bounds should be null at the same time");
-				Validate.notNull(upperBound, "Lower and upper bounds should be null at the same time");
-
-				if (lowerBound.compareTo(amount) > 0) {
-					throw new IllegalArgumentException(
-							"Lower bound cannot be strictly greater than numeric value");
-				}
-				if (amount.compareTo(upperBound) > 0) {
-					throw new IllegalArgumentException(
-							"Upper bound cannot be strictly smaller than numeric value");
-				}
-			}
-			this.amount = amount;
-			this.upperBound = upperBound;
-			this.lowerBound = lowerBound;
-			this.unit = unit;
+			this(amount,
+			     lowerBound == null ? Optional.empty() : Optional.of(lowerBound),
+			     upperBound == null ? Optional.empty() : Optional.of(upperBound),
+			     parseUnit(unit));
 		}
+		
+		protected static Optional<ItemIdValue> parseUnit(String unit) {
+		    Validate.notEmpty(unit, "Unit cannot be empty. Use \"1\" for unit-less quantities.");
+		    return "1".equals(unit) ? Optional.empty() : Optional.of(ItemIdValueImpl.fromIri(unit));
+		}
+		
+		/**
+		 * Constructor to construct a fresh quantity value.
+		 * 
+		 * @param amount
+		 *      the main value of this quantity
+		 * @param lowerBound
+		 *      the lower bound of this quantity
+		 * @param upperBound
+		 *      the upper bound of this quantity
+		 * @param unit
+		 *      the unit of this string, as an IRI to the relevant entity
+		 */
+	    JacksonInnerQuantity(
+                BigDecimal amount,
+                Optional<BigDecimal> lowerBound,
+                Optional<BigDecimal> upperBound,
+                Optional<ItemIdValue> unit) {
+            Validate.notNull(amount, "Numeric value cannot be null");
+            Validate.notNull(unit, "Unit cannot be null");
+
+            if(lowerBound.isPresent() || upperBound.isPresent()) {
+                Validate.isTrue(lowerBound.isPresent(), "Lower and upper bounds should be absent at the same time");
+                Validate.isTrue(upperBound.isPresent(), "Lower and upper bounds should be absent at the same time");
+
+                if (lowerBound.get().compareTo(amount) > 0) {
+                    throw new IllegalArgumentException(
+                            "Lower bound cannot be strictly greater than numeric value");
+                }
+                if (amount.compareTo(upperBound.get()) > 0) {
+                    throw new IllegalArgumentException(
+                            "Upper bound cannot be strictly smaller than numeric value");
+                }
+            }
+            this.amount = amount;
+            this.upperBound = upperBound;
+            this.lowerBound = lowerBound;
+            this.unit = unit;
+        }
 
 		/**
 		 * Returns the numeric value.
@@ -220,7 +282,7 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 		 * @return the upper bound
 		 */
 		@JsonIgnore
-		BigDecimal getUpperBound() {
+		Optional<BigDecimal> getUpperBound() {
 			return upperBound;
 		}
 
@@ -231,7 +293,7 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 		 * @return the lower bound
 		 */
 		@JsonIgnore
-		BigDecimal getLowerBound() {
+		Optional<BigDecimal> getLowerBound() {
 			return lowerBound;
 		}
 
@@ -243,13 +305,13 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 		@JsonProperty("upperBound")
 		@JsonInclude(JsonInclude.Include.NON_NULL)
 		String getUpperBoundAsString() {
-			return this.upperBound != null ? bigDecimalToSignedString(this.upperBound) : null;
+			return this.upperBound.isPresent() ? bigDecimalToSignedString(this.upperBound.get()) : null;
 		}
 
 		@JsonProperty("lowerBound")
 		@JsonInclude(JsonInclude.Include.NON_NULL)
 		String getLowerBoundAsString() {
-			return this.lowerBound != null ? bigDecimalToSignedString(this.lowerBound) : null;
+			return this.lowerBound.isPresent() ? bigDecimalToSignedString(this.lowerBound.get()) : null;
 		}
 
 		/**
@@ -260,8 +322,15 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 		 * @return unit string
 		 */
 		@JsonProperty("unit")
-		String getUnit() {
-			return this.unit;
+		String getUnitString() {
+			return unit.isEmpty() ? "1" : unit.get().getIri();
+		}
+		
+		/**
+		 * Returns the unit as an ItemIdValue.
+		 */
+		Optional<ItemIdValue> getUnit() {
+		    return unit;
 		}
 
 		/**

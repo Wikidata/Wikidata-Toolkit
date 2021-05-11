@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
@@ -199,10 +200,23 @@ public class DatamodelTest {
 				"0.123456789012345678901234567890123456788");
 		BigDecimal ub = new BigDecimal(
 				"0.123456789012345678901234567890123456790");
-		QuantityValue o1 = Datamodel.makeQuantityValue(nv, lb, ub, "unit");
-		QuantityValue o2 = factory.getQuantityValue(nv, lb, ub, "unit");
+		QuantityValue o1 = Datamodel.makeQuantityValue(nv, lb, ub, Datamodel.makeWikidataItemIdValue("Q123"));
+		QuantityValue o2 = factory.getQuantityValue(nv, Optional.of(lb), Optional.of(ub), Optional.of(Datamodel.makeWikidataItemIdValue("Q123")));
 		assertEquals(o1, o2);
 	}
+	
+    @Test
+    public final void testGetQuantityValueWithOptionals() {
+        BigDecimal nv = new BigDecimal(
+                "0.123456789012345678901234567890123456789");
+        BigDecimal lb = new BigDecimal(
+                "0.123456789012345678901234567890123456788");
+        BigDecimal ub = new BigDecimal(
+                "0.123456789012345678901234567890123456790");
+        QuantityValue o1 = Datamodel.makeQuantityValue(nv, Optional.of(lb), Optional.of(ub), Optional.of(Datamodel.makeWikidataItemIdValue("Q123")));
+        QuantityValue o2 = factory.getQuantityValue(nv, Optional.of(lb), Optional.of(ub), Optional.of(Datamodel.makeWikidataItemIdValue("Q123")));
+        assertEquals(o1, o2);
+    }
 
 	@Test
 	public final void testGetQuantityValueItemIdValue() {
@@ -215,7 +229,7 @@ public class DatamodelTest {
 		
 		ItemIdValue unit = factory.getItemIdValue("Q1", "http://www.wikidata.org/entity/");
 		QuantityValue o1 = Datamodel.makeQuantityValue(nv, lb, ub, unit);
-		QuantityValue o2 = factory.getQuantityValue(nv, lb, ub, unit.getIri());
+		QuantityValue o2 = factory.getQuantityValue(nv, Optional.of(lb), Optional.of(ub), Optional.of(unit));
 		assertEquals(o1, o2);
 	}
 
@@ -236,8 +250,8 @@ public class DatamodelTest {
 	public final void testGetQuantityValueNoBounds() {
 		BigDecimal nv = new BigDecimal(
 				"0.123456789012345678901234567890123456789");
-		QuantityValue o1 = Datamodel.makeQuantityValue(nv, "unit");
-		QuantityValue o2 = factory.getQuantityValue(nv, "unit");
+		QuantityValue o1 = Datamodel.makeQuantityValue(nv, "http://unit/Q23");
+		QuantityValue o2 = factory.getQuantityValue(nv, "http://unit/Q23");
 		assertEquals(o1, o2);
 	}
 

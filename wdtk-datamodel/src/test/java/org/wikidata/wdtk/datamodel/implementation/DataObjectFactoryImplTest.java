@@ -24,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-
+import java.util.Optional;import org.apache.commons.lang3.Validate;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
@@ -122,8 +122,8 @@ public class DataObjectFactoryImplTest {
 		BigDecimal nv = new BigDecimal("0.123456789012345678901234567890123456789");
 		BigDecimal lb = new BigDecimal("0.123456789012345678901234567890123456788");
 		BigDecimal ub = new BigDecimal("0.123456789012345678901234567890123456790");
-		QuantityValue o1 = new QuantityValueImpl(nv, lb, ub, "unit");
-		QuantityValue o2 = factory.getQuantityValue(nv, lb, ub, "unit");
+		QuantityValue o1 = new QuantityValueImpl(nv, Optional.of(lb), Optional.of(ub), Optional.of(new ItemIdValueImpl("Q42", "http://foo/")));
+		QuantityValue o2 = factory.getQuantityValue(nv, lb, ub, "http://foo/Q42");
 		assertEquals(o1, o2);
 	}
 
@@ -135,7 +135,7 @@ public class DataObjectFactoryImplTest {
 				"0.123456789012345678901234567890123456788");
 		BigDecimal ub = new BigDecimal(
 				"0.123456789012345678901234567890123456790");
-		QuantityValue o1 = new QuantityValueImpl(nv, lb, ub, "1");
+		QuantityValue o1 = new QuantityValueImpl(nv, Optional.of(lb), Optional.of(ub), Optional.empty());
 		QuantityValue o2 = factory.getQuantityValue(nv, lb, ub);
 		assertEquals(o1, o2);
 	}
@@ -144,8 +144,8 @@ public class DataObjectFactoryImplTest {
 	public final void testGetQuantityValueNoBounds() {
 		BigDecimal nv = new BigDecimal(
 				"0.123456789012345678901234567890123456789");
-		QuantityValue o1 = new QuantityValueImpl(nv, null, null, "unit");
-		QuantityValue o2 = factory.getQuantityValue(nv, "unit");
+		QuantityValue o1 = new QuantityValueImpl(nv, Optional.empty(), Optional.empty(), Optional.of(new ItemIdValueImpl("Q42", "http://foo/")));
+		QuantityValue o2 = factory.getQuantityValue(nv, "http://foo/Q42");
 		assertEquals(o1, o2);
 	}
 
@@ -153,7 +153,7 @@ public class DataObjectFactoryImplTest {
 	public final void testGetQuantityValueNoBoundsAndUnits() {
 		BigDecimal nv = new BigDecimal(
 				"0.123456789012345678901234567890123456789");
-		QuantityValue o1 = new QuantityValueImpl(nv, null, null, "1");
+		QuantityValue o1 = new QuantityValueImpl(nv, Optional.empty(), Optional.empty(), Optional.empty());
 		QuantityValue o2 = factory.getQuantityValue(nv);
 		assertEquals(o1, o2);
 	}

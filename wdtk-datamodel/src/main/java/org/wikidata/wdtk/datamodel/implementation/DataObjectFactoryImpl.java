@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Factory implementation to create Jackson versions of the datamodel objects,
@@ -110,25 +111,38 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
 	public QuantityValue getQuantityValue(BigDecimal numericValue) {
-		return getQuantityValue(numericValue, null, null, "1");
+		return getQuantityValue(numericValue, Optional.empty(), Optional.empty(), Optional.empty());
 	}
 
 	@Override
 	public QuantityValue getQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound) {
-		return getQuantityValue(numericValue, lowerBound, upperBound, "1");
+		return getQuantityValue(numericValue, Optional.of(lowerBound), Optional.of(upperBound), Optional.empty());
 	}
 
 	@Override
+	@Deprecated
 	public QuantityValue getQuantityValue(BigDecimal numericValue, String unit) {
 		return getQuantityValue(numericValue, null, null, unit);
 	}
+	
+    @Override
+    public QuantityValue getQuantityValue(BigDecimal numericValue, Optional<ItemIdValue> unit) {
+        return getQuantityValue(numericValue, Optional.empty(), Optional.empty(), unit);
+    }
 
 	@Override
+	@Deprecated
 	public QuantityValue getQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound, String unit) {
 		return new QuantityValueImpl(numericValue, lowerBound, upperBound, unit);
 	}
+
+    @Override
+    public QuantityValue getQuantityValue(BigDecimal numericValue, Optional<BigDecimal> lowerBound,
+            Optional<BigDecimal> upperBound, Optional<ItemIdValue> unit) {
+        return new QuantityValueImpl(numericValue, lowerBound, upperBound, unit);
+    }
 
 	/**
 	 * Creates a {@link ValueSnakImpl}. Value snaks in JSON need to know the
@@ -269,4 +283,5 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 		return new MediaInfoDocumentImpl(
 				mediaInfoIdValue, labels, statementGroups, revisionId);
 	}
+
 }

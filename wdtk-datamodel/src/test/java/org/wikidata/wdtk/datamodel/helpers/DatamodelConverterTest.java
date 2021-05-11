@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.*;
@@ -257,8 +258,10 @@ public class DatamodelConverterTest {
 				+ ".123456789012345678901234567890123456788");
 		BigDecimal ub = new BigDecimal(seed
 				+ ".123456789012345678901234567890123456790");
-		return new QuantityValueImpl(nv, lb, ub,
-				"http://wikidata.org/entity/Q11573");
+		return new QuantityValueImpl(nv,
+		        Optional.of(lb),
+		        Optional.of(ub),
+				Optional.of(Datamodel.makeWikidataItemIdValue("Q11573")));
 	}
 
 	private Value getTestValue(ValueType valueType, int seed) {

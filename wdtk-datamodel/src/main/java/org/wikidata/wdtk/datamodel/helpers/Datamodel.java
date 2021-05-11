@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.*;
@@ -404,9 +405,29 @@ public class Datamodel {
 	 */
 	public static QuantityValue makeQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound, ItemIdValue unit) {
-		return factory.getQuantityValue(numericValue, lowerBound, upperBound,
-				unit.getIri());
+		return factory.getQuantityValue(numericValue,
+		        lowerBound == null ? Optional.empty() : Optional.of(lowerBound),
+		        upperBound == null ? Optional.empty() : Optional.of(upperBound),
+				unit == null ? Optional.empty() : Optional.of(unit));
 	}
+	
+	/**
+	  * Creates a {@link QuantityValue}.
+	  *
+	  * @param numericValue
+	  *				the numeric value of this quantity
+	  * @param lowerBound
+	  *				the lower bound of the numeric value of this quantity
+	  * @param upperBound
+	  *				the upper bound of the numeric value of this quantity
+	  * @param unit
+	  *				the unit identifier to use for this quantity
+	  * @return a {@link QuantityValue} corresponding to the input
+	  */
+	 public static QuantityValue makeQuantityValue(BigDecimal numericValue,
+				Optional<BigDecimal> lowerBound, Optional<BigDecimal> upperBound, Optional<ItemIdValue> unit) {
+		return factory.getQuantityValue(numericValue, lowerBound, upperBound, unit);
+	 }
 
 	/**
 	 * Creates a {@link QuantityValue} without bounds.
@@ -433,7 +454,23 @@ public class Datamodel {
 	 * @return a {@link QuantityValue} corresponding to the input
 	 */
 	public static QuantityValue makeQuantityValue(BigDecimal numericValue, ItemIdValue unit) {
-		return factory.getQuantityValue(numericValue, unit.getIri());
+		return factory.getQuantityValue(numericValue,
+		        Optional.empty(),
+		        Optional.empty(),
+		        unit == null ? Optional.empty() : Optional.of(unit));
+	}
+	
+	/**
+	  * Creates a {@link QuantityValue} without bounds.
+	  *
+	  * @param numericValue
+	  *            the numeric value of this quantity
+	  * @param unit
+	  *            the unit identifier to use for this quantity
+	  * @return a {@link QuantityValue} corresponding to the input
+	  */
+	public static QuantityValue makeQuantityValue(BigDecimal numericValue, Optional<ItemIdValue> unit) {
+		return factory.getQuantityValue(numericValue, unit);
 	}
 
 	/**
