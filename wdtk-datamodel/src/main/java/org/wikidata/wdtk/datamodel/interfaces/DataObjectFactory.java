@@ -238,7 +238,7 @@ public interface DataObjectFactory {
 	 * @param unit
 	 *            the unit of this quantity, or the empty string if there is no
 	 *            unit
-	 * @deprecated use version with optional {@class ItemIdValue} instead
+	 * @deprecated use version with optional {@link ItemIdValue} instead
 	 * @return a {@link QuantityValue} corresponding to the input
 	 */
 	@Deprecated
@@ -267,7 +267,7 @@ public interface DataObjectFactory {
 	 * @param unit
 	 *            the unit of this quantity, or the empty string if there is no
 	 *            unit
-	 * @deprecated use version with optional {@class ItemIdValue} instead
+	 * @deprecated use version with optional {@link ItemIdValue} instead
 	 * @return a {@link QuantityValue} corresponding to the input
 	 */
 	@Deprecated
