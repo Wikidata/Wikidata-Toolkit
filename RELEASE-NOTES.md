@@ -1,6 +1,12 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.12.1
+--------------
+
+Bug fixes:
+* Allows empty representation list in `FormDocument` to parse the most recent Wikidata dumps.
+
 Version 0.12.0
 --------------
 
