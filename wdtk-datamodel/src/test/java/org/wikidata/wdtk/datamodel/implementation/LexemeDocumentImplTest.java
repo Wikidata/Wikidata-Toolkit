@@ -171,13 +171,13 @@ public class LexemeDocumentImplTest {
 	}
 
 	@Test
-	public void lemmasNotNull() {
-		assertThrows(NullPointerException.class, () -> new LexemeDocumentImpl(lid, lexCat, language, null, statementGroups, forms, senses,  1234));
+	public void lemmasNull() {
+		assertEquals(Collections.emptyMap(), new LexemeDocumentImpl(lid, lexCat, language, null, statementGroups, forms, senses,  1234).getLemmas());
 	}
 
 	@Test
-	public void lemmasNotEmpty() {
-		assertThrows(IllegalArgumentException.class, () -> new LexemeDocumentImpl(lid, lexCat, language, Collections.emptyList(), statementGroups, forms, senses,  1234));
+	public void lemmasEmpty() {
+		assertEquals(Collections.emptyMap(), new LexemeDocumentImpl(lid, lexCat, language, Collections.emptyList(), statementGroups, forms, senses,  1234).getLemmas());
 	}
 
 	@Test
