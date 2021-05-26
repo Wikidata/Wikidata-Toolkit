@@ -49,8 +49,14 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 public class LexemeUpdateBuilderTest {
 
 	private static final LexemeIdValue L1 = EntityUpdateBuilderTest.L1;
-	private static final Statement JOHN_HAS_BROWN_HAIR = StatementUpdateBuilderTest.JOHN_HAS_BROWN_HAIR;
-	private static final Statement JOHN_HAS_BLUE_EYES = StatementUpdateBuilderTest.JOHN_HAS_BLUE_EYES;
+	private static final Statement L1_DESCRIBES_SOMETHING = StatementBuilder
+			.forSubjectAndProperty(L1, Datamodel.makeWikidataPropertyIdValue("P1"))
+			.withValue(Datamodel.makeStringValue("something"))
+			.build();
+	private static final Statement L1_EVOKES_FEELING = StatementBuilder
+			.forSubjectAndProperty(L1, Datamodel.makeWikidataPropertyIdValue("P2"))
+			.withValue(Datamodel.makeStringValue("feeling"))
+			.build();
 	private static final MonolingualTextValue EN = TermUpdateBuilderTest.EN;
 	private static final MonolingualTextValue SK = TermUpdateBuilderTest.SK;
 	private static final ItemIdValue Q1 = EntityUpdateBuilderTest.Q1;
@@ -79,9 +85,9 @@ public class LexemeUpdateBuilderTest {
 	@Test
 	public void testStatementUpdate() {
 		LexemeUpdate update = LexemeUpdateBuilder.forEntityId(L1)
-				.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())
+				.updateStatements(StatementUpdateBuilder.create().add(L1_DESCRIBES_SOMETHING).build())
 				.build();
-		assertThat(update.getStatements().getAdded(), containsInAnyOrder(JOHN_HAS_BROWN_HAIR));
+		assertThat(update.getStatements().getAdded(), containsInAnyOrder(L1_DESCRIBES_SOMETHING));
 	}
 
 	@Test
@@ -406,7 +412,7 @@ public class LexemeUpdateBuilderTest {
 	public void testMerge() {
 		assertThrows(NullPointerException.class, () -> LexemeUpdateBuilder.forEntityId(L1).append(null));
 		LexemeUpdate update = LexemeUpdateBuilder.forEntityId(L1)
-				.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())
+				.updateStatements(StatementUpdateBuilder.create().add(L1_DESCRIBES_SOMETHING).build())
 				.updateLemmas(TermUpdateBuilder.create().remove("en").build())
 				.addForm(form("swim"))
 				.updateForm(formUpdate(2, RARE))
@@ -415,7 +421,7 @@ public class LexemeUpdateBuilderTest {
 				.updateSense(senseUpdate(2, RARE))
 				.removeSense(senseId(3))
 				.append(LexemeUpdateBuilder.forEntityId(L1)
-						.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BLUE_EYES).build())
+						.updateStatements(StatementUpdateBuilder.create().add(L1_EVOKES_FEELING).build())
 						.updateLemmas(TermUpdateBuilder.create().remove("sk").build())
 						.addForm(form("swims"))
 						.updateForm(formUpdate(2, OBSOLETE))
@@ -426,7 +432,7 @@ public class LexemeUpdateBuilderTest {
 						.build())
 				.build();
 		assertThat(update.getStatements().getAdded(),
-				containsInAnyOrder(JOHN_HAS_BROWN_HAIR, JOHN_HAS_BLUE_EYES));
+				containsInAnyOrder(L1_DESCRIBES_SOMETHING, L1_EVOKES_FEELING));
 		assertThat(update.getLemmas().getRemoved(), containsInAnyOrder("en", "sk"));
 		assertEquals(Arrays.asList(form("swim"), form("swims")), update.getAddedForms());
 		assertThat(update.getUpdatedForms().keySet(), containsInAnyOrder(formId(2)));

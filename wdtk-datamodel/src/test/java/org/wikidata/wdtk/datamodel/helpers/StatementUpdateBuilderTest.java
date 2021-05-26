@@ -104,6 +104,14 @@ public class StatementUpdateBuilderTest {
 	}
 
 	@Test
+	public void testCreateWithSubject() {
+		StatementUpdateBuilder builder = StatementUpdateBuilder.create(JOHN);
+		assertThrows(IllegalArgumentException.class, () -> builder.add(RITA_HAS_BROWN_HAIR));
+		assertThrows(IllegalArgumentException.class, () -> builder.replace(RITA_ALREADY_HAS_BROWN_HAIR));
+		builder.add(JOHN_HAS_BLUE_EYES);
+	}
+
+	@Test
 	public void testForStatements() {
 		assertThrows(NullPointerException.class, () -> StatementUpdateBuilder.forStatements(null));
 		assertThrows(NullPointerException.class,
@@ -131,6 +139,14 @@ public class StatementUpdateBuilderTest {
 	}
 
 	@Test
+	public void testForStatementsWithSubject() {
+		assertThrows(IllegalArgumentException.class,
+				() -> StatementUpdateBuilder.forStatements(JOHN, Arrays.asList(RITA_ALREADY_HAS_BROWN_HAIR)));
+		StatementUpdateBuilder builder = StatementUpdateBuilder.forStatements(JOHN, Collections.emptyList());
+		assertThrows(IllegalArgumentException.class, () -> builder.add(RITA_HAS_BROWN_HAIR));
+	}
+
+	@Test
 	public void testForStatementGroups() {
 		assertThrows(NullPointerException.class, () -> StatementUpdateBuilder.forStatementGroups(null));
 		StatementGroup johnAlreadyHasBrownAndSilverHair = Datamodel.makeStatementGroup(
@@ -148,9 +164,19 @@ public class StatementUpdateBuilderTest {
 	}
 
 	@Test
+	public void testForStatementGroupsWithSubject() {
+		assertThrows(IllegalArgumentException.class, () -> StatementUpdateBuilder.forStatementGroups(JOHN,
+				Arrays.asList(Datamodel.makeStatementGroup(Arrays.asList(RITA_ALREADY_HAS_BROWN_HAIR)))));
+		StatementUpdateBuilder builder = StatementUpdateBuilder.forStatementGroups(JOHN, Collections.emptyList());
+		assertThrows(IllegalArgumentException.class, () -> builder.add(RITA_HAS_BROWN_HAIR));
+	}
+
+	@Test
 	public void testBlindAddition() {
 		StatementUpdateBuilder builder = StatementUpdateBuilder.create();
 		assertThrows(NullPointerException.class, () -> builder.add(null));
+		// placeholder ID
+		assertThrows(IllegalArgumentException.class, () -> builder.add(NOBODY_HAS_BROWN_HAIR));
 		builder.add(JOHN_HAS_BROWN_HAIR); // simple case
 		builder.add(JOHN_HAS_BROWN_HAIR); // duplicates allowed
 		builder.add(JOHN_ALREADY_HAS_BROWN_EYES); // strip ID
@@ -164,6 +190,8 @@ public class StatementUpdateBuilderTest {
 	public void testBlindReplacement() {
 		StatementUpdateBuilder builder = StatementUpdateBuilder.create();
 		assertThrows(NullPointerException.class, () -> builder.replace(null));
+		// placeholder ID
+		assertThrows(IllegalArgumentException.class, () -> builder.replace(NOBODY_ALREADY_HAS_BROWN_HAIR));
 		builder.remove(JOHN_ALREADY_HAS_BROWN_EYES.getStatementId());
 		builder.replace(JOHN_ALREADY_HAS_BROWN_HAIR); // simple case
 		builder.replace(JOHN_ALREADY_HAS_BROWN_EYES); // previously removed

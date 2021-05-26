@@ -40,8 +40,14 @@ public class FormUpdateBuilderTest {
 
 	private static final FormIdValue F1 = EntityUpdateBuilderTest.F1;
 	private static final FormDocument FORM = EntityUpdateBuilderTest.FORM;
-	private static final Statement JOHN_HAS_BROWN_HAIR = StatementUpdateBuilderTest.JOHN_HAS_BROWN_HAIR;
-	private static final Statement JOHN_HAS_BLUE_EYES = StatementUpdateBuilderTest.JOHN_HAS_BLUE_EYES;
+	private static final Statement F1_DESCRIBES_SOMETHING = StatementBuilder
+			.forSubjectAndProperty(F1, Datamodel.makeWikidataPropertyIdValue("P1"))
+			.withValue(Datamodel.makeStringValue("something"))
+			.build();
+	private static final Statement F1_EVOKES_FEELING = StatementBuilder
+			.forSubjectAndProperty(F1, Datamodel.makeWikidataPropertyIdValue("P2"))
+			.withValue(Datamodel.makeStringValue("feeling"))
+			.build();
 	private static final MonolingualTextValue EN = TermUpdateBuilderTest.EN;
 	private static final MonolingualTextValue SK = TermUpdateBuilderTest.SK;
 	private static final ItemIdValue Q1 = EntityUpdateBuilderTest.Q1;
@@ -66,9 +72,9 @@ public class FormUpdateBuilderTest {
 	@Test
 	public void testStatementUpdate() {
 		FormUpdate update = FormUpdateBuilder.forEntityId(F1)
-				.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())
+				.updateStatements(StatementUpdateBuilder.create().add(F1_DESCRIBES_SOMETHING).build())
 				.build();
-		assertThat(update.getStatements().getAdded(), containsInAnyOrder(JOHN_HAS_BROWN_HAIR));
+		assertThat(update.getStatements().getAdded(), containsInAnyOrder(F1_DESCRIBES_SOMETHING));
 	}
 
 	@Test
@@ -129,15 +135,15 @@ public class FormUpdateBuilderTest {
 	public void testMerge() {
 		assertThrows(NullPointerException.class, () -> FormUpdateBuilder.forEntityId(F1).append(null));
 		FormUpdate update = FormUpdateBuilder.forEntityId(F1)
-				.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())
+				.updateStatements(StatementUpdateBuilder.create().add(F1_DESCRIBES_SOMETHING).build())
 				.updateRepresentations(TermUpdateBuilder.create().remove("en").build())
 				.append(FormUpdateBuilder.forEntityId(F1)
-						.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BLUE_EYES).build())
+						.updateStatements(StatementUpdateBuilder.create().add(F1_EVOKES_FEELING).build())
 						.updateRepresentations(TermUpdateBuilder.create().remove("sk").build())
 						.build())
 				.build();
 		assertThat(update.getStatements().getAdded(),
-				containsInAnyOrder(JOHN_HAS_BROWN_HAIR, JOHN_HAS_BLUE_EYES));
+				containsInAnyOrder(F1_DESCRIBES_SOMETHING, F1_EVOKES_FEELING));
 		assertThat(update.getRepresentations().getRemoved(), containsInAnyOrder("en", "sk"));
 	}
 

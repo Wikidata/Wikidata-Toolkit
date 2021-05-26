@@ -50,13 +50,22 @@ public class StatementUpdateBuilder {
 	private final Map<String, Statement> replaced = new HashMap<>();
 	private final Set<String> removed = new HashSet<>();
 
-	private StatementUpdateBuilder(Collection<Statement> base) {
+	private StatementUpdateBuilder(EntityIdValue subject, Collection<Statement> base) {
+		if (subject != null) {
+			Validate.isTrue(!subject.isPlaceholder(), "Subject cannot be a placeholder ID.");
+			this.subject = subject;
+		}
 		if (base != null) {
 			for (Statement statement : base) {
 				Objects.requireNonNull(statement, "Base document statements cannot be null.");
 				Validate.isTrue(
 						!statement.getSubject().isPlaceholder(),
-						"Statement subject cannot have placeholder ID.");
+						"Statement subject cannot be a placeholder ID.");
+				if (this.subject != null) {
+					Validate.isTrue(this.subject.equals(statement.getSubject()), "Inconsistent statement subject.");
+				} else {
+					this.subject = statement.getSubject();
+				}
 				Validate.notBlank(statement.getStatementId(), "Base document statement must have valid ID.");
 			}
 			Validate.isTrue(
@@ -66,9 +75,6 @@ public class StatementUpdateBuilder {
 					base.stream().map(s -> s.getStatementId()).distinct().count() == base.size(),
 					"Base document statements must have unique IDs.");
 			this.base = base.stream().collect(toMap(s -> s.getStatementId(), s -> s));
-			if (!base.isEmpty()) {
-				subject = base.stream().findFirst().get().getSubject();
-			}
 		} else {
 			this.base = null;
 		}
@@ -80,7 +86,21 @@ public class StatementUpdateBuilder {
 	 * @return update builder object
 	 */
 	public static StatementUpdateBuilder create() {
-		return new StatementUpdateBuilder(null);
+		return new StatementUpdateBuilder(null, null);
+	}
+
+	/**
+	 * Creates new builder object for constructing statement update of given
+	 * subject. All added or replaced statements must have the same subject ID.
+	 * 
+	 * @param subject
+	 *            statement subject or {@code null} for unspecified ID
+	 * @return update builder object
+	 * @throws IllegalArgumentException
+	 *             if subject is a placeholder ID
+	 */
+	public static StatementUpdateBuilder create(EntityIdValue subject) {
+		return new StatementUpdateBuilder(subject, null);
 	}
 
 	/**
@@ -97,11 +117,38 @@ public class StatementUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code statements} or any of its items is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if any statement is missing statement ID
+	 *             if any statement is missing statement ID or statement subjects
+	 *             are inconsistent or placeholders
 	 */
 	public static StatementUpdateBuilder forStatements(Collection<Statement> statements) {
 		Objects.requireNonNull(statements, "Base document statement collection cannot be null.");
-		return new StatementUpdateBuilder(statements);
+		return new StatementUpdateBuilder(null, statements);
+	}
+
+	/**
+	 * Creates new builder object for constructing update of given base revision
+	 * statements with given subject. Provided statements will be used to check
+	 * correctness of changes. All provided statements as well as added or replaced
+	 * statements must have the provided subject ID.
+	 * <p>
+	 * Since all changes will be checked after the {@link StatementUpdate} is passed
+	 * to {@link EntityDocumentBuilder} anyway, it is usually unnecessary to use
+	 * this method. It is simpler to initialize the builder with {@link #create()}.
+	 * 
+	 * @param subject
+	 *            statement subject or {@code null} for unspecified ID
+	 * @param statements
+	 *            statements from base revision of the document
+	 * @return update builder object
+	 * @throws NullPointerException
+	 *             if {@code statements} or any of its items is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any statement is missing statement ID or statement subjects
+	 *             are inconsistent or placeholders
+	 */
+	public static StatementUpdateBuilder forStatements(EntityIdValue subject, Collection<Statement> statements) {
+		Objects.requireNonNull(statements, "Base document statement collection cannot be null.");
+		return new StatementUpdateBuilder(subject, statements);
 	}
 
 	/**
@@ -120,12 +167,43 @@ public class StatementUpdateBuilder {
 	 *             if {@code groups} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if any group is {@code null} or any statement is missing
-	 *             statement ID
+	 *             statement ID or statement subjects are inconsistent or
+	 *             placeholders
 	 */
 	public static StatementUpdateBuilder forStatementGroups(Collection<StatementGroup> groups) {
 		Objects.requireNonNull(groups, "Base document statement group collection cannot be null.");
 		Validate.noNullElements(groups, "Base document statement groups cannot be null.");
-		return new StatementUpdateBuilder(groups.stream().flatMap(g -> g.getStatements().stream()).collect(toList()));
+		return new StatementUpdateBuilder(null,
+				groups.stream().flatMap(g -> g.getStatements().stream()).collect(toList()));
+	}
+
+	/**
+	 * Creates new builder object for constructing update of given base revision
+	 * statement groups with given subject. Provided statements will be used to
+	 * check correctness of changes. All provided statements as well as added or
+	 * replaced statements must have the provided subject ID.
+	 * <p>
+	 * Since all changes will be checked after the {@link StatementUpdate} is passed
+	 * to {@link EntityDocumentBuilder} anyway, it is usually unnecessary to use
+	 * this method. It is simpler to initialize the builder with {@link #create()}.
+	 * 
+	 * @param subject
+	 *            statement subject or {@code null} for unspecified ID
+	 * @param groups
+	 *            statement groups from base revision of the document
+	 * @return update builder object
+	 * @throws NullPointerException
+	 *             if {@code groups} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any group is {@code null} or any statement is missing
+	 *             statement ID or statement subjects are inconsistent or
+	 *             placeholders
+	 */
+	public static StatementUpdateBuilder forStatementGroups(EntityIdValue subject, Collection<StatementGroup> groups) {
+		Objects.requireNonNull(groups, "Base document statement group collection cannot be null.");
+		Validate.noNullElements(groups, "Base document statement groups cannot be null.");
+		return new StatementUpdateBuilder(subject,
+				groups.stream().flatMap(g -> g.getStatements().stream()).collect(toList()));
 	}
 
 	/**
@@ -139,10 +217,14 @@ public class StatementUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code statement} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if statement's subject is inconsistent with other statements
+	 *             if statement's subject is inconsistent with other statements or
+	 *             it is a placeholder ID
 	 */
 	public StatementUpdateBuilder add(Statement statement) {
 		Objects.requireNonNull(statement, "Statement cannot be null.");
+		Validate.isTrue(
+				!statement.getSubject().isPlaceholder(),
+				"Statement subject cannot be a placeholder ID.");
 		if (subject != null) {
 			Validate.isTrue(subject.equals(statement.getSubject()), "Inconsistent statement subject.");
 		}
@@ -174,10 +256,13 @@ public class StatementUpdateBuilder {
 	 * @throws IllegalArgumentException
 	 *             if {@code statement} does not have statement ID or it is not
 	 *             among base revision statements (if available) or its subject is
-	 *             inconsistent with other statements
+	 *             inconsistent with other statements or a placeholder ID
 	 */
 	public StatementUpdateBuilder replace(Statement statement) {
 		Objects.requireNonNull(statement, "Statement cannot be null.");
+		Validate.isTrue(
+				!statement.getSubject().isPlaceholder(),
+				"Statement subject cannot be a placeholder ID.");
 		Validate.notEmpty(statement.getStatementId(), "Statement must have an ID.");
 		if (subject != null) {
 			Validate.isTrue(subject.equals(statement.getSubject()), "Inconsistent statement subject.");

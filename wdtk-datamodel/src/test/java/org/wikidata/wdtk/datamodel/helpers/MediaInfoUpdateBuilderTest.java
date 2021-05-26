@@ -33,7 +33,10 @@ public class MediaInfoUpdateBuilderTest {
 
 	private static final MediaInfoIdValue M1 = EntityUpdateBuilderTest.M1;
 	private static final MediaInfoDocument MEDIA = EntityUpdateBuilderTest.MEDIA;
-	private static final Statement JOHN_HAS_BROWN_HAIR = StatementUpdateBuilderTest.JOHN_HAS_BROWN_HAIR;
+	private static final Statement M1_DESCRIBES_SOMETHING = StatementBuilder
+			.forSubjectAndProperty(M1, Datamodel.makeWikidataPropertyIdValue("P1"))
+			.withValue(Datamodel.makeStringValue("something"))
+			.build();
 
 	@Test
 	public void testForEntityId() {
@@ -53,9 +56,9 @@ public class MediaInfoUpdateBuilderTest {
 	@Test
 	public void testStatementUpdate() {
 		MediaInfoUpdate update = MediaInfoUpdateBuilder.forEntityId(M1)
-				.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())
+				.updateStatements(StatementUpdateBuilder.create().add(M1_DESCRIBES_SOMETHING).build())
 				.build();
-		assertThat(update.getStatements().getAdded(), containsInAnyOrder(JOHN_HAS_BROWN_HAIR));
+		assertThat(update.getStatements().getAdded(), containsInAnyOrder(M1_DESCRIBES_SOMETHING));
 	}
 
 	@Test

@@ -37,7 +37,10 @@ public class PropertyUpdateBuilderTest {
 
 	private static final PropertyIdValue P1 = EntityUpdateBuilderTest.P1;
 	private static final PropertyDocument PROPERTY = EntityUpdateBuilderTest.PROPERTY;
-	private static final Statement JOHN_HAS_BROWN_HAIR = StatementUpdateBuilderTest.JOHN_HAS_BROWN_HAIR;
+	private static final Statement P1_DESCRIBES_SOMETHING = StatementBuilder
+			.forSubjectAndProperty(P1, Datamodel.makeWikidataPropertyIdValue("P2"))
+			.withValue(Datamodel.makeStringValue("something"))
+			.build();
 	private static final MonolingualTextValue SK = TermUpdateBuilderTest.SK;
 
 	@Test
@@ -60,9 +63,9 @@ public class PropertyUpdateBuilderTest {
 	@Test
 	public void testStatementUpdate() {
 		PropertyUpdate update = PropertyUpdateBuilder.forEntityId(P1)
-				.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())
+				.updateStatements(StatementUpdateBuilder.create().add(P1_DESCRIBES_SOMETHING).build())
 				.build();
-		assertThat(update.getStatements().getAdded(), containsInAnyOrder(JOHN_HAS_BROWN_HAIR));
+		assertThat(update.getStatements().getAdded(), containsInAnyOrder(P1_DESCRIBES_SOMETHING));
 	}
 
 	@Test

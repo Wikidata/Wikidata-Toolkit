@@ -36,8 +36,14 @@ public class SenseUpdateBuilderTest {
 
 	private static final SenseIdValue S1 = EntityUpdateBuilderTest.S1;
 	private static final SenseDocument SENSE = EntityUpdateBuilderTest.SENSE;
-	private static final Statement JOHN_HAS_BROWN_HAIR = StatementUpdateBuilderTest.JOHN_HAS_BROWN_HAIR;
-	private static final Statement JOHN_HAS_BLUE_EYES = StatementUpdateBuilderTest.JOHN_HAS_BLUE_EYES;
+	private static final Statement S1_DESCRIBES_SOMETHING = StatementBuilder
+			.forSubjectAndProperty(S1, Datamodel.makeWikidataPropertyIdValue("P1"))
+			.withValue(Datamodel.makeStringValue("something"))
+			.build();
+	private static final Statement S1_EVOKES_FEELING = StatementBuilder
+			.forSubjectAndProperty(S1, Datamodel.makeWikidataPropertyIdValue("P2"))
+			.withValue(Datamodel.makeStringValue("feeling"))
+			.build();
 	private static final MonolingualTextValue EN = TermUpdateBuilderTest.EN;
 	private static final MonolingualTextValue SK = TermUpdateBuilderTest.SK;
 
@@ -59,9 +65,9 @@ public class SenseUpdateBuilderTest {
 	@Test
 	public void testStatementUpdate() {
 		SenseUpdate update = SenseUpdateBuilder.forEntityId(S1)
-				.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())
+				.updateStatements(StatementUpdateBuilder.create().add(S1_DESCRIBES_SOMETHING).build())
 				.build();
-		assertThat(update.getStatements().getAdded(), containsInAnyOrder(JOHN_HAS_BROWN_HAIR));
+		assertThat(update.getStatements().getAdded(), containsInAnyOrder(S1_DESCRIBES_SOMETHING));
 	}
 
 	@Test
@@ -93,15 +99,15 @@ public class SenseUpdateBuilderTest {
 	public void testMerge() {
 		assertThrows(NullPointerException.class, () -> SenseUpdateBuilder.forEntityId(S1).append(null));
 		SenseUpdate update = SenseUpdateBuilder.forEntityId(S1)
-				.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())
+				.updateStatements(StatementUpdateBuilder.create().add(S1_DESCRIBES_SOMETHING).build())
 				.updateGlosses(TermUpdateBuilder.create().remove("en").build())
 				.append(SenseUpdateBuilder.forEntityId(S1)
-						.updateStatements(StatementUpdateBuilder.create().add(JOHN_HAS_BLUE_EYES).build())
+						.updateStatements(StatementUpdateBuilder.create().add(S1_EVOKES_FEELING).build())
 						.updateGlosses(TermUpdateBuilder.create().remove("sk").build())
 						.build())
 				.build();
 		assertThat(update.getStatements().getAdded(),
-				containsInAnyOrder(JOHN_HAS_BROWN_HAIR, JOHN_HAS_BLUE_EYES));
+				containsInAnyOrder(S1_DESCRIBES_SOMETHING, S1_EVOKES_FEELING));
 		assertThat(update.getGlosses().getRemoved(), containsInAnyOrder("en", "sk"));
 	}
 

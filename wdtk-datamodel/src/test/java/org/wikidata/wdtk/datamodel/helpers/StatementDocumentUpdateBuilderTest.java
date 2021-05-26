@@ -27,6 +27,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -56,6 +57,8 @@ public class StatementDocumentUpdateBuilderTest {
 	private static final LexemeDocument LEXEME = EntityUpdateBuilderTest.LEXEME;
 	private static final FormDocument FORM = EntityUpdateBuilderTest.FORM;
 	private static final SenseDocument SENSE = EntityUpdateBuilderTest.SENSE;
+	private static final EntityIdValue JOHN = StatementUpdateBuilderTest.JOHN;
+	private static final EntityIdValue RITA = StatementUpdateBuilderTest.RITA;
 	private static final Statement JOHN_ALREADY_HAS_BROWN_HAIR = StatementUpdateBuilderTest.JOHN_ALREADY_HAS_BROWN_HAIR;
 	private static final Statement JOHN_ALREADY_HAS_BLUE_EYES = StatementUpdateBuilderTest.JOHN_ALREADY_HAS_BLUE_EYES;
 
@@ -90,7 +93,9 @@ public class StatementDocumentUpdateBuilderTest {
 	public void testBlindStatementUpdate() {
 		assertThrows(NullPointerException.class,
 				() -> StatementDocumentUpdateBuilder.forEntityId(Q1).updateStatements(null));
-		StatementDocumentUpdate update = StatementDocumentUpdateBuilder.forEntityId(Q1)
+		assertThrows(IllegalArgumentException.class, () -> StatementDocumentUpdateBuilder.forEntityId(RITA)
+				.updateStatements(StatementUpdateBuilder.create().replace(JOHN_ALREADY_HAS_BROWN_HAIR).build()));
+		StatementDocumentUpdate update = StatementDocumentUpdateBuilder.forEntityId(JOHN)
 				.updateStatements(StatementUpdateBuilder.create().replace(JOHN_ALREADY_HAS_BROWN_HAIR).build())
 				.updateStatements(StatementUpdateBuilder.create().replace(JOHN_ALREADY_HAS_BLUE_EYES).build())
 				.build();
@@ -117,9 +122,9 @@ public class StatementDocumentUpdateBuilderTest {
 	@Test
 	public void testMerge() {
 		assertThrows(NullPointerException.class, () -> StatementDocumentUpdateBuilder.forEntityId(Q1).append(null));
-		StatementDocumentUpdateBuilder builder = StatementDocumentUpdateBuilder.forEntityId(Q1)
+		StatementDocumentUpdateBuilder builder = StatementDocumentUpdateBuilder.forEntityId(JOHN)
 				.updateStatements(StatementUpdateBuilder.create().replace(JOHN_ALREADY_HAS_BROWN_HAIR).build());
-		builder.append(StatementDocumentUpdateBuilder.forEntityId(Q1)
+		builder.append(StatementDocumentUpdateBuilder.forEntityId(JOHN)
 				.updateStatements(StatementUpdateBuilder.create().replace(JOHN_ALREADY_HAS_BLUE_EYES).build())
 				.build());
 		StatementDocumentUpdate update = builder.build();
