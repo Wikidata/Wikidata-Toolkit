@@ -24,9 +24,6 @@ package org.wikidata.wdtk.datamodel.interfaces;
  */
 public interface LabeledDocumentUpdate extends EntityUpdate {
 
-	@Override
-	LabeledDocument getBaseRevision();
-
 	/**
 	 * Returns changes in entity labels.
 	 * 

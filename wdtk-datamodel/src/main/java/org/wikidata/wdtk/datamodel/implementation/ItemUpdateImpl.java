@@ -31,7 +31,6 @@ import java.util.Set;
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -41,8 +40,8 @@ import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Jackson implementation of {@link ItemUpdate}.
@@ -59,8 +58,8 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 	 * 
 	 * @param entityId
 	 *            ID of the item that is to be updated
-	 * @param revision
-	 *            base item revision to be updated or {@code null} if not available
+	 * @param revisionId
+	 *            base item revision to be updated or zero if not available
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
 	 * @param descriptions
@@ -80,14 +79,14 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 	 */
 	public ItemUpdateImpl(
 			ItemIdValue entityId,
-			ItemDocument revision,
+			long revisionId,
 			TermUpdate labels,
 			TermUpdate descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,
 			StatementUpdate statements,
 			Collection<SiteLink> modifiedSiteLinks,
 			Collection<String> removedSiteLinks) {
-		super(entityId, revision, labels, descriptions, aliases, statements);
+		super(entityId, revisionId, labels, descriptions, aliases, statements);
 		this.modifiedSiteLinks = Collections.unmodifiableMap(modifiedSiteLinks.stream()
 				.collect(toMap(sl -> sl.getSiteKey(), sl -> sl)));
 		this.removedSiteLinks = Collections.unmodifiableSet(new HashSet<>(removedSiteLinks));
@@ -97,12 +96,6 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 	@Override
 	public ItemIdValue getEntityId() {
 		return (ItemIdValue) super.getEntityId();
-	}
-
-	@JsonIgnore
-	@Override
-	public ItemDocument getBaseRevision() {
-		return (ItemDocument) super.getBaseRevision();
 	}
 
 	@JsonIgnore

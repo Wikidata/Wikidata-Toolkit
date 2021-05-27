@@ -24,6 +24,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
@@ -61,6 +62,13 @@ public class LabeledDocumentUpdateBuilderTest {
 		assertThat(LabeledDocumentUpdateBuilder.forEntityId(Q1), is(instanceOf(ItemUpdateBuilder.class)));
 		assertThat(LabeledDocumentUpdateBuilder.forEntityId(P1), is(instanceOf(PropertyUpdateBuilder.class)));
 		assertThat(LabeledDocumentUpdateBuilder.forEntityId(M1), is(instanceOf(MediaInfoUpdateBuilder.class)));
+	}
+
+	@Test
+	public void testForBaseRevisionId() {
+		assertEquals(123, LabeledDocumentUpdateBuilder.forBaseRevisionId(Q1, 123).getBaseRevisionId());
+		assertEquals(123, LabeledDocumentUpdateBuilder.forBaseRevisionId(P1, 123).getBaseRevisionId());
+		assertEquals(123, LabeledDocumentUpdateBuilder.forBaseRevisionId(M1, 123).getBaseRevisionId());
 	}
 
 	@Test

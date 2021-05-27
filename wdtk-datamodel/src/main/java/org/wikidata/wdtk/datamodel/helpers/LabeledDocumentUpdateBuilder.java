@@ -48,13 +48,16 @@ public abstract class LabeledDocumentUpdateBuilder extends StatementDocumentUpda
 	 * 
 	 * @param entityId
 	 *            ID of the entity that is to be updated
+	 * @param revisionId
+	 *            ID of the base entity revision to be updated or zero if not
+	 *            available
 	 * @throws NullPointerException
 	 *             if {@code entityId} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if {@code entityId} is a placeholder ID
 	 */
-	protected LabeledDocumentUpdateBuilder(EntityIdValue entityId) {
-		super(entityId);
+	protected LabeledDocumentUpdateBuilder(EntityIdValue entityId, long revisionId) {
+		super(entityId, revisionId);
 	}
 
 	/**
@@ -73,6 +76,33 @@ public abstract class LabeledDocumentUpdateBuilder extends StatementDocumentUpda
 	}
 
 	/**
+	 * Creates new builder object for constructing update of entity with given
+	 * revision ID.
+	 * <p>
+	 * Supported entity IDs include {@link ItemIdValue}, {@link PropertyIdValue},
+	 * and {@link MediaInfoIdValue}.
+	 * 
+	 * @param entityId
+	 *            ID of the entity that is to be updated
+	 * @param revisionId
+	 *            ID of the base entity revision to be updated or zero if not
+	 *            available
+	 * @return builder object matching entity type
+	 * @throws NullPointerException
+	 *             if {@code entityId} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code entityId} is of unrecognized type or it is a
+	 *             placeholder ID
+	 */
+	public static LabeledDocumentUpdateBuilder forBaseRevisionId(EntityIdValue entityId, long revisionId) {
+		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
+		if (entityId instanceof MediaInfoIdValue) {
+			return MediaInfoUpdateBuilder.forBaseRevisionId((MediaInfoIdValue) entityId, revisionId);
+		}
+		return TermedDocumentUpdateBuilder.forBaseRevisionId(entityId, revisionId);
+	}
+
+	/**
 	 * Creates new builder object for constructing update of entity with given ID.
 	 * <p>
 	 * Supported entity IDs include {@link ItemIdValue}, {@link PropertyIdValue},
@@ -88,11 +118,7 @@ public abstract class LabeledDocumentUpdateBuilder extends StatementDocumentUpda
 	 *             placeholder ID
 	 */
 	public static LabeledDocumentUpdateBuilder forEntityId(EntityIdValue entityId) {
-		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
-		if (entityId instanceof MediaInfoIdValue) {
-			return MediaInfoUpdateBuilder.forEntityId((MediaInfoIdValue) entityId);
-		}
-		return TermedDocumentUpdateBuilder.forEntityId(entityId);
+		return forBaseRevisionId(entityId, 0);
 	}
 
 	/**

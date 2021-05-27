@@ -22,7 +22,6 @@ package org.wikidata.wdtk.datamodel.implementation;
 import java.util.Objects;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocumentUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
@@ -46,9 +45,8 @@ public abstract class StatementDocumentUpdateImpl extends EntityUpdateImpl imple
 	 * 
 	 * @param entityId
 	 *            ID of the entity that is to be updated
-	 * @param revision
-	 *            base entity revision to be updated or {@code null} if not
-	 *            available
+	 * @param revisionId
+	 *            base entity revision to be updated or zero if not available
 	 * @param statements
 	 *            changes in entity statements, possibly empty
 	 * @throws NullPointerException
@@ -58,17 +56,11 @@ public abstract class StatementDocumentUpdateImpl extends EntityUpdateImpl imple
 	 */
 	protected StatementDocumentUpdateImpl(
 			EntityIdValue entityId,
-			StatementDocument revision,
+			long revisionId,
 			StatementUpdate statements) {
-		super(entityId, revision);
+		super(entityId, revisionId);
 		Objects.requireNonNull(statements, "Statement update cannot be null.");
 		this.statements = statements;
-	}
-
-	@JsonIgnore
-	@Override
-	public StatementDocument getBaseRevision() {
-		return (StatementDocument) super.getBaseRevision();
 	}
 
 	@JsonIgnore

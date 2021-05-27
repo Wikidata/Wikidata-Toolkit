@@ -54,13 +54,16 @@ public abstract class TermedDocumentUpdateBuilder extends LabeledDocumentUpdateB
 	 * 
 	 * @param entityId
 	 *            ID of the entity that is to be updated
+	 * @param revisionId
+	 *            ID of the base entity revision to be updated or zero if not
+	 *            available
 	 * @throws NullPointerException
 	 *             if {@code entityId} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if {@code entityId} is a placeholder ID
 	 */
-	protected TermedDocumentUpdateBuilder(EntityIdValue entityId) {
-		super(entityId);
+	protected TermedDocumentUpdateBuilder(EntityIdValue entityId, long revisionId) {
+		super(entityId, revisionId);
 	}
 
 	/**
@@ -79,6 +82,35 @@ public abstract class TermedDocumentUpdateBuilder extends LabeledDocumentUpdateB
 	}
 
 	/**
+	 * Creates new builder object for constructing update of entity with given
+	 * revision ID.
+	 * <p>
+	 * Supported entity IDs include {@link ItemIdValue} and {@link PropertyIdValue}.
+	 * 
+	 * @param entityId
+	 *            ID of the entity that is to be updated
+	 * @param revisionId
+	 *            ID of the base entity revision to be updated or zero if not
+	 *            available
+	 * @return builder object matching entity type
+	 * @throws NullPointerException
+	 *             if {@code entityId} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code entityId} is of unrecognized type or it is a
+	 *             placeholder ID
+	 */
+	public static TermedDocumentUpdateBuilder forBaseRevisionId(EntityIdValue entityId, long revisionId) {
+		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
+		if (entityId instanceof ItemIdValue) {
+			return ItemUpdateBuilder.forBaseRevisionId((ItemIdValue) entityId, revisionId);
+		}
+		if (entityId instanceof PropertyIdValue) {
+			return PropertyUpdateBuilder.forBaseRevisionId((PropertyIdValue) entityId, revisionId);
+		}
+		throw new IllegalArgumentException("Unrecognized entity ID type.");
+	}
+
+	/**
 	 * Creates new builder object for constructing update of entity with given ID.
 	 * <p>
 	 * Supported entity IDs include {@link ItemIdValue} and {@link PropertyIdValue}.
@@ -93,14 +125,7 @@ public abstract class TermedDocumentUpdateBuilder extends LabeledDocumentUpdateB
 	 *             placeholder ID
 	 */
 	public static TermedDocumentUpdateBuilder forEntityId(EntityIdValue entityId) {
-		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
-		if (entityId instanceof ItemIdValue) {
-			return ItemUpdateBuilder.forEntityId((ItemIdValue) entityId);
-		}
-		if (entityId instanceof PropertyIdValue) {
-			return PropertyUpdateBuilder.forEntityId((PropertyIdValue) entityId);
-		}
-		throw new IllegalArgumentException("Unrecognized entity ID type.");
+		return forBaseRevisionId(entityId, 0);
 	}
 
 	/**

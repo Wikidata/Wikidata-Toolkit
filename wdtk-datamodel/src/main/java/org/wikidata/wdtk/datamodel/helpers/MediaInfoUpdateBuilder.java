@@ -30,12 +30,31 @@ import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
  */
 public class MediaInfoUpdateBuilder extends LabeledDocumentUpdateBuilder {
 
-	private MediaInfoUpdateBuilder(MediaInfoIdValue mediaInfoId) {
-		super(mediaInfoId);
+	private MediaInfoUpdateBuilder(MediaInfoIdValue mediaInfoId, long revisionId) {
+		super(mediaInfoId, revisionId);
 	}
 
 	private MediaInfoUpdateBuilder(MediaInfoDocument revision) {
 		super(revision);
+	}
+
+	/**
+	 * Creates new builder object for constructing update of media entity with given
+	 * revision ID.
+	 * 
+	 * @param mediaInfoId
+	 *            ID of the media entity that is to be updated
+	 * @param revisionId
+	 *            ID of the base media entity revision to be updated or zero if not
+	 *            available
+	 * @return update builder object
+	 * @throws NullPointerException
+	 *             if {@code mediaInfoId} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code mediaInfoId} is a placeholder ID
+	 */
+	public static MediaInfoUpdateBuilder forBaseRevisionId(MediaInfoIdValue mediaInfoId, long revisionId) {
+		return new MediaInfoUpdateBuilder(mediaInfoId, revisionId);
 	}
 
 	/**
@@ -51,7 +70,7 @@ public class MediaInfoUpdateBuilder extends LabeledDocumentUpdateBuilder {
 	 *             if {@code mediaInfoId} is a placeholder ID
 	 */
 	public static MediaInfoUpdateBuilder forEntityId(MediaInfoIdValue mediaInfoId) {
-		return new MediaInfoUpdateBuilder(mediaInfoId);
+		return new MediaInfoUpdateBuilder(mediaInfoId, 0);
 	}
 
 	/**
@@ -116,7 +135,7 @@ public class MediaInfoUpdateBuilder extends LabeledDocumentUpdateBuilder {
 
 	@Override
 	public MediaInfoUpdate build() {
-		return Datamodel.makeMediaInfoUpdate(getEntityId(), getBaseRevision(), labels, statements);
+		return Datamodel.makeMediaInfoUpdate(getEntityId(), getBaseRevisionId(), labels, statements);
 	}
 
 }

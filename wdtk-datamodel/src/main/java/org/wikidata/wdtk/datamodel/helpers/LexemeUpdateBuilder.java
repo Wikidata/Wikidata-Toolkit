@@ -56,12 +56,31 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	private final Map<FormIdValue, FormUpdate> updatedForms = new HashMap<>();
 	private final Set<FormIdValue> removedForms = new HashSet<>();
 
-	private LexemeUpdateBuilder(LexemeIdValue lexemeId) {
-		super(lexemeId);
+	private LexemeUpdateBuilder(LexemeIdValue lexemeId, long revisionId) {
+		super(lexemeId, revisionId);
 	}
 
 	private LexemeUpdateBuilder(LexemeDocument revision) {
 		super(revision);
+	}
+
+	/**
+	 * Creates new builder object for constructing update of lexeme entity with
+	 * given revision ID.
+	 * 
+	 * @param lexemeId
+	 *            ID of the lexeme that is to be updated
+	 * @param revisionId
+	 *            ID of the base lexeme revision to be updated or zero if not
+	 *            available
+	 * @return update builder object
+	 * @throws NullPointerException
+	 *             if {@code lexemeId} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code lexemeId} is a placeholder ID
+	 */
+	public static LexemeUpdateBuilder forBaseRevisionId(LexemeIdValue lexemeId, long revisionId) {
+		return new LexemeUpdateBuilder(lexemeId, revisionId);
 	}
 
 	/**
@@ -77,7 +96,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 *             if {@code lexemeId} is a placeholder ID
 	 */
 	public static LexemeUpdateBuilder forEntityId(LexemeIdValue lexemeId) {
-		return new LexemeUpdateBuilder(lexemeId);
+		return new LexemeUpdateBuilder(lexemeId, 0);
 	}
 
 	/**
@@ -414,7 +433,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	@Override
 	public LexemeUpdate build() {
-		return Datamodel.makeLexemeUpdate(getEntityId(), getBaseRevision(),
+		return Datamodel.makeLexemeUpdate(getEntityId(), getBaseRevisionId(),
 				language, lexicalCategory, lemmas, statements,
 				addedSenses, updatedSenses.values(), removedSenses,
 				addedForms, updatedForms.values(), removedForms);

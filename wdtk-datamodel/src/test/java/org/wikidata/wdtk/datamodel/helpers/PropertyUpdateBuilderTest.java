@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.helpers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
@@ -48,6 +49,11 @@ public class PropertyUpdateBuilderTest {
 		assertThrows(NullPointerException.class, () -> PropertyUpdateBuilder.forEntityId(null));
 		assertThrows(IllegalArgumentException.class, () -> PropertyUpdateBuilder.forEntityId(PropertyIdValue.NULL));
 		PropertyUpdateBuilder.forEntityId(P1);
+	}
+
+	@Test
+	public void testForBaseRevisionId() {
+		assertEquals(123, PropertyUpdateBuilder.forBaseRevisionId(P1, 123).getBaseRevisionId());
 	}
 
 	@Test

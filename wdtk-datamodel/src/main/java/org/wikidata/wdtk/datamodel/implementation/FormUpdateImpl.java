@@ -31,7 +31,6 @@ import java.util.Set;
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
-import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
@@ -58,8 +57,8 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 	 * 
 	 * @param entityId
 	 *            ID of the form that is to be updated
-	 * @param revision
-	 *            base form revision to be updated or {@code null} if not available
+	 * @param revisionId
+	 *            base form revision to be updated or zero if not available
 	 * @param representations
 	 *            changes in form representations, possibly empty
 	 * @param grammaticalFeatures
@@ -73,11 +72,11 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 	 */
 	public FormUpdateImpl(
 			FormIdValue entityId,
-			FormDocument revision,
+			long revisionId,
 			TermUpdate representations,
 			Collection<ItemIdValue> grammaticalFeatures,
 			StatementUpdate statements) {
-		super(entityId, revision, statements);
+		super(entityId, revisionId, statements);
 		Objects.requireNonNull(representations, "Representation update cannot be null.");
 		this.representations = representations;
 		this.grammaticalFeatures = grammaticalFeatures != null
@@ -89,12 +88,6 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 	@Override
 	public FormIdValue getEntityId() {
 		return (FormIdValue) super.getEntityId();
-	}
-
-	@JsonIgnore
-	@Override
-	public FormDocument getBaseRevision() {
-		return (FormDocument) super.getBaseRevision();
 	}
 
 	@JsonIgnore

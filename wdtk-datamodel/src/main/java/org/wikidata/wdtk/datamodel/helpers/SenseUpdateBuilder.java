@@ -34,12 +34,31 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	private TermUpdate glosses = TermUpdate.NULL;
 
-	private SenseUpdateBuilder(SenseIdValue senseId) {
-		super(senseId);
+	private SenseUpdateBuilder(SenseIdValue senseId, long revisionId) {
+		super(senseId, revisionId);
 	}
 
 	private SenseUpdateBuilder(SenseDocument revision) {
 		super(revision);
+	}
+
+	/**
+	 * Creates new builder object for constructing update of sense entity with given
+	 * revision ID.
+	 * 
+	 * @param senseId
+	 *            ID of the sense that is to be updated
+	 * @param revisionId
+	 *            ID of the base sense revision to be updated or zero if not
+	 *            available
+	 * @return update builder object
+	 * @throws NullPointerException
+	 *             if {@code senseId} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code senseId} is a placeholder ID
+	 */
+	public static SenseUpdateBuilder forBaseRevisionId(SenseIdValue senseId, long revisionId) {
+		return new SenseUpdateBuilder(senseId, revisionId);
 	}
 
 	/**
@@ -55,7 +74,7 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 *             if {@code senseId} is a placeholder ID
 	 */
 	public static SenseUpdateBuilder forEntityId(SenseIdValue senseId) {
-		return new SenseUpdateBuilder(senseId);
+		return new SenseUpdateBuilder(senseId, 0);
 	}
 
 	/**
@@ -137,7 +156,7 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	@Override
 	public SenseUpdate build() {
-		return Datamodel.makeSenseUpdate(getEntityId(), getBaseRevision(), glosses, statements);
+		return Datamodel.makeSenseUpdate(getEntityId(), getBaseRevisionId(), glosses, statements);
 	}
 
 }

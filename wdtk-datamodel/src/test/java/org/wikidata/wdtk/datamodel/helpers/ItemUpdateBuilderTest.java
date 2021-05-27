@@ -58,6 +58,11 @@ public class ItemUpdateBuilderTest {
 	}
 
 	@Test
+	public void testForBaseRevisionId() {
+		assertEquals(123, ItemUpdateBuilder.forBaseRevisionId(Q1, 123).getBaseRevisionId());
+	}
+
+	@Test
 	public void testForBaseRevision() {
 		assertThrows(NullPointerException.class, () -> ItemUpdateBuilder.forBaseRevision(null));
 		assertThrows(IllegalArgumentException.class,

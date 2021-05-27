@@ -604,8 +604,8 @@ public interface DataObjectFactory {
 	 * 
 	 * @param entityId
 	 *            ID of the sense that is to be updated
-	 * @param document
-	 *            sense revision to be updated or {@code null} if not available
+	 * @param revisionId
+	 *            base sense revision to be updated or zero if not available
 	 * @param glosses
 	 *            changes in sense glosses or {@code null} for no change
 	 * @param statements
@@ -618,7 +618,7 @@ public interface DataObjectFactory {
 	 */
 	SenseUpdate getSenseUpdate(
 			SenseIdValue entityId,
-			SenseDocument document,
+			long revisionId,
 			TermUpdate glosses,
 			StatementUpdate statements);
 
@@ -628,8 +628,8 @@ public interface DataObjectFactory {
 	 * 
 	 * @param entityId
 	 *            ID of the form that is to be updated
-	 * @param document
-	 *            form revision to be updated or {@code null} if not available
+	 * @param revisionId
+	 *            base form revision to be updated or zero if not available
 	 * @param representations
 	 *            changes in form representations or {@code null} for no change
 	 * @param grammaticalFeatures
@@ -644,7 +644,7 @@ public interface DataObjectFactory {
 	 */
 	FormUpdate getFormUpdate(
 			FormIdValue entityId,
-			FormDocument document,
+			long revisionId,
 			TermUpdate representations,
 			Collection<ItemIdValue> grammaticalFeatures,
 			StatementUpdate statements);
@@ -655,8 +655,8 @@ public interface DataObjectFactory {
 	 * 
 	 * @param entityId
 	 *            ID of the lexeme that is to be updated
-	 * @param document
-	 *            lexeme revision to be updated or {@code null} if not available
+	 * @param revisionId
+	 *            base lexeme revision to be updated or zero if not available
 	 * @param language
 	 *            new lexeme language or {@code null} for no change
 	 * @param lexicalCategory
@@ -685,7 +685,7 @@ public interface DataObjectFactory {
 	 */
 	LexemeUpdate getLexemeUpdate(
 			LexemeIdValue entityId,
-			LexemeDocument document,
+			long revisionId,
 			ItemIdValue language,
 			ItemIdValue lexicalCategory,
 			TermUpdate lemmas,
@@ -703,8 +703,8 @@ public interface DataObjectFactory {
 	 * 
 	 * @param entityId
 	 *            ID of the media that is to be updated
-	 * @param document
-	 *            media revision to be updated or {@code null} if not available
+	 * @param revisionId
+	 *            base media revision to be updated or zero if not available
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
 	 * @param statements
@@ -717,7 +717,7 @@ public interface DataObjectFactory {
 	 */
 	MediaInfoUpdate getMediaInfoUpdate(
 			MediaInfoIdValue entityId,
-			MediaInfoDocument document,
+			long revisionId,
 			TermUpdate labels,
 			StatementUpdate statements);
 
@@ -727,8 +727,8 @@ public interface DataObjectFactory {
 	 * 
 	 * @param entityId
 	 *            ID of the item that is to be updated
-	 * @param document
-	 *            item revision to be updated or {@code null} if not available
+	 * @param revisionId
+	 *            base item revision to be updated or zero if not available
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
 	 * @param descriptions
@@ -749,7 +749,7 @@ public interface DataObjectFactory {
 	 */
 	ItemUpdate getItemUpdate(
 			ItemIdValue entityId,
-			ItemDocument document,
+			long revisionId,
 			TermUpdate labels,
 			TermUpdate descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,
@@ -763,9 +763,8 @@ public interface DataObjectFactory {
 	 * 
 	 * @param entityId
 	 *            ID of the property entity that is to be updated
-	 * @param document
-	 *            property entity revision to be updated or {@code null} if not
-	 *            available
+	 * @param revisionId
+	 *            base property revision to be updated or zero if not available
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
 	 * @param descriptions
@@ -782,7 +781,7 @@ public interface DataObjectFactory {
 	 */
 	PropertyUpdate getPropertyUpdate(
 			PropertyIdValue entityId,
-			PropertyDocument document,
+			long revisionId,
 			TermUpdate labels,
 			TermUpdate descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,

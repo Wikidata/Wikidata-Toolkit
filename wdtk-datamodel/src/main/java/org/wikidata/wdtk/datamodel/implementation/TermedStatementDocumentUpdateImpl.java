@@ -29,15 +29,14 @@ import java.util.Objects;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Jackson implementation of {@link TermedStatementDocumentUpdate}.
@@ -55,9 +54,8 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 	 * 
 	 * @param entityId
 	 *            ID of the entity that is to be updated
-	 * @param revision
-	 *            base entity revision to be updated or {@code null} if not
-	 *            available
+	 * @param revisionId
+	 *            base entity revision to be updated or zero if not available
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
 	 * @param descriptions
@@ -73,12 +71,12 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 	 */
 	protected TermedStatementDocumentUpdateImpl(
 			EntityIdValue entityId,
-			TermedStatementDocument revision,
+			long revisionId,
 			TermUpdate labels,
 			TermUpdate descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,
 			StatementUpdate statements) {
-		super(entityId, revision, labels, statements);
+		super(entityId, revisionId, labels, statements);
 		Objects.requireNonNull(descriptions, "Description update cannot be null.");
 		Objects.requireNonNull(aliases, "Alias map cannot be null.");
 		this.descriptions = descriptions;
@@ -86,12 +84,6 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 				.collect(toMap(k -> k, k -> Collections.unmodifiableList(aliases.get(k).stream()
 						.map(t -> new TermImpl(k, t.getText()))
 						.collect(toList())))));
-	}
-
-	@JsonIgnore
-	@Override
-	public TermedStatementDocument getBaseRevision() {
-		return (TermedStatementDocument) super.getBaseRevision();
 	}
 
 	@JsonIgnore

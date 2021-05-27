@@ -33,13 +33,12 @@ public interface EntityUpdate {
 
 	/**
 	 * Returns entity revision, upon which this update is built. This might not be
-	 * the latest revision of the entity as currently stored in Wikibase. Providing
-	 * base revision of the entity is optional when constructing the update. If not
-	 * provided, this method returns {@code null}.
+	 * the latest revision of the entity as currently stored in Wikibase. If base
+	 * revision was not provided, this method returns zero.
 	 * 
-	 * @return entity revision that is being updated or {@code null}
+	 * @return entity revision that is being updated or zero
 	 */
-	EntityDocument getBaseRevision();
+	long getBaseRevisionId();
 
 	/**
 	 * Checks whether the update is empty. Empty update will not change the entity

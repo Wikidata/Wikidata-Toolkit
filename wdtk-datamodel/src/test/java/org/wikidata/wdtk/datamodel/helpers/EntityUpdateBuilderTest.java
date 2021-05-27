@@ -53,7 +53,7 @@ public class EntityUpdateBuilderTest {
 	static final LexemeIdValue L1 = Datamodel.makeWikidataLexemeIdValue("L1");
 	static final FormIdValue F1 = Datamodel.makeWikidataFormIdValue("L1-F1");
 	static final SenseIdValue S1 = Datamodel.makeWikidataSenseIdValue("L1-S1");
-	static final ItemDocument ITEM = Datamodel.makeItemDocument(Q1);
+	static final ItemDocument ITEM = Datamodel.makeItemDocument(Q1).withRevisionId(123);
 	static final PropertyDocument PROPERTY = Datamodel.makePropertyDocument(
 			P1, Datamodel.makeDatatypeIdValue(DatatypeIdValue.DT_ITEM));
 	static final MediaInfoDocument MEDIA = Datamodel.makeMediaInfoDocument(M1);
@@ -80,6 +80,21 @@ public class EntityUpdateBuilderTest {
 		EntityUpdateBuilder builder = EntityUpdateBuilder.forEntityId(Q1);
 		assertEquals(Q1, builder.getEntityId());
 		assertNull(builder.getBaseRevision());
+		assertEquals(0, builder.getBaseRevisionId());
+	}
+
+	@Test
+	public void testForBaseRevisionId() {
+		EntityUpdateBuilder builder = EntityUpdateBuilder.forBaseRevisionId(Q1, 123);
+		assertEquals(Q1, builder.getEntityId());
+		assertNull(builder.getBaseRevision());
+		assertEquals(123, builder.getBaseRevisionId());
+		assertEquals(123, EntityUpdateBuilder.forBaseRevisionId(Q1, 123).getBaseRevisionId());
+		assertEquals(123, EntityUpdateBuilder.forBaseRevisionId(P1, 123).getBaseRevisionId());
+		assertEquals(123, EntityUpdateBuilder.forBaseRevisionId(M1, 123).getBaseRevisionId());
+		assertEquals(123, EntityUpdateBuilder.forBaseRevisionId(L1, 123).getBaseRevisionId());
+		assertEquals(123, EntityUpdateBuilder.forBaseRevisionId(F1, 123).getBaseRevisionId());
+		assertEquals(123, EntityUpdateBuilder.forBaseRevisionId(S1, 123).getBaseRevisionId());
 	}
 
 	@Test
@@ -96,6 +111,7 @@ public class EntityUpdateBuilderTest {
 		EntityUpdateBuilder builder = EntityUpdateBuilder.forBaseRevision(ITEM);
 		assertEquals(Q1, builder.getEntityId());
 		assertSame(ITEM, builder.getBaseRevision());
+		assertEquals(123, builder.getBaseRevisionId());
 	}
 
 }

@@ -21,18 +21,17 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import java.util.Objects;
 
-import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
-import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Jackson implementation of {@link SenseUpdate}.
@@ -47,8 +46,8 @@ public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements Sens
 	 * 
 	 * @param entityId
 	 *            ID of the sense that is to be updated
-	 * @param revision
-	 *            base sense revision to be updated or {@code null} if not available
+	 * @param revisionId
+	 *            base sense revision to be updated or zero if not available
 	 * @param glosses
 	 *            changes in sense glosses, possibly empty
 	 * @param statements
@@ -60,10 +59,10 @@ public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements Sens
 	 */
 	public SenseUpdateImpl(
 			SenseIdValue entityId,
-			SenseDocument revision,
+			long revisionId,
 			TermUpdate glosses,
 			StatementUpdate statements) {
-		super(entityId, revision, statements);
+		super(entityId, revisionId, statements);
 		Objects.requireNonNull(glosses, "Gloss update cannot be null.");
 		this.glosses = glosses;
 	}
@@ -72,12 +71,6 @@ public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements Sens
 	@Override
 	public SenseIdValue getEntityId() {
 		return (SenseIdValue) super.getEntityId();
-	}
-
-	@JsonIgnore
-	@Override
-	public SenseDocument getBaseRevision() {
-		return (SenseDocument) super.getBaseRevision();
 	}
 
 	@JsonIgnore

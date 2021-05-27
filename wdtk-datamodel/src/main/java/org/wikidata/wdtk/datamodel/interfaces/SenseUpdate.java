@@ -27,9 +27,6 @@ public interface SenseUpdate extends StatementDocumentUpdate {
 	@Override
 	SenseIdValue getEntityId();
 
-	@Override
-	SenseDocument getBaseRevision();
-
 	/**
 	 * Returns changes in sense glosses.
 	 * 

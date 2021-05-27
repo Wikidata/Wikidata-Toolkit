@@ -22,15 +22,14 @@ package org.wikidata.wdtk.datamodel.implementation;
 import java.util.Objects;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocumentUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Jackson implementation of {@link LabeledStatementDocumentUpdate}.
@@ -46,9 +45,8 @@ public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocume
 	 * 
 	 * @param entityId
 	 *            ID of the entity that is to be updated
-	 * @param revision
-	 *            base entity revision to be updated or {@code null} if not
-	 *            available
+	 * @param revisionId
+	 *            base entity revision to be updated or zero if not available
 	 * @param labels
 	 *            changes in entity labels, possibly empty
 	 * @param statements
@@ -60,18 +58,12 @@ public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocume
 	 */
 	protected LabeledStatementDocumentUpdateImpl(
 			EntityIdValue entityId,
-			LabeledStatementDocument revision,
+			long revisionId,
 			TermUpdate labels,
 			StatementUpdate statements) {
-		super(entityId, revision, statements);
+		super(entityId, revisionId, statements);
 		Objects.requireNonNull(labels, "Label update cannot be null.");
 		this.labels = labels;
-	}
-
-	@JsonIgnore
-	@Override
-	public LabeledStatementDocument getBaseRevision() {
-		return (LabeledStatementDocument) super.getBaseRevision();
 	}
 
 	@JsonIgnore

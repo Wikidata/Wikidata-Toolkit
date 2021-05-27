@@ -21,7 +21,6 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collections;
@@ -53,26 +52,19 @@ public class EntityUpdateImplTest {
 
 	@Test
 	public void testFields() {
-		EntityUpdate update = new PropertyUpdateImpl(P1, PROPERTY, NO_TERMS, NO_TERMS, NO_ALIASES, NO_STATEMENTS);
+		EntityUpdate update = new PropertyUpdateImpl(P1, 123, NO_TERMS, NO_TERMS, NO_ALIASES, NO_STATEMENTS);
 		assertEquals(P1, update.getEntityId());
-		assertEquals(PROPERTY, update.getBaseRevision());
-		update = new PropertyUpdateImpl(P1, null, NO_TERMS, NO_TERMS, NO_ALIASES, NO_STATEMENTS);
-		assertNull(update.getBaseRevision());
+		assertEquals(123, update.getBaseRevisionId());
+		update = new PropertyUpdateImpl(P1, 0, NO_TERMS, NO_TERMS, NO_ALIASES, NO_STATEMENTS);
+		assertEquals(0, update.getBaseRevisionId());
 	}
 
 	@Test
 	public void testValidation() {
 		assertThrows(NullPointerException.class, () -> new PropertyUpdateImpl(
-				null, PROPERTY, NO_TERMS, NO_TERMS, NO_ALIASES, NO_STATEMENTS));
-		assertThrows(NullPointerException.class, () -> new PropertyUpdateImpl(
-				null, null, NO_TERMS, NO_TERMS, NO_ALIASES, NO_STATEMENTS));
+				null, 0, NO_TERMS, NO_TERMS, NO_ALIASES, NO_STATEMENTS));
 		assertThrows(IllegalArgumentException.class, () -> new PropertyUpdateImpl(
-				P2, PROPERTY, NO_TERMS, NO_TERMS, NO_ALIASES, NO_STATEMENTS));
-		assertThrows(IllegalArgumentException.class, () -> new PropertyUpdateImpl(
-				PropertyIdValue.NULL, null, NO_TERMS, NO_TERMS, NO_ALIASES, NO_STATEMENTS));
-		assertThrows(IllegalArgumentException.class, () -> new PropertyUpdateImpl(
-				PropertyIdValue.NULL, PROPERTY.withEntityId(PropertyIdValue.NULL),
-				NO_TERMS, NO_TERMS, NO_ALIASES, NO_STATEMENTS));
+				PropertyIdValue.NULL, 0, NO_TERMS, NO_TERMS, NO_ALIASES, NO_STATEMENTS));
 	}
 
 	@Test
@@ -80,12 +72,10 @@ public class EntityUpdateImplTest {
 		EntityUpdate update1 = PropertyUpdateBuilder.forEntityId(P1).build();
 		EntityUpdate update2 = PropertyUpdateBuilder.forBaseRevision(PROPERTY).build();
 		assertEquals(update1, update1);
-		assertEquals(update2, update2);
+		assertEquals(update1, update2);
 		assertEquals(update1, PropertyUpdateBuilder.forEntityId(P1).build());
-		assertEquals(update2, PropertyUpdateBuilder.forBaseRevision(PROPERTY).build());
 		assertNotEquals(update1, null);
 		assertNotEquals(update1, this);
-		assertNotEquals(update1, update2);
 		assertNotEquals(update1, PropertyUpdateBuilder.forEntityId(P2).build());
 		assertNotEquals(update2, PropertyUpdateBuilder.forBaseRevision(PROPERTY.withRevisionId(1234)).build());
 	}

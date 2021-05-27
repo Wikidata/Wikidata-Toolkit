@@ -23,6 +23,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -59,6 +60,11 @@ public class FormUpdateBuilderTest {
 		assertThrows(NullPointerException.class, () -> FormUpdateBuilder.forEntityId(null));
 		assertThrows(IllegalArgumentException.class, () -> FormUpdateBuilder.forEntityId(FormIdValue.NULL));
 		FormUpdateBuilder.forEntityId(F1);
+	}
+
+	@Test
+	public void testForBaseRevisionId() {
+		assertEquals(123, FormUpdateBuilder.forBaseRevisionId(F1, 123).getBaseRevisionId());
 	}
 
 	@Test

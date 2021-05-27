@@ -27,7 +27,4 @@ public interface PropertyUpdate extends TermedStatementDocumentUpdate {
 	@Override
 	PropertyIdValue getEntityId();
 
-	@Override
-	PropertyDocument getBaseRevision();
-
 }

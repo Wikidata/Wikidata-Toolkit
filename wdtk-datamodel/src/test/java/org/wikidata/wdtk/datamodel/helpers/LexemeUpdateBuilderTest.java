@@ -75,6 +75,11 @@ public class LexemeUpdateBuilderTest {
 	}
 
 	@Test
+	public void testForBaseRevisionId() {
+		assertEquals(123, LexemeUpdateBuilder.forBaseRevisionId(L1, 123).getBaseRevisionId());
+	}
+
+	@Test
 	public void testForBaseRevision() {
 		assertThrows(NullPointerException.class, () -> LexemeUpdateBuilder.forBaseRevision(null));
 		assertThrows(IllegalArgumentException.class,

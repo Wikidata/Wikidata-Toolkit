@@ -30,9 +30,6 @@ public interface ItemUpdate extends TermedStatementDocumentUpdate {
 	@Override
 	ItemIdValue getEntityId();
 
-	@Override
-	ItemDocument getBaseRevision();
-
 	/**
 	 * Returns site links added or modified in this update. Existing site links are
 	 * preserved if their site key is not listed here.

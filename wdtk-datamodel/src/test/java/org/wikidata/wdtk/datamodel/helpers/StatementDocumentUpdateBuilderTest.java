@@ -24,6 +24,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
@@ -73,6 +74,16 @@ public class StatementDocumentUpdateBuilderTest {
 		assertThat(StatementDocumentUpdateBuilder.forEntityId(L1), is(instanceOf(LexemeUpdateBuilder.class)));
 		assertThat(StatementDocumentUpdateBuilder.forEntityId(F1), is(instanceOf(FormUpdateBuilder.class)));
 		assertThat(StatementDocumentUpdateBuilder.forEntityId(S1), is(instanceOf(SenseUpdateBuilder.class)));
+	}
+
+	@Test
+	public void testForBaseRevisionId() {
+		assertEquals(123, StatementDocumentUpdateBuilder.forBaseRevisionId(Q1, 123).getBaseRevisionId());
+		assertEquals(123, StatementDocumentUpdateBuilder.forBaseRevisionId(P1, 123).getBaseRevisionId());
+		assertEquals(123, StatementDocumentUpdateBuilder.forBaseRevisionId(M1, 123).getBaseRevisionId());
+		assertEquals(123, StatementDocumentUpdateBuilder.forBaseRevisionId(L1, 123).getBaseRevisionId());
+		assertEquals(123, StatementDocumentUpdateBuilder.forBaseRevisionId(F1, 123).getBaseRevisionId());
+		assertEquals(123, StatementDocumentUpdateBuilder.forBaseRevisionId(S1, 123).getBaseRevisionId());
 	}
 
 	@Test

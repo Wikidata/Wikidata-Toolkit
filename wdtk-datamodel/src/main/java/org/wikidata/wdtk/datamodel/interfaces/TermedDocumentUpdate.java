@@ -28,9 +28,6 @@ import java.util.Map;
  */
 public interface TermedDocumentUpdate extends LabeledDocumentUpdate {
 
-	@Override
-	TermedDocument getBaseRevision();
-
 	/**
 	 * Returns changes in entity descriptions.
 	 * 

@@ -23,6 +23,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
@@ -52,6 +53,11 @@ public class SenseUpdateBuilderTest {
 		assertThrows(NullPointerException.class, () -> SenseUpdateBuilder.forEntityId(null));
 		assertThrows(IllegalArgumentException.class, () -> SenseUpdateBuilder.forEntityId(SenseIdValue.NULL));
 		SenseUpdateBuilder.forEntityId(S1);
+	}
+
+	@Test
+	public void testForBaseRevisionId() {
+		assertEquals(123, SenseUpdateBuilder.forBaseRevisionId(S1, 123).getBaseRevisionId());
 	}
 
 	@Test

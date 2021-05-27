@@ -19,18 +19,16 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
-import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
-
 import java.util.List;
 import java.util.Map;
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -44,8 +42,8 @@ public class PropertyUpdateImpl extends TermedStatementDocumentUpdateImpl implem
 	 * 
 	 * @param entityId
 	 *            ID of the property entity that is to be updated
-	 * @param revision
-	 *            base property entity revision to be updated or {@code null} if not
+	 * @param revisionId
+	 *            base property entity revision to be updated or zero if not
 	 *            available
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
@@ -62,24 +60,18 @@ public class PropertyUpdateImpl extends TermedStatementDocumentUpdateImpl implem
 	 */
 	public PropertyUpdateImpl(
 			PropertyIdValue entityId,
-			PropertyDocument revision,
+			long revisionId,
 			TermUpdate labels,
 			TermUpdate descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,
 			StatementUpdate statements) {
-		super(entityId, revision, labels, descriptions, aliases, statements);
+		super(entityId, revisionId, labels, descriptions, aliases, statements);
 	}
 
 	@JsonIgnore
 	@Override
 	public PropertyIdValue getEntityId() {
 		return (PropertyIdValue) super.getEntityId();
-	}
-
-	@JsonIgnore
-	@Override
-	public PropertyDocument getBaseRevision() {
-		return (PropertyDocument) super.getBaseRevision();
 	}
 
 	@Override

@@ -326,26 +326,26 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	@Override
 	public SenseUpdate getSenseUpdate(
 			SenseIdValue entityId,
-			SenseDocument document,
+			long revisionId,
 			TermUpdate glosses,
 			StatementUpdate statements) {
-		return new SenseUpdateImpl(entityId, document, glosses, statements);
+		return new SenseUpdateImpl(entityId, revisionId, glosses, statements);
 	}
 
 	@Override
 	public FormUpdate getFormUpdate(
 			FormIdValue entityId,
-			FormDocument document,
+			long revisionId,
 			TermUpdate representations,
 			Collection<ItemIdValue> grammaticalFeatures,
 			StatementUpdate statements) {
-		return new FormUpdateImpl(entityId, document, representations, grammaticalFeatures, statements);
+		return new FormUpdateImpl(entityId, revisionId, representations, grammaticalFeatures, statements);
 	}
 
 	@Override
 	public LexemeUpdate getLexemeUpdate(
 			LexemeIdValue entityId,
-			LexemeDocument document,
+			long revisionId,
 			ItemIdValue language,
 			ItemIdValue lexicalCategory,
 			TermUpdate lemmas,
@@ -356,7 +356,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			Collection<FormDocument> addedForms,
 			Collection<FormUpdate> updatedForms,
 			Collection<FormIdValue> removedForms) {
-		return new LexemeUpdateImpl(entityId, document,
+		return new LexemeUpdateImpl(entityId, revisionId,
 				language, lexicalCategory, lemmas, statements,
 				addedSenses, updatedSenses, removedSenses,
 				addedForms, updatedForms, removedForms);
@@ -365,35 +365,35 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	@Override
 	public MediaInfoUpdate getMediaInfoUpdate(
 			MediaInfoIdValue entityId,
-			MediaInfoDocument document,
+			long revisionId,
 			TermUpdate labels,
 			StatementUpdate statements) {
-		return new MediaInfoUpdateImpl(entityId, document, labels, statements);
+		return new MediaInfoUpdateImpl(entityId, revisionId, labels, statements);
 	}
 
 	@Override
 	public ItemUpdate getItemUpdate(
 			ItemIdValue entityId,
-			ItemDocument document,
+			long revisionId,
 			TermUpdate labels,
 			TermUpdate descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,
 			StatementUpdate statements,
 			Collection<SiteLink> modifiedSiteLinks,
 			Collection<String> removedSiteLinks) {
-		return new ItemUpdateImpl(entityId, document, labels, descriptions, aliases, statements,
+		return new ItemUpdateImpl(entityId, revisionId, labels, descriptions, aliases, statements,
 				modifiedSiteLinks, removedSiteLinks);
 	}
 
 	@Override
 	public PropertyUpdate getPropertyUpdate(
 			PropertyIdValue entityId,
-			PropertyDocument document,
+			long revisionId,
 			TermUpdate labels,
 			TermUpdate descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,
 			StatementUpdate statements) {
-		return new PropertyUpdateImpl(entityId, document, labels, descriptions, aliases, statements);
+		return new PropertyUpdateImpl(entityId, revisionId, labels, descriptions, aliases, statements);
 	}
 
 }

@@ -478,7 +478,7 @@ public class Hash {
 	}
 
 	private static int hashCodeForEntityUpdate(EntityUpdate o) {
-		return Objects.hash(o.getEntityId(), o.getBaseRevision());
+		return Objects.hash(o.getEntityId(), o.getBaseRevisionId());
 	}
 
 	private static int hashCodeForStatementDocumentUpdate(StatementDocumentUpdate o) {

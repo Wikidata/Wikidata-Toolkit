@@ -69,6 +69,12 @@ public class TermedDocumentUpdateBuilderTest {
 	}
 
 	@Test
+	public void testForBaseRevisionId() {
+		assertEquals(123, TermedDocumentUpdateBuilder.forBaseRevisionId(Q1, 123).getBaseRevisionId());
+		assertEquals(123, TermedDocumentUpdateBuilder.forBaseRevisionId(P1, 123).getBaseRevisionId());
+	}
+
+	@Test
 	public void testForBaseRevision() {
 		assertThrows(NullPointerException.class, () -> TermedDocumentUpdateBuilder.forBaseRevision(null));
 		assertThrows(IllegalArgumentException.class,

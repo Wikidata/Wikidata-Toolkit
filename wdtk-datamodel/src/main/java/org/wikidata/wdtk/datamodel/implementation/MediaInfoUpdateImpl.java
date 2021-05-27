@@ -21,11 +21,10 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
-import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -39,8 +38,8 @@ public class MediaInfoUpdateImpl extends LabeledStatementDocumentUpdateImpl impl
 	 * 
 	 * @param entityId
 	 *            ID of the media that is to be updated
-	 * @param revision
-	 *            base media revision to be updated or {@code null} if not available
+	 * @param revisionId
+	 *            base media revision to be updated or zero if not available
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
 	 * @param statements
@@ -52,22 +51,16 @@ public class MediaInfoUpdateImpl extends LabeledStatementDocumentUpdateImpl impl
 	 */
 	public MediaInfoUpdateImpl(
 			MediaInfoIdValue entityId,
-			MediaInfoDocument revision,
+			long revisionId,
 			TermUpdate labels,
 			StatementUpdate statements) {
-		super(entityId, revision, labels, statements);
+		super(entityId, revisionId, labels, statements);
 	}
 
 	@JsonIgnore
 	@Override
 	public MediaInfoIdValue getEntityId() {
 		return (MediaInfoIdValue) super.getEntityId();
-	}
-
-	@JsonIgnore
-	@Override
-	public MediaInfoDocument getBaseRevision() {
-		return (MediaInfoDocument) super.getBaseRevision();
 	}
 
 	@Override

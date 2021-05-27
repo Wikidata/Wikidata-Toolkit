@@ -689,7 +689,7 @@ public class Equality {
 
 	private static boolean equalsEntityUpdate(EntityUpdate o1, EntityUpdate o2) {
 		return Objects.equals(o1.getEntityId(), o2.getEntityId())
-				&& Objects.equals(o1.getBaseRevision(), o2.getBaseRevision());
+				&& o1.getBaseRevisionId() == o2.getBaseRevisionId();
 	}
 
 	private static boolean equalsStatementDocumentUpdate(StatementDocumentUpdate o1, StatementDocumentUpdate o2) {

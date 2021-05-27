@@ -37,14 +37,13 @@ import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -80,9 +79,8 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 	 * 
 	 * @param entityId
 	 *            ID of the lexeme that is to be updated
-	 * @param revision
-	 *            base lexeme revision to be updated or {@code null} if not
-	 *            available
+	 * @param revisionId
+	 *            base lexeme revision to be updated or zero if not available
 	 * @param language
 	 *            new lexeme language or {@code null} for no change
 	 * @param lexicalCategory
@@ -110,7 +108,7 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 	 */
 	public LexemeUpdateImpl(
 			LexemeIdValue entityId,
-			LexemeDocument revision,
+			long revisionId,
 			ItemIdValue language,
 			ItemIdValue lexicalCategory,
 			TermUpdate lemmas,
@@ -121,7 +119,7 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 			Collection<FormDocument> addedForms,
 			Collection<FormUpdate> updatedForms,
 			Collection<FormIdValue> removedForms) {
-		super(entityId, revision, statements);
+		super(entityId, revisionId, statements);
 		Objects.requireNonNull(lemmas, "Lemma update cannot be null.");
 		this.language = language;
 		this.lexicalCategory = lexicalCategory;
@@ -140,12 +138,6 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 	@Override
 	public LexemeIdValue getEntityId() {
 		return (LexemeIdValue) super.getEntityId();
-	}
-
-	@JsonIgnore
-	@Override
-	public LexemeDocument getBaseRevision() {
-		return (LexemeDocument) super.getBaseRevision();
 	}
 
 	@JsonIgnore

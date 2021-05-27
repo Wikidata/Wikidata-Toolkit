@@ -27,7 +27,4 @@ public interface MediaInfoUpdate extends LabeledStatementDocumentUpdate {
 	@Override
 	MediaInfoIdValue getEntityId();
 
-	@Override
-	MediaInfoDocument getBaseRevision();
-
 }

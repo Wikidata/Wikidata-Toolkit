@@ -33,12 +33,31 @@ import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
  */
 public class PropertyUpdateBuilder extends TermedDocumentUpdateBuilder {
 
-	private PropertyUpdateBuilder(PropertyIdValue propertyId) {
-		super(propertyId);
+	private PropertyUpdateBuilder(PropertyIdValue propertyId, long revisionId) {
+		super(propertyId, revisionId);
 	}
 
 	private PropertyUpdateBuilder(PropertyDocument revision) {
 		super(revision);
+	}
+
+	/**
+	 * Creates new builder object for constructing update of property entity with
+	 * given revision ID.
+	 * 
+	 * @param propertyId
+	 *            ID of the property entity that is to be updated
+	 * @param revisionId
+	 *            ID of the base property revision to be updated or zero if not
+	 *            available
+	 * @return update builder object
+	 * @throws NullPointerException
+	 *             if {@code propertyId} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code propertyId} is a placeholder ID
+	 */
+	public static PropertyUpdateBuilder forBaseRevisionId(PropertyIdValue propertyId, long revisionId) {
+		return new PropertyUpdateBuilder(propertyId, revisionId);
 	}
 
 	/**
@@ -54,7 +73,7 @@ public class PropertyUpdateBuilder extends TermedDocumentUpdateBuilder {
 	 *             if {@code propertyId} is a placeholder ID
 	 */
 	public static PropertyUpdateBuilder forEntityId(PropertyIdValue propertyId) {
-		return new PropertyUpdateBuilder(propertyId);
+		return new PropertyUpdateBuilder(propertyId, 0);
 	}
 
 	/**
@@ -137,7 +156,7 @@ public class PropertyUpdateBuilder extends TermedDocumentUpdateBuilder {
 
 	@Override
 	public PropertyUpdate build() {
-		return Datamodel.makePropertyUpdate(getEntityId(), getBaseRevision(),
+		return Datamodel.makePropertyUpdate(getEntityId(), getBaseRevisionId(),
 				labels, descriptions, aliases, statements);
 	}
 

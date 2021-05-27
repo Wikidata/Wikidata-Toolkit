@@ -55,13 +55,16 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	 * 
 	 * @param entityId
 	 *            ID of the entity that is to be updated
+	 * @param revisionId
+	 *            ID of the base entity revision to be updated or zero if not
+	 *            available
 	 * @throws NullPointerException
 	 *             if {@code entityId} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if {@code entityId} is a placeholder ID
 	 */
-	protected StatementDocumentUpdateBuilder(EntityIdValue entityId) {
-		super(entityId);
+	protected StatementDocumentUpdateBuilder(EntityIdValue entityId, long revisionId) {
+		super(entityId, revisionId);
 	}
 
 	/**
@@ -77,6 +80,40 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	 */
 	protected StatementDocumentUpdateBuilder(StatementDocument revision) {
 		super(revision);
+	}
+
+	/**
+	 * Creates new builder object for constructing update of entity with given
+	 * revision ID.
+	 * <p>
+	 * Supported entity IDs include {@link ItemIdValue}, {@link PropertyIdValue},
+	 * {@link LexemeIdValue}, {@link FormIdValue}, {@link SenseIdValue}, and
+	 * {@link MediaInfoIdValue}.
+	 * 
+	 * @param entityId
+	 *            ID of the entity that is to be updated
+	 * @param revisionId
+	 *            ID of the base entity revision to be updated or zero if not
+	 *            available
+	 * @return builder object matching entity type
+	 * @throws NullPointerException
+	 *             if {@code entityId} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code entityId} is of unrecognized type or it is a
+	 *             placeholder ID
+	 */
+	public static StatementDocumentUpdateBuilder forBaseRevisionId(EntityIdValue entityId, long revisionId) {
+		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
+		if (entityId instanceof SenseIdValue) {
+			return SenseUpdateBuilder.forBaseRevisionId((SenseIdValue) entityId, revisionId);
+		}
+		if (entityId instanceof FormIdValue) {
+			return FormUpdateBuilder.forBaseRevisionId((FormIdValue) entityId, revisionId);
+		}
+		if (entityId instanceof LexemeIdValue) {
+			return LexemeUpdateBuilder.forBaseRevisionId((LexemeIdValue) entityId, revisionId);
+		}
+		return LabeledDocumentUpdateBuilder.forBaseRevisionId(entityId, revisionId);
 	}
 
 	/**
@@ -96,17 +133,7 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	 *             placeholder ID
 	 */
 	public static StatementDocumentUpdateBuilder forEntityId(EntityIdValue entityId) {
-		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
-		if (entityId instanceof SenseIdValue) {
-			return SenseUpdateBuilder.forEntityId((SenseIdValue) entityId);
-		}
-		if (entityId instanceof FormIdValue) {
-			return FormUpdateBuilder.forEntityId((FormIdValue) entityId);
-		}
-		if (entityId instanceof LexemeIdValue) {
-			return LexemeUpdateBuilder.forEntityId((LexemeIdValue) entityId);
-		}
-		return LabeledDocumentUpdateBuilder.forEntityId(entityId);
+		return forBaseRevisionId(entityId, 0);
 	}
 
 	/**

@@ -22,7 +22,6 @@ package org.wikidata.wdtk.datamodel.implementation;
 import java.util.Objects;
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
 
@@ -37,31 +36,26 @@ public abstract class EntityUpdateImpl implements EntityUpdate {
 	@JsonIgnore
 	private final EntityIdValue entityId;
 	@JsonIgnore
-	private final EntityDocument baseRevision;
+	private final long revisionId;
 
 	/**
 	 * Initializes new entity update.
 	 * 
 	 * @param entityId
 	 *            ID of the entity that is to be updated
-	 * @param revision
-	 *            base entity revision to be updated or {@code null} if not
-	 *            available
+	 * @param revisionId
+	 *            base entity revision to be updated or zero if not available
 	 * @throws NullPointerException
 	 *             if {@code entityId} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if {@code entityId} is a placeholder ID or it does not match base
 	 *             revision document ID (if provided)
 	 */
-	protected EntityUpdateImpl(EntityIdValue entityId, EntityDocument revision) {
+	protected EntityUpdateImpl(EntityIdValue entityId, long revisionId) {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
 		Validate.isTrue(!entityId.isPlaceholder(), "Cannot create update for placeholder entity ID.");
-		if (revision != null) {
-			Validate.isTrue(entityId.equals(revision.getEntityId()),
-					"Entity ID must be the same as ID of the base revision document.");
-		}
 		this.entityId = entityId;
-		baseRevision = revision;
+		this.revisionId = revisionId;
 	}
 
 	@JsonIgnore
@@ -77,8 +71,8 @@ public abstract class EntityUpdateImpl implements EntityUpdate {
 
 	@JsonIgnore
 	@Override
-	public EntityDocument getBaseRevision() {
-		return baseRevision;
+	public long getBaseRevisionId() {
+		return revisionId;
 	}
 
 }

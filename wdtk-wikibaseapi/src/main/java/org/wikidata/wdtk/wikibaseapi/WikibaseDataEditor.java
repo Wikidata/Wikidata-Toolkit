@@ -483,16 +483,15 @@ public class WikibaseDataEditor {
 	public void editEntityDocument(
 			EntityUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		long revisionId = update.getBaseRevision() != null ? update.getBaseRevision().getRevisionId() : 0;
+		long revisionId = update.getBaseRevisionId();
 		if (!clear) {
 			if (update.isEmpty())
 				return;
 			if (update instanceof StatementDocumentUpdate) {
 				StatementDocumentUpdate typed = (StatementDocumentUpdate) update;
 				if (typed.getStatements().getAdded().size() == 1) {
-					StatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-							? StatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-							: StatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					StatementDocumentUpdateBuilder builder = StatementDocumentUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
 					Statement statement = typed.getStatements().getAdded().stream().findFirst().get();
 					builder.updateStatements(StatementUpdateBuilder.create().add(statement).build());
 					if (builder.build().equals(update)) {
@@ -504,9 +503,8 @@ public class WikibaseDataEditor {
 					}
 				}
 				if (typed.getStatements().getReplaced().size() == 1) {
-					StatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-							? StatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-							: StatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					StatementDocumentUpdateBuilder builder = StatementDocumentUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
 					Statement statement = typed.getStatements().getReplaced().values().stream().findFirst().get();
 					builder.updateStatements(StatementUpdateBuilder.create().replace(statement).build());
 					if (builder.build().equals(update)) {
@@ -517,9 +515,8 @@ public class WikibaseDataEditor {
 				}
 				if (!typed.getStatements().getRemoved().isEmpty()
 						&& typed.getStatements().getRemoved().size() <= 50) {
-					StatementDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-							? StatementDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-							: StatementDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					StatementDocumentUpdateBuilder builder = StatementDocumentUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
 					List<String> statementIds = new ArrayList<>(typed.getStatements().getRemoved());
 					StatementUpdateBuilder statementBuilder = StatementUpdateBuilder.create();
 					for (String statementId : statementIds) {
@@ -535,9 +532,8 @@ public class WikibaseDataEditor {
 			if (update instanceof LabeledStatementDocumentUpdate) {
 				LabeledStatementDocumentUpdate typed = (LabeledStatementDocumentUpdate) update;
 				if (typed.getLabels().getModified().size() == 1) {
-					LabeledDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-							? LabeledDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-							: LabeledDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					LabeledDocumentUpdateBuilder builder = LabeledDocumentUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
 					MonolingualTextValue label = typed.getLabels().getModified().values().stream().findFirst().get();
 					builder.updateLabels(TermUpdateBuilder.create().put(label).build());
 					if (builder.build().equals(update)) {
@@ -547,9 +543,8 @@ public class WikibaseDataEditor {
 					}
 				}
 				if (typed.getLabels().getRemoved().size() == 1) {
-					LabeledDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-							? LabeledDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-							: LabeledDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					LabeledDocumentUpdateBuilder builder = LabeledDocumentUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
 					String language = typed.getLabels().getRemoved().stream().findFirst().get();
 					builder.updateLabels(TermUpdateBuilder.create().remove(language).build());
 					if (builder.build().equals(update)) {
@@ -562,9 +557,8 @@ public class WikibaseDataEditor {
 			if (update instanceof TermedStatementDocumentUpdate) {
 				TermedStatementDocumentUpdate typed = (TermedStatementDocumentUpdate) update;
 				if (typed.getDescriptions().getModified().size() == 1) {
-					TermedDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-							? TermedDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-							: TermedDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					TermedDocumentUpdateBuilder builder = TermedDocumentUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
 					MonolingualTextValue description = typed.getDescriptions().getModified()
 							.values().stream().findFirst().get();
 					builder.updateDescriptions(TermUpdateBuilder.create().put(description).build());
@@ -576,9 +570,8 @@ public class WikibaseDataEditor {
 					}
 				}
 				if (typed.getDescriptions().getRemoved().size() == 1) {
-					TermedDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-							? TermedDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-							: TermedDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					TermedDocumentUpdateBuilder builder = TermedDocumentUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
 					String language = typed.getDescriptions().getRemoved().stream().findFirst().get();
 					builder.updateDescriptions(TermUpdateBuilder.create().remove(language).build());
 					if (builder.build().equals(update)) {
@@ -588,16 +581,15 @@ public class WikibaseDataEditor {
 					}
 				}
 				if (typed.getAliases().size() == 1) {
-					TermedDocumentUpdateBuilder builder = typed.getBaseRevision() != null
-							? TermedDocumentUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-							: TermedDocumentUpdateBuilder.forEntityId(typed.getEntityId());
+					TermedDocumentUpdateBuilder builder = TermedDocumentUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
 					String language = typed.getAliases().keySet().stream().findFirst().get();
 					builder.putAliases(language, typed.getAliases().get(language));
 					if (builder.build().equals(update)) {
 						List<String> aliases = typed.getAliases().get(language).stream()
 								.map(v -> v.getText())
 								.collect(toList());
-						if (typed.getBaseRevision() != null
+						/*if (typed.getBaseRevision() != null
 								&& typed.getBaseRevision().getAliases().containsKey(language)) {
 							List<String> original = typed.getBaseRevision().getAliases().get(language).stream()
 									.map(v -> v.getText())
@@ -618,7 +610,7 @@ public class WikibaseDataEditor {
 										language, added, removed, null, editAsBot, revisionId, summary, tags);
 								return;
 							}
-						}
+						}*/
 						wbEditingAction.wbSetAliases(update.getEntityId().getId(), null, null, null,
 								language, null, null, aliases, editAsBot, revisionId, summary, tags);
 						return;
@@ -628,9 +620,8 @@ public class WikibaseDataEditor {
 			if (update instanceof LexemeUpdate) {
 				LexemeUpdate typed = (LexemeUpdate) update;
 				if (typed.getUpdatedSenses().size() == 1) {
-					LexemeUpdateBuilder builder = typed.getBaseRevision() != null
-							? LexemeUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-							: LexemeUpdateBuilder.forEntityId(typed.getEntityId());
+					LexemeUpdateBuilder builder = LexemeUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
 					SenseUpdate sense = typed.getUpdatedSenses().values().stream().findFirst().get();
 					builder.updateSense(sense);
 					if (builder.build().equals(update)) {
@@ -639,9 +630,8 @@ public class WikibaseDataEditor {
 					}
 				}
 				if (typed.getUpdatedForms().size() == 1) {
-					LexemeUpdateBuilder builder = typed.getBaseRevision() != null
-							? LexemeUpdateBuilder.forBaseRevision(typed.getBaseRevision())
-							: LexemeUpdateBuilder.forEntityId(typed.getEntityId());
+					LexemeUpdateBuilder builder = LexemeUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
 					FormUpdate form = typed.getUpdatedForms().values().stream().findFirst().get();
 					builder.updateForm(form);
 					if (builder.build().equals(update)) {

@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.helpers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,11 @@ public class MediaInfoUpdateBuilderTest {
 		assertThrows(NullPointerException.class, () -> MediaInfoUpdateBuilder.forEntityId(null));
 		assertThrows(IllegalArgumentException.class, () -> MediaInfoUpdateBuilder.forEntityId(MediaInfoIdValue.NULL));
 		MediaInfoUpdateBuilder.forEntityId(M1);
+	}
+
+	@Test
+	public void testForBaseRevisionId() {
+		assertEquals(123, MediaInfoUpdateBuilder.forBaseRevisionId(M1, 123).getBaseRevisionId());
 	}
 
 	@Test

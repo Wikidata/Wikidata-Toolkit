@@ -947,8 +947,8 @@ public class Datamodel {
 	 * 
 	 * @param entityId
 	 *            ID of the sense that is to be updated
-	 * @param document
-	 *            sense revision to be updated or {@code null} if not available
+	 * @param revisionId
+	 *            base sense revision to be updated or zero if not available
 	 * @param glosses
 	 *            changes in sense glosses or {@code null} for no change
 	 * @param statements
@@ -961,10 +961,10 @@ public class Datamodel {
 	 */
 	public static SenseUpdate makeSenseUpdate(
 			SenseIdValue entityId,
-			SenseDocument document,
+			long revisionId,
 			TermUpdate glosses,
 			StatementUpdate statements) {
-		return factory.getSenseUpdate(entityId, document, glosses, statements);
+		return factory.getSenseUpdate(entityId, revisionId, glosses, statements);
 	}
 
 	/**
@@ -973,8 +973,8 @@ public class Datamodel {
 	 * 
 	 * @param entityId
 	 *            ID of the form that is to be updated
-	 * @param document
-	 *            form revision to be updated or {@code null} if not available
+	 * @param revisionId
+	 *            base form revision to be updated or zero if not available
 	 * @param representations
 	 *            changes in form representations or {@code null} for no change
 	 * @param grammaticalFeatures
@@ -989,11 +989,11 @@ public class Datamodel {
 	 */
 	public static FormUpdate makeFormUpdate(
 			FormIdValue entityId,
-			FormDocument document,
+			long revisionId,
 			TermUpdate representations,
 			Collection<ItemIdValue> grammaticalFeatures,
 			StatementUpdate statements) {
-		return factory.getFormUpdate(entityId, document, representations, grammaticalFeatures, statements);
+		return factory.getFormUpdate(entityId, revisionId, representations, grammaticalFeatures, statements);
 	}
 
 	/**
@@ -1002,8 +1002,8 @@ public class Datamodel {
 	 * 
 	 * @param entityId
 	 *            ID of the lexeme that is to be updated
-	 * @param document
-	 *            lexeme revision to be updated or {@code null} if not available
+	 * @param revisionId
+	 *            base lexeme revision to be updated or zero if not available
 	 * @param language
 	 *            new lexeme language or {@code null} for no change
 	 * @param lexicalCategory
@@ -1032,7 +1032,7 @@ public class Datamodel {
 	 */
 	public static LexemeUpdate makeLexemeUpdate(
 			LexemeIdValue entityId,
-			LexemeDocument document,
+			long revisionId,
 			ItemIdValue language,
 			ItemIdValue lexicalCategory,
 			TermUpdate lemmas,
@@ -1043,7 +1043,7 @@ public class Datamodel {
 			Collection<FormDocument> addedForms,
 			Collection<FormUpdate> updatedForms,
 			Collection<FormIdValue> removedForms) {
-		return factory.getLexemeUpdate(entityId, document, language, lexicalCategory, lemmas, statements,
+		return factory.getLexemeUpdate(entityId, revisionId, language, lexicalCategory, lemmas, statements,
 				addedSenses, updatedSenses, removedSenses, addedForms, updatedForms, removedForms);
 	}
 
@@ -1053,8 +1053,8 @@ public class Datamodel {
 	 * 
 	 * @param entityId
 	 *            ID of the media that is to be updated
-	 * @param document
-	 *            media revision to be updated or {@code null} if not available
+	 * @param revisionId
+	 *            base media revision to be updated or zero if not available
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
 	 * @param statements
@@ -1067,10 +1067,10 @@ public class Datamodel {
 	 */
 	public static MediaInfoUpdate makeMediaInfoUpdate(
 			MediaInfoIdValue entityId,
-			MediaInfoDocument document,
+			long revisionId,
 			TermUpdate labels,
 			StatementUpdate statements) {
-		return factory.getMediaInfoUpdate(entityId, document, labels, statements);
+		return factory.getMediaInfoUpdate(entityId, revisionId, labels, statements);
 	}
 
 	/**
@@ -1079,8 +1079,8 @@ public class Datamodel {
 	 * 
 	 * @param entityId
 	 *            ID of the item that is to be updated
-	 * @param document
-	 *            item revision to be updated or {@code null} if not available
+	 * @param revisionId
+	 *            base item revision to be updated or zero if not available
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
 	 * @param descriptions
@@ -1101,14 +1101,14 @@ public class Datamodel {
 	 */
 	public static ItemUpdate makeItemUpdate(
 			ItemIdValue entityId,
-			ItemDocument document,
+			long revisionId,
 			TermUpdate labels,
 			TermUpdate descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,
 			StatementUpdate statements,
 			Collection<SiteLink> modifiedSiteLinks,
 			Collection<String> removedSiteLinks) {
-		return factory.getItemUpdate(entityId, document, labels, descriptions, aliases,
+		return factory.getItemUpdate(entityId, revisionId, labels, descriptions, aliases,
 				statements, modifiedSiteLinks, removedSiteLinks);
 	}
 
@@ -1118,9 +1118,8 @@ public class Datamodel {
 	 * 
 	 * @param entityId
 	 *            ID of the property entity that is to be updated
-	 * @param document
-	 *            property entity revision to be updated or {@code null} if not
-	 *            available
+	 * @param revisionId
+	 *            base property revision to be updated or zero if not available
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
 	 * @param descriptions
@@ -1137,12 +1136,12 @@ public class Datamodel {
 	 */
 	public static PropertyUpdate makePropertyUpdate(
 			PropertyIdValue entityId,
-			PropertyDocument document,
+			long revisionId,
 			TermUpdate labels,
 			TermUpdate descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,
 			StatementUpdate statements) {
-		return factory.getPropertyUpdate(entityId, document, labels, descriptions, aliases, statements);
+		return factory.getPropertyUpdate(entityId, revisionId, labels, descriptions, aliases, statements);
 	}
 
 }

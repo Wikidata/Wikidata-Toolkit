@@ -25,7 +25,4 @@ package org.wikidata.wdtk.datamodel.interfaces;
  */
 public interface TermedStatementDocumentUpdate extends TermedDocumentUpdate, LabeledStatementDocumentUpdate {
 
-	@Override
-	TermedStatementDocument getBaseRevision();
-
 }

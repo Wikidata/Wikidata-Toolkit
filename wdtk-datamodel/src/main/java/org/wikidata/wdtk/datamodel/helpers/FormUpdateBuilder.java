@@ -40,12 +40,31 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	private TermUpdate representations = TermUpdate.NULL;
 	private Set<ItemIdValue> grammaticalFeatures;
 
-	private FormUpdateBuilder(FormIdValue formId) {
-		super(formId);
+	private FormUpdateBuilder(FormIdValue formId, long revisionId) {
+		super(formId, revisionId);
 	}
 
 	private FormUpdateBuilder(FormDocument revision) {
 		super(revision);
+	}
+
+	/**
+	 * Creates new builder object for constructing update of form entity with given
+	 * revision ID.
+	 * 
+	 * @param formId
+	 *            ID of the form that is to be updated
+	 * @param revisionId
+	 *            ID of the base form revision to be updated or zero if not
+	 *            available
+	 * @return update builder object
+	 * @throws NullPointerException
+	 *             if {@code formId} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code formId} is a placeholder ID
+	 */
+	public static FormUpdateBuilder forBaseRevisionId(FormIdValue formId, long revisionId) {
+		return new FormUpdateBuilder(formId, revisionId);
 	}
 
 	/**
@@ -61,7 +80,7 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 *             if {@code formId} is a placeholder ID
 	 */
 	public static FormUpdateBuilder forEntityId(FormIdValue formId) {
-		return new FormUpdateBuilder(formId);
+		return new FormUpdateBuilder(formId, 0);
 	}
 
 	/**
@@ -178,7 +197,7 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	@Override
 	public FormUpdate build() {
-		return Datamodel.makeFormUpdate(getEntityId(), getBaseRevision(),
+		return Datamodel.makeFormUpdate(getEntityId(), getBaseRevisionId(),
 				representations, grammaticalFeatures, statements);
 	}
 

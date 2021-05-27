@@ -43,12 +43,31 @@ public class ItemUpdateBuilder extends TermedDocumentUpdateBuilder {
 	private final Map<String, SiteLink> modifiedSiteLinks = new HashMap<>();
 	private final Set<String> removedSiteLinks = new HashSet<>();
 
-	private ItemUpdateBuilder(ItemIdValue itemId) {
-		super(itemId);
+	private ItemUpdateBuilder(ItemIdValue itemId, long revisionId) {
+		super(itemId, revisionId);
 	}
 
 	private ItemUpdateBuilder(ItemDocument revision) {
 		super(revision);
+	}
+
+	/**
+	 * Creates new builder object for constructing update of item entity with given
+	 * revision ID.
+	 * 
+	 * @param itemId
+	 *            ID of the item entity that is to be updated
+	 * @param revisionId
+	 *            ID of the base item revision to be updated or zero if not
+	 *            available
+	 * @return update builder object
+	 * @throws NullPointerException
+	 *             if {@code itemId} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code itemId} is a placeholder ID
+	 */
+	public static ItemUpdateBuilder forBaseRevisionId(ItemIdValue itemId, long revisionId) {
+		return new ItemUpdateBuilder(itemId, revisionId);
 	}
 
 	/**
@@ -64,7 +83,7 @@ public class ItemUpdateBuilder extends TermedDocumentUpdateBuilder {
 	 *             if {@code itemId} is a placeholder ID
 	 */
 	public static ItemUpdateBuilder forEntityId(ItemIdValue itemId) {
-		return new ItemUpdateBuilder(itemId);
+		return new ItemUpdateBuilder(itemId, 0);
 	}
 
 	/**
@@ -211,7 +230,7 @@ public class ItemUpdateBuilder extends TermedDocumentUpdateBuilder {
 
 	@Override
 	public ItemUpdate build() {
-		return Datamodel.makeItemUpdate(getEntityId(), getBaseRevision(), labels, descriptions, aliases, statements,
+		return Datamodel.makeItemUpdate(getEntityId(), getBaseRevisionId(), labels, descriptions, aliases, statements,
 				modifiedSiteLinks.values(), removedSiteLinks);
 	}
 

@@ -45,6 +45,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 public abstract class EntityUpdateBuilder {
 
 	private final EntityIdValue entityId;
+	private final long baseRevisionId;
 	private final EntityDocument baseRevision;
 
 	/**
@@ -53,15 +54,19 @@ public abstract class EntityUpdateBuilder {
 	 * 
 	 * @param entityId
 	 *            ID of the entity that is to be updated
+	 * @param revisionId
+	 *            ID of the base entity revision to be updated or zero if not
+	 *            available
 	 * @throws NullPointerException
 	 *             if {@code entityId} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if {@code entityId} is as placeholder ID
 	 */
-	protected EntityUpdateBuilder(EntityIdValue entityId) {
+	protected EntityUpdateBuilder(EntityIdValue entityId, long revisionId) {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
 		Validate.isTrue(!entityId.isPlaceholder(), "Cannot create update for placeholder entity ID.");
 		this.entityId = entityId;
+		this.baseRevisionId = revisionId;
 		baseRevision = null;
 	}
 
@@ -81,6 +86,31 @@ public abstract class EntityUpdateBuilder {
 		Validate.isTrue(!revision.getEntityId().isPlaceholder(), "Cannot create update for placeholder entity ID.");
 		entityId = revision.getEntityId();
 		baseRevision = revision;
+		baseRevisionId = baseRevision.getRevisionId();
+	}
+
+	/**
+	 * Creates new builder object for constructing update of entity with given
+	 * revision ID.
+	 * <p>
+	 * Supported entity IDs include {@link ItemIdValue}, {@link PropertyIdValue},
+	 * {@link LexemeIdValue}, {@link FormIdValue}, {@link SenseIdValue}, and
+	 * {@link MediaInfoIdValue}.
+	 * 
+	 * @param entityId
+	 *            ID of the entity that is to be updated
+	 * @param revisionId
+	 *            ID of the base entity revision to be updated or zero if not
+	 *            available
+	 * @return builder object matching entity type
+	 * @throws NullPointerException
+	 *             if {@code entityId} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if {@code entityId} is of unrecognized type or it's a placeholder
+	 *             ID
+	 */
+	public static EntityUpdateBuilder forBaseRevisionId(EntityIdValue entityId, long revisionId) {
+		return StatementDocumentUpdateBuilder.forBaseRevisionId(entityId, revisionId);
 	}
 
 	/**
@@ -100,7 +130,7 @@ public abstract class EntityUpdateBuilder {
 	 *             ID
 	 */
 	public static EntityUpdateBuilder forEntityId(EntityIdValue entityId) {
-		return StatementDocumentUpdateBuilder.forEntityId(entityId);
+		return forBaseRevisionId(entityId, 0);
 	}
 
 	/**
@@ -149,6 +179,17 @@ public abstract class EntityUpdateBuilder {
 	 */
 	EntityDocument getBaseRevision() {
 		return baseRevision;
+	}
+
+	/**
+	 * Returns base entity revision ID, upon which this update is built. If no base
+	 * revision nor base revision ID was provided when this builder was constructed,
+	 * this method returns zero.
+	 * 
+	 * @return base entity revision ID
+	 */
+	long getBaseRevisionId() {
+		return baseRevisionId;
 	}
 
 	/**
