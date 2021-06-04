@@ -302,9 +302,9 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 		 * @return
 		 */
 		@JsonIgnore
-        public ItemIdValue getUnitItemId() {
-            return unit;
-        }
+		public ItemIdValue getUnitItemId() {
+		    return unit;
+		}
 
 		/**
 		 * Formats the string output with a leading signum as JSON expects it.
