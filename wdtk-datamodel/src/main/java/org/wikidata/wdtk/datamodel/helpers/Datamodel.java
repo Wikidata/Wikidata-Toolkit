@@ -384,7 +384,7 @@ public class Datamodel {
 	public static QuantityValue makeQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound, ItemIdValue unit) {
 		return factory.getQuantityValue(numericValue, lowerBound, upperBound,
-				unit.getIri());
+				unit);
 	}
 
 	/**
@@ -397,7 +397,7 @@ public class Datamodel {
 	 * @return a {@link QuantityValue} corresponding to the input
 	 */
 	public static QuantityValue makeQuantityValue(BigDecimal numericValue, ItemIdValue unit) {
-		return factory.getQuantityValue(numericValue, unit.getIri());
+		return factory.getQuantityValue(numericValue, unit);
 	}
 
 	/**
