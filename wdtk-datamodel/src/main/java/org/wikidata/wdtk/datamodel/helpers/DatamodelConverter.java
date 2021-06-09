@@ -148,10 +148,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	}
 
 	/**
-	 * Copies a {@link MonolingualTextValue}. This method is not affected by the
-	 * language filter option (see
-	 * {@link DatamodelConverter#setOptionLanguageFilter(Set)}).
-	 *
+	 * Copies a {@link MonolingualTextValue}
 	 * @param object
 	 *            object to copy
 	 * @return copied object
@@ -296,9 +293,6 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 
 	/**
 	 * Copies a {@link StatementGroup}.
-	 * <p>
-	 * This method ignores filters set via {@link #setOptionPropertyFilter(Set)}.
-	 *
 	 * @param object
 	 *            object to copy
 	 * @return copied object
@@ -313,9 +307,6 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 
 	/**
 	 * Copies a {@link SiteLink}.
-	 * <p>
-	 * This method is not affected by the setting made via
-	 * {@link #setOptionSiteLinkFilter(Set)}.
 	 *
 	 * @param object
 	 *            object to copy

@@ -146,7 +146,7 @@ public class OAuthApiConnection extends ApiConnection {
      * The OAuth credentials can be invalid if the user invoked it.
      * <p>
      * We simply call {@link ApiConnection#checkCredentials()} here.
-     * Because for OAuth, the query "action=query&assert=user" returns success
+     * Because for OAuth, the query "action=query&amp;assert=user" returns success
      * if and only if the credentials are still valid. This behaviour is the
      * same when using username/password for logging in.
      * <p>

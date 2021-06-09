@@ -246,8 +246,22 @@ public interface DataObjectFactory {
 	 *            the unit of this quantity, or the empty string if there is no
 	 *            unit
 	 * @return a {@link QuantityValue} corresponding to the input
+	 * @deprecated use {@link #getQuantityValue(BigDecimal, ItemIdValue)}
 	 */
+	@Deprecated
 	QuantityValue getQuantityValue(BigDecimal numericValue, String unit);
+	
+	/**
+     * Creates a {@link QuantityValue} without bounds.
+     *
+     * @param numericValue
+     *            the numeric value of this quantity
+     * @param unit
+     *            the unit of this quantity, or null if there is no
+     *            unit
+     * @return a {@link QuantityValue} corresponding to the input
+     */
+    QuantityValue getQuantityValue(BigDecimal numericValue, ItemIdValue unit);
 
 	/**
 	 * Creates a {@link QuantityValue}.
@@ -262,9 +276,27 @@ public interface DataObjectFactory {
 	 *            the unit of this quantity, or the empty string if there is no
 	 *            unit
 	 * @return a {@link QuantityValue} corresponding to the input
+	 * @deprecated use {@link #getQuantityValue(BigDecimal, BigDecimal, BigDecimal, ItemIdValue)}
 	 */
 	QuantityValue getQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound, String unit);
+	
+	/**
+     * Creates a {@link QuantityValue}.
+     *
+     * @param numericValue
+     *            the numeric value of this quantity
+     * @param lowerBound
+     *            the lower bound of the numeric value of this quantity
+     * @param upperBound
+     *            the upper bound of the numeric value of this quantity
+     * @param unit
+     *            the unit of this quantity, or null if there is no
+     *            unit
+     * @return a {@link QuantityValue} corresponding to the input
+     */
+    QuantityValue getQuantityValue(BigDecimal numericValue,
+            BigDecimal lowerBound, BigDecimal upperBound, ItemIdValue unit);
 
 	/**
 	 * Creates a {@link ValueSnak}.

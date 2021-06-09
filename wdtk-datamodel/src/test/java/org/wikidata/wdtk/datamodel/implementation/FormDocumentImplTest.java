@@ -118,13 +118,13 @@ public class FormDocumentImplTest {
 	}
 
 	@Test
-	public void representationsNotNull() {
-		assertThrows(NullPointerException.class, () -> new FormDocumentImpl(fid,  null, gramFeatures, statementGroups, 1234));
+	public void representationsNull() {
+		assertEquals(Collections.emptyMap(), new FormDocumentImpl(fid,  null, gramFeatures, statementGroups, 1234).getRepresentations());
 	}
 
 	@Test
-	public void representationsNotEmpty() {
-		assertThrows(IllegalArgumentException.class, () -> new FormDocumentImpl(fid, Collections.emptyList(), gramFeatures, statementGroups, 1234));
+	public void representationsEmpty() {
+		assertEquals(Collections.emptyMap(), new FormDocumentImpl(fid, Collections.emptyList(), gramFeatures, statementGroups, 1234).getRepresentations());
 	}
 
 	@Test

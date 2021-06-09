@@ -50,6 +50,31 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 	private final JacksonInnerQuantity value;
 	
 	/**
+     * Constructor.
+     *
+     * @param numericValue
+     *            the numeric value of this quantity
+     * @param lowerBound
+     *            the lower bound of the numeric value of this quantity or null
+     *            if not set
+     * @param upperBound
+     *            the upper bound of the numeric value of this quantity or null
+     *            if not set
+     * @param unit
+     *            the unit of this quantity, or null if there is no
+     *            unit
+     */
+    public QuantityValueImpl(
+            BigDecimal numericValue,
+            BigDecimal lowerBound,
+            BigDecimal upperBound,
+            ItemIdValue unit) {
+        super(JSON_VALUE_TYPE_QUANTITY);
+        this.value = new JacksonInnerQuantity(numericValue, lowerBound,
+                upperBound, unit);
+    }
+	
+	/**
 	 * Constructor.
 	 *
 	 * @param numericValue
@@ -63,6 +88,7 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 	 * @param unit
 	 *            the unit of this quantity, or the empty string if there is no
 	 *            unit
+	 * @deprecated supply the unit as an ItemIdValue instead
 	 */
 	public QuantityValueImpl(
 			BigDecimal numericValue,
@@ -71,7 +97,7 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 			String unit) {
 		super(JSON_VALUE_TYPE_QUANTITY);
 		this.value = new JacksonInnerQuantity(numericValue, lowerBound,
-				upperBound, unit);
+				upperBound, "1".equals(unit) ? null : ItemIdValueImpl.fromIri(unit));
 	}
 
 	/**
@@ -121,12 +147,7 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 	@JsonIgnore
 	@Override
 	public ItemIdValue getUnitItemId() {
-		String unit = this.value.getUnit();
-		if(unit.equals("1")) {
-			return null;
-		} else {
-			return ItemIdValueImpl.fromIri(unit);
-		}
+		return this.value.getUnitItemId();
 	}
 
 	@Override
@@ -158,11 +179,11 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 		private final BigDecimal amount;
 		private final BigDecimal upperBound;
 		private final BigDecimal lowerBound;
-		private final String unit;
+		private final ItemIdValue unit;
 
 		/**
-		 * Constructor. The unit given here is a unit string as used in WDTK, with
-		 * the empty string meaning "no unit".
+		 * Constructor for JSON deserialization. The unit given here is a unit string as used in WDTK, with
+		 * the string "1" meaning "no unit".
 		 *
 		 * @param amount
 		 * 		the main value of this quantity
@@ -171,7 +192,7 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 		 * @param upperBound
 		 * 		the upper bound of this quantity
 		 * @param unit
-		 * 		the unit of this string, as an IRI to the relevant entity
+		 * 		the unit of this quantity, as an IRI to the relevant entity
 		 */
 		@JsonCreator
 		JacksonInnerQuantity(
@@ -179,28 +200,40 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 				@JsonProperty("lowerBound") BigDecimal lowerBound,
 				@JsonProperty("upperBound") BigDecimal upperBound,
 				@JsonProperty("unit") String unit) {
-			Validate.notNull(amount, "Numeric value cannot be null");
-			Validate.notNull(unit, "Unit cannot be null");
-			Validate.notEmpty(unit, "Unit cannot be empty. Use \"1\" for unit-less quantities.");
-
-			if(lowerBound != null || upperBound != null) {
-				Validate.notNull(lowerBound, "Lower and upper bounds should be null at the same time");
-				Validate.notNull(upperBound, "Lower and upper bounds should be null at the same time");
-
-				if (lowerBound.compareTo(amount) > 0) {
-					throw new IllegalArgumentException(
-							"Lower bound cannot be strictly greater than numeric value");
-				}
-				if (amount.compareTo(upperBound) > 0) {
-					throw new IllegalArgumentException(
-							"Upper bound cannot be strictly smaller than numeric value");
-				}
-			}
-			this.amount = amount;
-			this.upperBound = upperBound;
-			this.lowerBound = lowerBound;
-			this.unit = unit;
+		    this(amount, lowerBound, upperBound, parseUnit(unit));
 		}
+
+        protected static ItemIdValue parseUnit(String unit) {
+		    Validate.notNull(unit, "Unit cannot be null");
+            Validate.notEmpty(unit, "Unit cannot be empty. Use \"1\" for unit-less quantities.");
+            return "1".equals(unit) ? null : ItemIdValueImpl.fromIri(unit);
+        }
+		
+        JacksonInnerQuantity(
+                BigDecimal amount,
+                BigDecimal lowerBound,
+                BigDecimal upperBound,
+                ItemIdValue unit) {
+            Validate.notNull(amount, "Numeric value cannot be null");
+
+            if(lowerBound != null || upperBound != null) {
+                Validate.notNull(lowerBound, "Lower and upper bounds should be null at the same time");
+                Validate.notNull(upperBound, "Lower and upper bounds should be null at the same time");
+
+                if (lowerBound.compareTo(amount) > 0) {
+                    throw new IllegalArgumentException(
+                            "Lower bound cannot be strictly greater than numeric value");
+                }
+                if (amount.compareTo(upperBound) > 0) {
+                    throw new IllegalArgumentException(
+                            "Upper bound cannot be strictly smaller than numeric value");
+                }
+            }
+            this.amount = amount;
+            this.upperBound = upperBound;
+            this.lowerBound = lowerBound;
+            this.unit = unit;
+        }
 
 		/**
 		 * Returns the numeric value.
@@ -261,7 +294,16 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 		 */
 		@JsonProperty("unit")
 		String getUnit() {
-			return this.unit;
+			return unit == null ? "1" : unit.getIri();
+		}
+		
+		/**
+		 * Returns the unit represented as an {@link ItemIdValue}.
+		 * @return
+		 */
+		@JsonIgnore
+		public ItemIdValue getUnitItemId() {
+		    return unit;
 		}
 
 		/**
