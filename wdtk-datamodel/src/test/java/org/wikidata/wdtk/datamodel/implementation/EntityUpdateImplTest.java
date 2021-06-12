@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -32,9 +31,9 @@ import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.PropertyUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.TermUpdateBuilder;
+import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
@@ -48,7 +47,7 @@ public class EntityUpdateImplTest {
 			P1, Datamodel.makeDatatypeIdValue(DatatypeIdValue.DT_ITEM));
 	private static final TermUpdate NO_TERMS = TermUpdateBuilder.create().build();
 	private static final StatementUpdate NO_STATEMENTS = StatementUpdateBuilder.create().build();
-	private static final Map<String, List<MonolingualTextValue>> NO_ALIASES = Collections.emptyMap();
+	private static final Map<String, AliasUpdate> NO_ALIASES = Collections.emptyMap();
 
 	@Test
 	public void testFields() {

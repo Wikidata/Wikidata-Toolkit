@@ -25,15 +25,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
@@ -82,7 +81,7 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 			long revisionId,
 			TermUpdate labels,
 			TermUpdate descriptions,
-			Map<String, List<MonolingualTextValue>> aliases,
+			Map<String, AliasUpdate> aliases,
 			StatementUpdate statements,
 			Collection<SiteLink> modifiedSiteLinks,
 			Collection<String> removedSiteLinks) {

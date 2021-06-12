@@ -24,11 +24,8 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
@@ -42,7 +39,6 @@ public class PropertyUpdateBuilderTest {
 			.forSubjectAndProperty(P1, Datamodel.makeWikidataPropertyIdValue("P2"))
 			.withValue(Datamodel.makeStringValue("something"))
 			.build();
-	private static final MonolingualTextValue SK = TermUpdateBuilderTest.SK;
 
 	@Test
 	public void testForEntityId() {
@@ -93,10 +89,9 @@ public class PropertyUpdateBuilderTest {
 	@Test
 	public void testAliasUpdate() {
 		PropertyUpdate update = PropertyUpdateBuilder.forEntityId(P1)
-				.putAliases("sk", Arrays.asList(SK))
-				.putAliasesAsStrings("en", Arrays.asList("hello"))
+				.updateAliases("sk", AliasUpdateBuilder.create().add(TermUpdateBuilderTest.SK).build())
 				.build();
-		assertThat(update.getAliases().keySet(), containsInAnyOrder("en", "sk"));
+		assertThat(update.getAliases().keySet(), containsInAnyOrder("sk"));
 	}
 
 	@Test

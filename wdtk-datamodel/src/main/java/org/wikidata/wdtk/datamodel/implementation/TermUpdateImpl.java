@@ -61,7 +61,7 @@ public class TermUpdateImpl implements TermUpdate {
 	 */
 	public TermUpdateImpl(Collection<MonolingualTextValue> modified, Collection<String> removed) {
 		this.modified = Collections.unmodifiableMap(modified.stream()
-				.map(v -> new TermImpl(v.getLanguageCode(), v.getText()))
+				.map(TermImpl::new)
 				.collect(toMap(v -> v.getLanguageCode(), r -> r)));
 		this.removed = Collections.unmodifiableSet(new HashSet<>(removed));
 	}
@@ -84,11 +84,11 @@ public class TermUpdateImpl implements TermUpdate {
 		return removed;
 	}
 
-	static class RemovedMonolingualTextValue {
+	static class RemovedTerm {
 
 		private final String language;
 
-		RemovedMonolingualTextValue(String language) {
+		RemovedTerm(String language) {
 			this.language = language;
 		}
 
@@ -111,7 +111,7 @@ public class TermUpdateImpl implements TermUpdate {
 			map.put(value.getLanguageCode(), value);
 		}
 		for (String language : removed) {
-			map.put(language, new RemovedMonolingualTextValue(language));
+			map.put(language, new RemovedTerm(language));
 		}
 		return map;
 	}

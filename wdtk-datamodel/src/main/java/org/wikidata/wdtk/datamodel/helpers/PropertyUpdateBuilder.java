@@ -19,9 +19,7 @@
  */
 package org.wikidata.wdtk.datamodel.helpers;
 
-import java.util.List;
-
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
@@ -124,14 +122,8 @@ public class PropertyUpdateBuilder extends TermedDocumentUpdateBuilder {
 	}
 
 	@Override
-	public PropertyUpdateBuilder putAliases(String language, List<MonolingualTextValue> aliases) {
-		super.putAliases(language, aliases);
-		return this;
-	}
-
-	@Override
-	public PropertyUpdateBuilder putAliasesAsStrings(String language, List<String> aliases) {
-		super.putAliasesAsStrings(language, aliases);
+	public PropertyUpdateBuilder updateAliases(String language, AliasUpdate update) {
+		super.updateAliases(language, update);
 		return this;
 	}
 

@@ -19,19 +19,16 @@
  */
 package org.wikidata.wdtk.datamodel.helpers;
 
-import static java.util.stream.Collectors.toList;
-
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
@@ -46,7 +43,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
 public abstract class TermedDocumentUpdateBuilder extends LabeledDocumentUpdateBuilder {
 
 	TermUpdate descriptions = TermUpdate.NULL;
-	final Map<String, List<MonolingualTextValue>> aliases = new HashMap<>();
+	final Map<String, AliasUpdate> aliases = new HashMap<>();
 
 	/**
 	 * Initializes new builder object for constructing update of entity with given
@@ -198,76 +195,52 @@ public abstract class TermedDocumentUpdateBuilder extends LabeledDocumentUpdateB
 	}
 
 	/**
-	 * Adds or changes entity aliases. Any previous aliases for the language code
-	 * are discarded. To remove aliases for some language code, pass in empty alias
-	 * list. If base entity revision was provided, redundant changes are silently
-	 * ignored, resulting in empty update.
+	 * Updates entity aliases. If this method is called multiple times, changes are
+	 * accumulated. If base entity revision was provided, the update is checked
+	 * against it and redundant changes are silently ignored, resulting in empty
+	 * update.
 	 * 
 	 * @param language
 	 *            language code of the altered aliases
-	 * @param aliases
-	 *            new list of aliases for the language, possibly empty
+	 * @param update
+	 *            alias changes
 	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
-	 *             if {@code language}, {@code aliases}, or any of the aliases are
-	 *             {@code null}
+	 *             if {@code language} or {@code aliases} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code language} is blank or {@code aliases} contains
-	 *             duplicates or non-matching language codes
+	 *             if {@code language} is blank or {@code aliases} has inconsistent
+	 *             language code
 	 */
-	public TermedDocumentUpdateBuilder putAliases(String language, List<MonolingualTextValue> aliases) {
+	public TermedDocumentUpdateBuilder updateAliases(String language, AliasUpdate update) {
 		Validate.notBlank(language, "Specify language code.");
-		Objects.requireNonNull(aliases, "Alias list cannot be null.");
-		for (MonolingualTextValue alias : aliases) {
-			Objects.requireNonNull(alias, "Aliases cannot be null.");
-			Validate.isTrue(language.equals(alias.getLanguageCode()), "Aliases must have matching language code.");
+		Objects.requireNonNull(update, "Alias update cannot be null.");
+		if (update.getLanguageCode().isPresent()) {
+			Validate.isTrue(language.equals(update.getLanguageCode().get()),
+					"Alias update must have matching language code.");
 		}
-		Validate.isTrue(new HashSet<>(aliases).size() == aliases.size(), "Aliases must be unique.");
+		AliasUpdateBuilder builder;
 		if (getBaseRevision() != null) {
-			List<MonolingualTextValue> original = getBaseRevision().getAliases().get(language);
-			if (aliases.equals(original) || original == null && aliases.isEmpty()) {
-				this.aliases.remove(language);
-				return this;
-			}
+			builder = AliasUpdateBuilder
+					.forAliases(getBaseRevision().getAliases().getOrDefault(language, Collections.emptyList()));
+		} else {
+			builder = AliasUpdateBuilder.create();
 		}
-		this.aliases.put(language, aliases);
+		builder.append(aliases.getOrDefault(language, AliasUpdate.NULL));
+		builder.append(update);
+		AliasUpdate combined = builder.build();
+		if (!combined.isEmpty()) {
+			aliases.put(language, combined);
+		} else {
+			aliases.remove(language);
+		}
 		return this;
-	}
-
-	/**
-	 * Adds or changes entity aliases as plain strings. Any previous aliases for the
-	 * language code are discarded. To remove aliases for some language code, pass
-	 * in empty alias list. If base entity revision was provided, redundant changes
-	 * are silently ignored, resulting in empty update.
-	 * 
-	 * @param language
-	 *            language code of the altered aliases
-	 * @param aliases
-	 *            new list of aliases for the language, possibly empty
-	 * @return {@code this} (fluent method)
-	 * @throws NullPointerException
-	 *             if {@code language}, {@code aliases}, or any of the aliases are
-	 *             {@code null}
-	 * @throws IllegalArgumentException
-	 *             if {@code language} is blank or {@code aliases} contains
-	 *             duplicates
-	 */
-	public TermedDocumentUpdateBuilder putAliasesAsStrings(String language, List<String> aliases) {
-		Validate.notBlank(language, "Specify language code.");
-		Objects.requireNonNull(aliases, "Alias list cannot be null.");
-		for (String alias : aliases) {
-			Objects.requireNonNull(alias, "Aliases cannot be null.");
-		}
-		return putAliases(language, aliases.stream()
-				.map(a -> Datamodel.makeMonolingualTextValue(a, language))
-				.collect(toList()));
 	}
 
 	void append(TermedStatementDocumentUpdate update) {
 		super.append(update);
 		updateDescriptions(update.getDescriptions());
-		for (Map.Entry<String, List<MonolingualTextValue>> entry : update.getAliases().entrySet()) {
-			putAliases(entry.getKey(), entry.getValue());
+		for (Map.Entry<String, AliasUpdate> entry : update.getAliases().entrySet()) {
+			updateAliases(entry.getKey(), entry.getValue());
 		}
 	}
 

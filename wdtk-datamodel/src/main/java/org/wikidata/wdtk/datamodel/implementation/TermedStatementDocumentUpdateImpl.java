@@ -19,16 +19,14 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
@@ -47,7 +45,7 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 	@JsonIgnore
 	private final TermUpdate descriptions;
 	@JsonIgnore
-	private final Map<String, List<MonolingualTextValue>> aliases;
+	private final Map<String, AliasUpdate> aliases;
 
 	/**
 	 * Initializes new entity update.
@@ -74,16 +72,15 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 			long revisionId,
 			TermUpdate labels,
 			TermUpdate descriptions,
-			Map<String, List<MonolingualTextValue>> aliases,
+			Map<String, AliasUpdate> aliases,
 			StatementUpdate statements) {
 		super(entityId, revisionId, labels, statements);
 		Objects.requireNonNull(descriptions, "Description update cannot be null.");
 		Objects.requireNonNull(aliases, "Alias map cannot be null.");
 		this.descriptions = descriptions;
 		this.aliases = Collections.unmodifiableMap(aliases.keySet().stream()
-				.collect(toMap(k -> k, k -> Collections.unmodifiableList(aliases.get(k).stream()
-						.map(t -> new TermImpl(k, t.getText()))
-						.collect(toList())))));
+				.filter(k -> !aliases.get(k).isEmpty())
+				.collect(toMap(k -> k, k -> aliases.get(k))));
 	}
 
 	@JsonIgnore
@@ -107,7 +104,7 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 	@JsonProperty("aliases")
 	@JsonInclude(Include.NON_EMPTY)
 	@Override
-	public Map<String, List<MonolingualTextValue>> getAliases() {
+	public Map<String, AliasUpdate> getAliases() {
 		return aliases;
 	}
 

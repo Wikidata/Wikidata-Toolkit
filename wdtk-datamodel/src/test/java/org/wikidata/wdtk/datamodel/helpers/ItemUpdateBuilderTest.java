@@ -27,8 +27,6 @@ import static org.hamcrest.Matchers.empty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
@@ -97,10 +95,9 @@ public class ItemUpdateBuilderTest {
 	@Test
 	public void testAliasUpdate() {
 		ItemUpdate update = ItemUpdateBuilder.forEntityId(Q1)
-				.putAliases("sk", Arrays.asList(TermUpdateBuilderTest.SK))
-				.putAliasesAsStrings("en", Arrays.asList("hello"))
+				.updateAliases("sk", AliasUpdateBuilder.create().add(TermUpdateBuilderTest.SK).build())
 				.build();
-		assertThat(update.getAliases().keySet(), containsInAnyOrder("en", "sk"));
+		assertThat(update.getAliases().keySet(), containsInAnyOrder("sk"));
 	}
 
 	@Test

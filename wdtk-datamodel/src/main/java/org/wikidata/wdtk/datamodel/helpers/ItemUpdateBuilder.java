@@ -21,16 +21,15 @@ package org.wikidata.wdtk.datamodel.helpers;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
@@ -134,14 +133,8 @@ public class ItemUpdateBuilder extends TermedDocumentUpdateBuilder {
 	}
 
 	@Override
-	public ItemUpdateBuilder putAliases(String language, List<MonolingualTextValue> aliases) {
-		super.putAliases(language, aliases);
-		return this;
-	}
-
-	@Override
-	public ItemUpdateBuilder putAliasesAsStrings(String language, List<String> aliases) {
-		super.putAliasesAsStrings(language, aliases);
+	public ItemUpdateBuilder updateAliases(String language, AliasUpdate update) {
+		super.updateAliases(language, update);
 		return this;
 	}
 

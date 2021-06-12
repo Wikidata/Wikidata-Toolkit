@@ -25,9 +25,51 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
+import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
+import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
+import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 /**
  * This class contains static methods to create WDTK data objects. This is the
@@ -917,6 +959,72 @@ public class Datamodel {
 			Collection<String> removed) {
 		return factory.getTermUpdate(modified, removed);
 	}
+	
+
+	/**
+	 * Creates new {@link AliasUpdate}. Callers should specify either
+	 * {@code recreated} parameter or {@code added} and {@code removed} parameters,
+	 * because combination of the two update approaches is not possible. To remove
+	 * all aliases, pass empty list in {@code recreated} parameter.
+	 * <p>
+	 * In most cases, it is more convenient to use {@link #makeAliasUpdate(List)},
+	 * {@link #makeAliasUpdate(List, Collection)}, or {@link AliasUpdateBuilder}.
+	 * 
+	 * @param recreated
+	 *            new list of aliases that completely replaces the old ones or
+	 *            {@code null} to not recreate aliases
+	 * @param added
+	 *            aliases added in this update or empty collection for no additions
+	 * @param removed
+	 *            aliases removed in this update or empty collection for no removals
+	 * @return new {@link AliasUpdate}
+	 * @throws NullPointerException
+	 *             if {@code added}, {@code removed}, or any alias is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if given invalid combination of parameters
+	 */
+	public static AliasUpdate makeAliasUpdate(
+			List<MonolingualTextValue> recreated,
+			List<MonolingualTextValue> added,
+			Collection<MonolingualTextValue> removed) {
+		return factory.getAliasUpdate(recreated, added, removed);
+	}
+
+	/**
+	 * Creates new {@link AliasUpdate} that completely replaces all aliases.
+	 * 
+	 * @param recreated
+	 *            new list of aliases that completely replaces the old ones
+	 * @return new {@link AliasUpdate}
+	 * @throws NullPointerException
+	 *             if the parameter or any alias is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if language codes are inconsistent or there are alias duplicates
+	 */
+	public static AliasUpdate makeAliasUpdate(List<MonolingualTextValue> recreated) {
+		Objects.requireNonNull(recreated, "New list of aliases must be provided.");
+		return factory.getAliasUpdate(recreated, Collections.emptyList(), Collections.emptyList());
+	}
+
+	/**
+	 * Creates new {@link AliasUpdate} that adds and/or removes some of the aliases.
+	 * It might be more convenient to use {@link AliasUpdateBuilder}.
+	 * 
+	 * @param added
+	 *            aliases to add
+	 * @param removed
+	 *            aliases to remove
+	 * @return new {@link AliasUpdate}
+	 * @throws NullPointerException
+	 *             if any parameter or any alias is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if language codes are inconsistent or there are alias duplicates
+	 */
+	public static AliasUpdate makeAliasUpdate(
+			List<MonolingualTextValue> added,
+			Collection<MonolingualTextValue> removed) {
+		return factory.getAliasUpdate(null, added, removed);
+	}
 
 	/**
 	 * Creates new {@link StatementUpdate}. It might be more convenient to use
@@ -1104,7 +1212,7 @@ public class Datamodel {
 			long revisionId,
 			TermUpdate labels,
 			TermUpdate descriptions,
-			Map<String, List<MonolingualTextValue>> aliases,
+			Map<String, AliasUpdate> aliases,
 			StatementUpdate statements,
 			Collection<SiteLink> modifiedSiteLinks,
 			Collection<String> removedSiteLinks) {
@@ -1139,7 +1247,7 @@ public class Datamodel {
 			long revisionId,
 			TermUpdate labels,
 			TermUpdate descriptions,
-			Map<String, List<MonolingualTextValue>> aliases,
+			Map<String, AliasUpdate> aliases,
 			StatementUpdate statements) {
 		return factory.getPropertyUpdate(entityId, revisionId, labels, descriptions, aliases, statements);
 	}

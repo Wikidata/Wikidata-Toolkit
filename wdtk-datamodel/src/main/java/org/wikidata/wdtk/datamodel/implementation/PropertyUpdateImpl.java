@@ -19,12 +19,11 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
-import java.util.List;
 import java.util.Map;
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
@@ -63,7 +62,7 @@ public class PropertyUpdateImpl extends TermedStatementDocumentUpdateImpl implem
 			long revisionId,
 			TermUpdate labels,
 			TermUpdate descriptions,
-			Map<String, List<MonolingualTextValue>> aliases,
+			Map<String, AliasUpdate> aliases,
 			StatementUpdate statements) {
 		super(entityId, revisionId, labels, descriptions, aliases, statements);
 	}

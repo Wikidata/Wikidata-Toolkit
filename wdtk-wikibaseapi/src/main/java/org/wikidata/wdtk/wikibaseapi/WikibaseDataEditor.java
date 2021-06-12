@@ -33,6 +33,7 @@ import org.wikidata.wdtk.datamodel.helpers.StatementDocumentUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.TermUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.TermedDocumentUpdateBuilder;
+import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
@@ -584,35 +585,20 @@ public class WikibaseDataEditor {
 					TermedDocumentUpdateBuilder builder = TermedDocumentUpdateBuilder
 							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
 					String language = typed.getAliases().keySet().stream().findFirst().get();
-					builder.putAliases(language, typed.getAliases().get(language));
+					AliasUpdate aliases = typed.getAliases().get(language);
+					builder.updateAliases(language, aliases);
 					if (builder.build().equals(update)) {
-						List<String> aliases = typed.getAliases().get(language).stream()
-								.map(v -> v.getText())
-								.collect(toList());
-						/*if (typed.getBaseRevision() != null
-								&& typed.getBaseRevision().getAliases().containsKey(language)) {
-							List<String> original = typed.getBaseRevision().getAliases().get(language).stream()
-									.map(v -> v.getText())
-									.collect(toList());
-							List<String> added = aliases.stream()
-									.filter(a -> !original.contains(a))
-									.collect(toList());
-							List<String> removed = original.stream()
-									.filter(a -> !aliases.contains(a))
-									.collect(toList());
-							List<String> simulated = new ArrayList<>(original);
-							for (String alias : removed) {
-								simulated.remove(alias);
-							}
-							simulated.addAll(added);
-							if (simulated.equals(aliases)) {
-								wbEditingAction.wbSetAliases(update.getEntityId().getId(), null, null, null,
-										language, added, removed, null, editAsBot, revisionId, summary, tags);
-								return;
-							}
-						}*/
+						List<String> added = !aliases.getAdded().isEmpty()
+								? aliases.getAdded().stream().map(a -> a.getText()).collect(toList())
+								: null;
+						List<String> removed = !aliases.getRemoved().isEmpty()
+								? aliases.getRemoved().stream().map(a -> a.getText()).collect(toList())
+								: null;
+						List<String> recreated = aliases.getRecreated()
+								.map(l -> l.stream().map(a -> a.getText()).collect(toList()))
+								.orElse(null);
 						wbEditingAction.wbSetAliases(update.getEntityId().getId(), null, null, null,
-								language, null, null, aliases, editAsBot, revisionId, summary, tags);
+								language, added, removed, recreated, editAsBot, revisionId, summary, tags);
 						return;
 					}
 				}

@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.helpers;
 
 import java.util.Objects;
 
+import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -463,6 +464,18 @@ public class Hash {
 	 */
 	public static int hashCode(TermUpdate o) {
 		return Objects.hash(o.getModified(), o.getRemoved());
+	}
+
+	/**
+	 * Calculates hash code for given {@link AliasUpdate} object.
+	 *
+	 * @see Object#hashCode()
+	 * @param o
+	 *            the object to create a hash for
+	 * @return object's hash code
+	 */
+	public static int hashCode(AliasUpdate o) {
+		return Objects.hash(o.getRecreated(), o.getAdded(), o.getRemoved());
 	}
 
 	/**

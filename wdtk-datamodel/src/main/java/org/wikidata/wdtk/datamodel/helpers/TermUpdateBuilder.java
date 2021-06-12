@@ -30,7 +30,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 /**
@@ -69,7 +68,7 @@ public class TermUpdateBuilder {
 	 * terms. Provided terms will be used to check correctness of changes.
 	 * <p>
 	 * Since all changes will be checked after the {@link TermUpdate} is passed to
-	 * {@link EntityDocumentBuilder} anyway, it is usually unnecessary to use this
+	 * {@link EntityUpdateBuilder} anyway, it is usually unnecessary to use this
 	 * method. It is simpler to initialize the builder with {@link #create()}.
 	 * 
 	 * @param terms
@@ -86,15 +85,10 @@ public class TermUpdateBuilder {
 	}
 
 	/**
-	 * Adds or changes term. If there is no term for the language code, new term is
-	 * added. If a term with this langua *
-	 * <p>
-	 * Since all changes will be checked after the {@link StatementUpdate} is passed
-	 * to {@link EntityDocumentBuilder} anyway, it is usually unnecessary to use
-	 * this method. It is simpler to initialize the builder with {@link #create()}.
-	 * ge code already exists, it is replaced. Terms with other language codes are
-	 * not touched. Calling this method overrides any previous changes made with the
-	 * same language code by this method or {@link #remove(String)}.
+	 * Adds or changes term. If a term with this language code already exists, it is
+	 * replaced. Terms with other language codes are not touched. Calling this
+	 * method overrides any previous changes made with the same language code by
+	 * this method or {@link #remove(String)}.
 	 * <p>
 	 * If base revision terms were provided, attempt to overwrite some term with the
 	 * same value will be silently ignored, resulting in empty update.

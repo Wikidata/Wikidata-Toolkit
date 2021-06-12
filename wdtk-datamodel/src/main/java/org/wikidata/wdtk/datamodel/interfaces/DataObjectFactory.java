@@ -29,13 +29,13 @@ import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
 import org.wikidata.wdtk.datamodel.helpers.ItemUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.LexemeUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.MediaInfoUpdateBuilder;
-import org.wikidata.wdtk.datamodel.helpers.TermUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.PropertyDocumentBuilder;
 import org.wikidata.wdtk.datamodel.helpers.PropertyUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.ReferenceBuilder;
 import org.wikidata.wdtk.datamodel.helpers.SenseUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.TermUpdateBuilder;
 
 /**
  * Interface for factories that create data objects that implement the
@@ -610,6 +610,30 @@ public interface DataObjectFactory {
 			Collection<String> removed);
 
 	/**
+	 * Creates new {@link AliasUpdate}. Callers should specify either
+	 * {@code recreated} parameter or {@code added} and {@code removed} parameters,
+	 * because combination of the two update approaches is not possible. To remove
+	 * all aliases, pass empty list in {@code recreated} parameter.
+	 * 
+	 * @param recreated
+	 *            new list of aliases that completely replaces the old ones or
+	 *            {@code null} to not recreate aliases
+	 * @param added
+	 *            aliases added in this update or empty collection for no additions
+	 * @param removed
+	 *            aliases removed in this update or empty collection for no removals
+	 * @return new {@link AliasUpdate}
+	 * @throws NullPointerException
+	 *             if {@code added}, {@code removed}, or any alias is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if given invalid combination of parameters
+	 */
+	AliasUpdate getAliasUpdate(
+			List<MonolingualTextValue> recreated,
+			List<MonolingualTextValue> added,
+			Collection<MonolingualTextValue> removed);
+
+	/**
 	 * Creates new {@link StatementUpdate}. It might be more convenient to use
 	 * {@link StatementUpdateBuilder}.
 	 * 
@@ -784,7 +808,7 @@ public interface DataObjectFactory {
 			long revisionId,
 			TermUpdate labels,
 			TermUpdate descriptions,
-			Map<String, List<MonolingualTextValue>> aliases,
+			Map<String, AliasUpdate> aliases,
 			StatementUpdate statements,
 			Collection<SiteLink> modifiedSiteLinks,
 			Collection<String> removedSiteLinks);
@@ -816,7 +840,7 @@ public interface DataObjectFactory {
 			long revisionId,
 			TermUpdate labels,
 			TermUpdate descriptions,
-			Map<String, List<MonolingualTextValue>> aliases,
+			Map<String, AliasUpdate> aliases,
 			StatementUpdate statements);
 
 }

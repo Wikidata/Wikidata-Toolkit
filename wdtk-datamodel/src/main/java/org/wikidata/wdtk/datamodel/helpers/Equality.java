@@ -664,6 +664,30 @@ public class Equality {
 	}
 
 	/**
+	 * Returns {@code true} if the two {@link AliasUpdate} objects contain exactly
+	 * the same data. It does not matter whether they are different implementations
+	 * of the interface as long as their content is the same.
+	 *
+	 * @param o1
+	 *            the first object to compare
+	 * @param o2
+	 *            the second object to compare
+	 * @return {@code true} if both objects are equal
+	 */
+	public static boolean equalsAliasUpdate(AliasUpdate o1, Object o2) {
+		if (o2 == o1) {
+			return true;
+		}
+		if (!(o2 instanceof AliasUpdate)) {
+			return false;
+		}
+		AliasUpdate other = (AliasUpdate) o2;
+		return Objects.equals(o1.getRecreated(), other.getRecreated())
+				&& Objects.equals(o1.getAdded(), other.getAdded())
+				&& Objects.equals(o1.getRemoved(), other.getRemoved());
+	}
+
+	/**
 	 * Returns {@code true} if the two {@link StatementUpdate} objects contain
 	 * exactly the same data. It does not matter whether they are different
 	 * implementations of the interface as long as their content is the same.

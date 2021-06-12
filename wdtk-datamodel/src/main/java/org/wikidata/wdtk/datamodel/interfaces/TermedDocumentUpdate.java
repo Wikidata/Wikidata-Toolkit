@@ -19,7 +19,6 @@
  */
 package org.wikidata.wdtk.datamodel.interfaces;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,12 +35,12 @@ public interface TermedDocumentUpdate extends LabeledDocumentUpdate {
 	TermUpdate getDescriptions();
 
 	/**
-	 * Returns changes in entity aliases. If language code is not in the returned
-	 * map, aliases for that language do not change. If alias list is empty, any
-	 * existing aliases for that language will be removed.
+	 * Returns changes in entity aliases. All {@link AliasUpdate} instances are
+	 * non-empty. If language code is not in the returned map, aliases for that
+	 * language do not change.
 	 * 
 	 * @return changes in aliases
 	 */
-	Map<String, List<MonolingualTextValue>> getAliases();
+	Map<String, AliasUpdate> getAliases();
 
 }
