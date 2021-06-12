@@ -45,7 +45,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Jackson implementation of {@link ItemUpdate}.
  */
-public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements ItemUpdate {
+public class ItemUpdateImpl extends TermedDocumentUpdateImpl implements ItemUpdate {
 
 	@JsonIgnore
 	private final Map<String, SiteLink> modifiedSiteLinks;

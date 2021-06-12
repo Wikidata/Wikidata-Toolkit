@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * Jackson implementation of {@link MediaInfoUpdate}.
  */
-public class MediaInfoUpdateImpl extends LabeledStatementDocumentUpdateImpl implements MediaInfoUpdate {
+public class MediaInfoUpdateImpl extends LabeledDocumentUpdateImpl implements MediaInfoUpdate {
 
 	/**
 	 * Initializes new media update.

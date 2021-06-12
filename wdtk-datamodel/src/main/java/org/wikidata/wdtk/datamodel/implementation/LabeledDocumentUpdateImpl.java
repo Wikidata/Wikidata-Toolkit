@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Jackson implementation of {@link LabeledStatementDocumentUpdate}.
  */
-public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocumentUpdateImpl
+public abstract class LabeledDocumentUpdateImpl extends StatementDocumentUpdateImpl
 		implements LabeledStatementDocumentUpdate {
 
 	@JsonIgnore
@@ -56,7 +56,7 @@ public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocume
 	 * @throws IllegalArgumentException
 	 *             if any parameters or their combination is invalid
 	 */
-	protected LabeledStatementDocumentUpdateImpl(
+	protected LabeledDocumentUpdateImpl(
 			EntityIdValue entityId,
 			long revisionId,
 			TermUpdate labels,

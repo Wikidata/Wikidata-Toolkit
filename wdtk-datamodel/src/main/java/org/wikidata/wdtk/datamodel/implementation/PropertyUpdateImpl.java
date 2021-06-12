@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * Jackson implementation of {@link PropertyUpdate}.
  */
-public class PropertyUpdateImpl extends TermedStatementDocumentUpdateImpl implements PropertyUpdate {
+public class PropertyUpdateImpl extends TermedDocumentUpdateImpl implements PropertyUpdate {
 
 	/**
 	 * Initializes new property update.

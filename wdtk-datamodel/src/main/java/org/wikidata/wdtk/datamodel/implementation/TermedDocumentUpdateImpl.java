@@ -39,7 +39,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Jackson implementation of {@link TermedStatementDocumentUpdate}.
  */
-public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatementDocumentUpdateImpl
+public abstract class TermedDocumentUpdateImpl extends LabeledDocumentUpdateImpl
 		implements TermedStatementDocumentUpdate {
 
 	@JsonIgnore
@@ -67,7 +67,7 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 	 * @throws IllegalArgumentException
 	 *             if any parameters or their combination is invalid
 	 */
-	protected TermedStatementDocumentUpdateImpl(
+	protected TermedDocumentUpdateImpl(
 			EntityIdValue entityId,
 			long revisionId,
 			TermUpdate labels,
