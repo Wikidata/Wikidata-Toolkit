@@ -278,6 +278,7 @@ public interface DataObjectFactory {
 	 * @return a {@link QuantityValue} corresponding to the input
 	 * @deprecated use {@link #getQuantityValue(BigDecimal, BigDecimal, BigDecimal, ItemIdValue)}
 	 */
+	@Deprecated
 	QuantityValue getQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound, String unit);
 	
