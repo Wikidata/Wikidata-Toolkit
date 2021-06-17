@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
@@ -57,15 +56,11 @@ public class EntityUpdateBuilderTest {
 	static final PropertyDocument PROPERTY = Datamodel.makePropertyDocument(
 			P1, Datamodel.makeDatatypeIdValue(DatatypeIdValue.DT_ITEM));
 	static final MediaInfoDocument MEDIA = Datamodel.makeMediaInfoDocument(M1);
-	static final LexemeDocument LEXEME = Datamodel.makeLexemeDocument(L1, Q1, Q1,
-			Arrays.asList(Datamodel.makeMonolingualTextValue("hello", "en")));
-	static final FormDocument FORM = Datamodel.makeFormDocument(
-			F1,
-			Arrays.asList(Datamodel.makeMonolingualTextValue("hello", "en")),
-			Collections.emptyList(),
-			Collections.emptyList());
-	static final SenseDocument SENSE = Datamodel.makeSenseDocument(
-			S1, Arrays.asList(Datamodel.makeMonolingualTextValue("something", "en")), Collections.emptyList());
+	static final LexemeDocument LEXEME = Datamodel.makeLexemeDocument(L1, Q1, Q1, Collections.emptyList());
+	static final FormDocument FORM = Datamodel.makeFormDocument(F1,
+			Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+	static final SenseDocument SENSE = Datamodel.makeSenseDocument(S1,
+			Collections.emptyList(), Collections.emptyList());
 
 	@Test
 	public void testForEntityId() {
