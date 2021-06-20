@@ -48,6 +48,7 @@ public class AliasUpdateBuilder {
 			Validate.isTrue(
 					base.stream().map(v -> v.getLanguageCode()).distinct().count() <= 1,
 					"Base document aliases must have the same language code.");
+			Validate.isTrue(base.stream().distinct().count() == base.size(), "Base document aliases must be unique.");
 			this.base = new ArrayList<>(base);
 			languageCode = base.stream().map(v -> v.getLanguageCode()).findFirst().orElse(null);
 		} else
@@ -153,7 +154,6 @@ public class AliasUpdateBuilder {
 		} else if (!removed.contains(alias) && (base == null || base.contains(alias))) {
 			removed.add(alias);
 		}
-		removed.add(alias);
 		languageCode = alias.getLanguageCode();
 		return this;
 	}
