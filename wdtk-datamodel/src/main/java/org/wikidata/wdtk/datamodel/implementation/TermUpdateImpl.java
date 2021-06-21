@@ -26,8 +26,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -55,11 +58,21 @@ public class TermUpdateImpl implements TermUpdate {
 	 * @param removed
 	 *            language codes of removed terms
 	 * @throws NullPointerException
-	 *             if any required parameter is {@code null}
+	 *             if any required parameter or its item is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if any parameters or their combination is invalid
 	 */
 	public TermUpdateImpl(Collection<MonolingualTextValue> modified, Collection<String> removed) {
+		Objects.requireNonNull(modified, "Collection of modified terms cannot be null.");
+		Objects.requireNonNull(removed, "Collection of removed terms cannot be null.");
+		for (MonolingualTextValue value : modified) {
+			Objects.requireNonNull(value, "Modified term cannot be null.");
+		}
+		for (String language : removed) {
+			Validate.notBlank(language, "Language code must be a non-blank string.");
+		}
+		long distinct = Stream.concat(removed.stream(), modified.stream().map(v -> v.getLanguageCode())).distinct().count();
+		Validate.isTrue(distinct == modified.size() + removed.size(), "Every term must have unique language code.");
 		this.modified = Collections.unmodifiableMap(modified.stream()
 				.map(TermImpl::new)
 				.collect(toMap(v -> v.getLanguageCode(), r -> r)));
