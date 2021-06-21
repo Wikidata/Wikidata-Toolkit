@@ -80,7 +80,7 @@
 		<hamcrestVersion>2.2</hamcrestVersion>
 		<mockitoVersion>3.11.1</mockitoVersion>
 		<rdf4jVersion>3.7.0</rdf4jVersion>
-		<slf4jVersion>1.7.30</slf4jVersion>
+		<slf4jVersion>1.7.31</slf4jVersion>
 		<threetenVersion>1.6.0</threetenVersion>
 		<okhttpSignpostVersion>1.1.0</okhttpSignpostVersion>
 		<okhttpVersion>5.0.0-alpha.2</okhttpVersion>
