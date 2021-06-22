@@ -46,7 +46,7 @@ public class StatementUpdateImplTest {
 
 	private static final Collection<Statement> NO_STATEMENTS = Collections.emptyList();
 	private static final Collection<String> NO_IDS = Collections.emptyList();
-	private static final EntityIdValue JOHN = Datamodel.makeWikidataItemIdValue("Q1");
+	static final ItemIdValue JOHN = Datamodel.makeWikidataItemIdValue("Q1");
 	private static final EntityIdValue RITA = Datamodel.makeWikidataItemIdValue("Q2");
 	private static final PropertyIdValue HAIR = Datamodel.makeWikidataPropertyIdValue("P1");
 	private static final PropertyIdValue EYES = Datamodel.makeWikidataPropertyIdValue("P2");
@@ -58,7 +58,7 @@ public class StatementUpdateImplTest {
 			.withValue(BROWN)
 			.build();
 	private static final Statement NOBODY_ALREADY_HAS_BROWN_HAIR = NOBODY_HAS_BROWN_HAIR.withStatementId("ID1");
-	private static final Statement JOHN_HAS_BROWN_HAIR = StatementBuilder
+	static final Statement JOHN_HAS_BROWN_HAIR = StatementBuilder
 			.forSubjectAndProperty(JOHN, HAIR)
 			.withValue(BROWN)
 			.build();

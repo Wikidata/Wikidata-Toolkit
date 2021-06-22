@@ -20,21 +20,15 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.helpers.PropertyUpdateBuilder;
-import org.wikidata.wdtk.datamodel.helpers.StatementUpdateBuilder;
-import org.wikidata.wdtk.datamodel.helpers.TermUpdateBuilder;
-import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
@@ -43,47 +37,39 @@ public class EntityUpdateImplTest {
 
 	private static final PropertyIdValue P1 = Datamodel.makeWikidataPropertyIdValue("P1");
 	private static final PropertyIdValue P2 = Datamodel.makeWikidataPropertyIdValue("P2");
-	private static final PropertyDocument PROPERTY = Datamodel.makePropertyDocument(
-			P1, Datamodel.makeDatatypeIdValue(DatatypeIdValue.DT_ITEM));
-	private static final TermUpdate NO_TERMS = TermUpdateBuilder.create().build();
-	private static final StatementUpdate NO_STATEMENTS = StatementUpdateBuilder.create().build();
-	private static final Map<String, AliasUpdate> NO_ALIASES = Collections.emptyMap();
+
+	private static EntityUpdate create(PropertyIdValue entityId, long revisionId) {
+		return new PropertyUpdateImpl(entityId, revisionId,
+				TermUpdate.NULL, TermUpdate.NULL, Collections.emptyMap(), StatementUpdate.NULL);
+	}
 
 	@Test
 	public void testFields() {
-		EntityUpdate update = new PropertyUpdateImpl(P1, 123, NO_TERMS, NO_TERMS, NO_ALIASES, NO_STATEMENTS);
+		EntityUpdate update = create(P1, 123);
 		assertEquals(P1, update.getEntityId());
 		assertEquals(123, update.getBaseRevisionId());
-		update = new PropertyUpdateImpl(P1, 0, NO_TERMS, NO_TERMS, NO_ALIASES, NO_STATEMENTS);
+		update = create(P1, 0);
 		assertEquals(0, update.getBaseRevisionId());
 	}
 
 	@Test
 	public void testValidation() {
-		assertThrows(NullPointerException.class, () -> new PropertyUpdateImpl(
-				null, 0, NO_TERMS, NO_TERMS, NO_ALIASES, NO_STATEMENTS));
-		assertThrows(IllegalArgumentException.class, () -> new PropertyUpdateImpl(
-				PropertyIdValue.NULL, 0, NO_TERMS, NO_TERMS, NO_ALIASES, NO_STATEMENTS));
+		assertThrows(NullPointerException.class, () -> create(null, 0));
+		assertThrows(IllegalArgumentException.class, () -> create(PropertyIdValue.NULL, 0));
 	}
 
 	@Test
 	public void testEquality() {
-		EntityUpdate update1 = PropertyUpdateBuilder.forEntityId(P1).build();
-		EntityUpdate update2 = PropertyUpdateBuilder.forBaseRevision(PROPERTY).build();
-		assertEquals(update1, update1);
-		assertEquals(update1, update2);
-		assertEquals(update1, PropertyUpdateBuilder.forEntityId(P1).build());
-		assertNotEquals(update1, null);
-		assertNotEquals(update1, this);
-		assertNotEquals(update1, PropertyUpdateBuilder.forEntityId(P2).build());
-		assertNotEquals(update2, PropertyUpdateBuilder.forBaseRevision(PROPERTY.withRevisionId(1234)).build());
+		EntityUpdate update = create(P1, 123);
+		assertTrue(update.equals(update));
+		assertTrue(update.equals(create(P1, 123)));
+		assertFalse(update.equals(create(P2, 123)));
+		assertFalse(update.equals(create(P1, 777)));
 	}
 
 	@Test
 	public void testHashCode() {
-		assertEquals(
-				PropertyUpdateBuilder.forBaseRevision(PROPERTY).build().hashCode(),
-				PropertyUpdateBuilder.forBaseRevision(PROPERTY).build().hashCode());
+		assertEquals(create(P1, 123).hashCode(), create(P1, 123).hashCode());
 	}
 
 }
