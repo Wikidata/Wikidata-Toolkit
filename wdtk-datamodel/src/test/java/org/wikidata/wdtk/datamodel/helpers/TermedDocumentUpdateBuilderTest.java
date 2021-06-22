@@ -127,12 +127,12 @@ public class TermedDocumentUpdateBuilderTest {
 	@Test
 	public void testBlindAliasChanges() {
 		TermedDocumentUpdateBuilder builder = TermedDocumentUpdateBuilder.forEntityId(Q1);
-		assertThrows(NullPointerException.class, () -> builder.updateAliases(null, AliasUpdate.NULL));
-		assertThrows(IllegalArgumentException.class, () -> builder.updateAliases(" ", AliasUpdate.NULL));
+		assertThrows(NullPointerException.class, () -> builder.updateAliases(null, AliasUpdate.EMPTY));
+		assertThrows(IllegalArgumentException.class, () -> builder.updateAliases(" ", AliasUpdate.EMPTY));
 		assertThrows(NullPointerException.class, () -> builder.updateAliases("en", null));
 		TermedStatementDocumentUpdate update = builder
 				.updateAliases("sk", AliasUpdateBuilder.create().add(SK).build()) // simple case
-				.updateAliases("cs", AliasUpdate.NULL) // empty update
+				.updateAliases("cs", AliasUpdate.EMPTY) // empty update
 				.updateAliases("de", AliasUpdateBuilder.create().add(DE).build())
 				.updateAliases("de", AliasUpdateBuilder.create().add(DE2).build()) // merge changes
 				.build();

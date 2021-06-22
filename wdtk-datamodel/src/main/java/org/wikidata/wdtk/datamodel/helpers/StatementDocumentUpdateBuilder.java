@@ -47,7 +47,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
  */
 public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder {
 
-	StatementUpdate statements = StatementUpdate.NULL;
+	StatementUpdate statements = StatementUpdate.EMPTY;
 
 	/**
 	 * Initializes new builder object for constructing update of entity with given

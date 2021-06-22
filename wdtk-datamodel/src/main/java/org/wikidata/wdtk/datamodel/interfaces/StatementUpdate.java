@@ -36,7 +36,7 @@ public interface StatementUpdate {
 	/**
 	 * Empty update that does not alter or add any statements.
 	 */
-	StatementUpdate NULL = new StatementUpdateImpl(
+	StatementUpdate EMPTY = new StatementUpdateImpl(
 			Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
 
 	/**

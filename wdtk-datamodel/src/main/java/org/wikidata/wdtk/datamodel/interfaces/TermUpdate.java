@@ -33,7 +33,7 @@ public interface TermUpdate {
 	/**
 	 * Empty update that does not alter or remove any terms.
 	 */
-	TermUpdate NULL = new TermUpdateImpl(Collections.emptyList(), Collections.emptyList());
+	TermUpdate EMPTY = new TermUpdateImpl(Collections.emptyList(), Collections.emptyList());
 
 	/**
 	 * Checks whether the update is empty. Empty update will not change or remove

@@ -48,7 +48,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	private ItemIdValue language;
 	private ItemIdValue lexicalCategory;
-	private TermUpdate lemmas = TermUpdate.NULL;
+	private TermUpdate lemmas = TermUpdate.EMPTY;
 	private final List<SenseDocument> addedSenses = new ArrayList<>();
 	private final Map<SenseIdValue, SenseUpdate> updatedSenses = new HashMap<>();
 	private final Set<SenseIdValue> removedSenses = new HashSet<>();

@@ -40,7 +40,7 @@ public class EntityUpdateImplTest {
 
 	private static EntityUpdate create(PropertyIdValue entityId, long revisionId) {
 		return new PropertyUpdateImpl(entityId, revisionId,
-				TermUpdate.NULL, TermUpdate.NULL, Collections.emptyMap(), StatementUpdate.NULL);
+				TermUpdate.EMPTY, TermUpdate.EMPTY, Collections.emptyMap(), StatementUpdate.EMPTY);
 	}
 
 	@Test

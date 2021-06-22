@@ -32,7 +32,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
  */
 public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 
-	private TermUpdate glosses = TermUpdate.NULL;
+	private TermUpdate glosses = TermUpdate.EMPTY;
 
 	private SenseUpdateBuilder(SenseIdValue senseId, long revisionId) {
 		super(senseId, revisionId);

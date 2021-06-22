@@ -40,7 +40,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
  */
 public abstract class LabeledDocumentUpdateBuilder extends StatementDocumentUpdateBuilder {
 
-	TermUpdate labels = TermUpdate.NULL;
+	TermUpdate labels = TermUpdate.EMPTY;
 
 	/**
 	 * Initializes new builder object for constructing update of entity with given

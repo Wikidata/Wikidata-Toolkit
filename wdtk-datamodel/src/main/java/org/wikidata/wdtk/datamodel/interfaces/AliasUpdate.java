@@ -38,7 +38,7 @@ public interface AliasUpdate {
 	/**
 	 * Empty update that does not alter or remove any aliases.
 	 */
-	AliasUpdate NULL = new AliasUpdateImpl(null, Collections.emptyList(), Collections.emptyList());
+	AliasUpdate EMPTY = new AliasUpdateImpl(null, Collections.emptyList(), Collections.emptyList());
 
 	/**
 	 * Checks whether the update is empty. Empty update will not alter alias list in

@@ -45,7 +45,7 @@ public class StatementDocumentUpdateImplTest {
 	private static final Collection<String> NO_REMOVED_SITELINKS = Collections.emptyList();
 
 	private static StatementDocumentUpdate create(ItemIdValue entityId, long revisionId, StatementUpdate statements) {
-		return new ItemUpdateImpl(entityId, revisionId, TermUpdate.NULL, TermUpdate.NULL, Collections.emptyMap(),
+		return new ItemUpdateImpl(entityId, revisionId, TermUpdate.EMPTY, TermUpdate.EMPTY, Collections.emptyMap(),
 				statements, NO_SITELINKS, NO_REMOVED_SITELINKS);
 	}
 
@@ -67,7 +67,7 @@ public class StatementDocumentUpdateImplTest {
 	public void testEmpty() {
 		StatementUpdate statements = StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build();
 		assertFalse(create(JOHN, 0, statements).isEmpty());
-		assertTrue(create(JOHN, 0, StatementUpdate.NULL).isEmpty());
+		assertTrue(create(JOHN, 0, StatementUpdate.EMPTY).isEmpty());
 	}
 
 	@Test
@@ -79,7 +79,7 @@ public class StatementDocumentUpdateImplTest {
 				StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())));
 		assertFalse(update.equals(create(JOHN, 123,
 				StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())));
-		assertFalse(update.equals(create(JOHN, 0, StatementUpdate.NULL)));
+		assertFalse(update.equals(create(JOHN, 0, StatementUpdate.EMPTY)));
 	}
 
 	@Test

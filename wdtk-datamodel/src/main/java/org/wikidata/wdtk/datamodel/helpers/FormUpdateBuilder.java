@@ -37,7 +37,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
  */
 public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 
-	private TermUpdate representations = TermUpdate.NULL;
+	private TermUpdate representations = TermUpdate.EMPTY;
 	private Set<ItemIdValue> grammaticalFeatures;
 
 	private FormUpdateBuilder(FormIdValue formId, long revisionId) {

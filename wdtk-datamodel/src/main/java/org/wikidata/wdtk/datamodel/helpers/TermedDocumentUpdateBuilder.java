@@ -42,7 +42,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
  */
 public abstract class TermedDocumentUpdateBuilder extends LabeledDocumentUpdateBuilder {
 
-	TermUpdate descriptions = TermUpdate.NULL;
+	TermUpdate descriptions = TermUpdate.EMPTY;
 	final Map<String, AliasUpdate> aliases = new HashMap<>();
 
 	/**
@@ -225,7 +225,7 @@ public abstract class TermedDocumentUpdateBuilder extends LabeledDocumentUpdateB
 		} else {
 			builder = AliasUpdateBuilder.create();
 		}
-		builder.append(aliases.getOrDefault(language, AliasUpdate.NULL));
+		builder.append(aliases.getOrDefault(language, AliasUpdate.EMPTY));
 		builder.append(update);
 		AliasUpdate combined = builder.build();
 		if (!combined.isEmpty()) {
