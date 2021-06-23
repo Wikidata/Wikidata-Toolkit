@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
@@ -63,7 +64,7 @@ public abstract class TermedDocumentUpdateImpl extends LabeledDocumentUpdateImpl
 	 * @param statements
 	 *            changes in entity statements, possibly empty
 	 * @throws NullPointerException
-	 *             if any required parameter is {@code null}
+	 *             if any required parameter or its part is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if any parameters or their combination is invalid
 	 */
@@ -77,6 +78,14 @@ public abstract class TermedDocumentUpdateImpl extends LabeledDocumentUpdateImpl
 		super(entityId, revisionId, labels, statements);
 		Objects.requireNonNull(descriptions, "Description update cannot be null.");
 		Objects.requireNonNull(aliases, "Alias map cannot be null.");
+		for (Map.Entry<String, AliasUpdate> entry : aliases.entrySet()) {
+			Validate.notBlank(entry.getKey(), "Alias language code cannot be null or blank.");
+			Objects.requireNonNull(entry.getValue(), "Alias update cannot be null.");
+			if (entry.getValue().getLanguageCode().isPresent()) {
+				Validate.isTrue(entry.getValue().getLanguageCode().get().equals(entry.getKey()),
+						"Inconsistent alias language codes.");
+			}
+		}
 		this.descriptions = descriptions;
 		this.aliases = Collections.unmodifiableMap(aliases.keySet().stream()
 				.filter(k -> !aliases.get(k).isEmpty())
