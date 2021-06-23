@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
@@ -78,6 +79,15 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 			StatementUpdate statements) {
 		super(entityId, revisionId, statements);
 		Objects.requireNonNull(representations, "Representation update cannot be null.");
+		if (grammaticalFeatures != null) {
+			for (ItemIdValue feature : grammaticalFeatures) {
+				Objects.requireNonNull(feature, "Grammatical feature cannot be null.");
+				Validate.isTrue(!feature.isPlaceholder(), "Grammatical feature cannot be a placeholder ID.");
+			}
+			Validate.isTrue(
+					grammaticalFeatures.stream().distinct().count() == grammaticalFeatures.size(),
+					"Grammatical features must be unique.");
+		}
 		this.representations = representations;
 		this.grammaticalFeatures = grammaticalFeatures != null
 				? Collections.unmodifiableSet(new HashSet<>(grammaticalFeatures))

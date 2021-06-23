@@ -61,6 +61,7 @@ public class SenseUpdateImplTest {
 	}
 
 	@Test
+	@SuppressWarnings("unlikely-arg-type")
 	public void testEquality() {
 		SenseUpdate update = new SenseUpdateImpl(S1, 0, GLOSSES, STATEMENTS);
 		assertFalse(update.equals(null));
