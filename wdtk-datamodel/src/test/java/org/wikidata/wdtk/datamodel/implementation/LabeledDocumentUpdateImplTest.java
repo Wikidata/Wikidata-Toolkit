@@ -44,8 +44,8 @@ public class LabeledDocumentUpdateImplTest {
 	private static final Statement JOHN_HAS_BROWN_HAIR = StatementUpdateImplTest.JOHN_HAS_BROWN_HAIR;
 	private static final Collection<SiteLink> NO_SITELINKS = Collections.emptyList();
 	private static final Collection<String> NO_REMOVED_SITELINKS = Collections.emptyList();
-	private static final StatementUpdate STATEMENTS = StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build();
-	private static final TermUpdate LABELS = TermUpdateBuilder.create().remove("en").build();
+	static final StatementUpdate STATEMENTS = StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build();
+	static final TermUpdate LABELS = TermUpdateBuilder.create().remove("en").build();
 
 	private static LabeledStatementDocumentUpdate create(
 			ItemIdValue entityId, long revisionId, StatementUpdate statements, TermUpdate labels) {

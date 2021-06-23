@@ -35,12 +35,10 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.AliasUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.helpers.StatementUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.TermUpdateBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
@@ -48,8 +46,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
 public class TermedDocumentUpdateImplTest {
 
 	private static final ItemIdValue JOHN = StatementUpdateImplTest.JOHN;
-	private static final Statement JOHN_HAS_BROWN_HAIR = StatementUpdateImplTest.JOHN_HAS_BROWN_HAIR;
-	private static final StatementUpdate STATEMENTS = StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build();
+	private static final StatementUpdate STATEMENTS = LabeledDocumentUpdateImplTest.STATEMENTS;
 	private static final MonolingualTextValue EN = Datamodel.makeMonolingualTextValue("hello", "en");
 	private static final MonolingualTextValue SK = Datamodel.makeMonolingualTextValue("ahoj", "sk");
 	private static final TermUpdate LABELS = TermUpdateBuilder.create().remove("de").build();
