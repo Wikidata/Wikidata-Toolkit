@@ -50,8 +50,8 @@ public class TermedDocumentUpdateImplTest {
 	private static final MonolingualTextValue EN = Datamodel.makeMonolingualTextValue("hello", "en");
 	private static final MonolingualTextValue SK = Datamodel.makeMonolingualTextValue("ahoj", "sk");
 	private static final TermUpdate LABELS = TermUpdateBuilder.create().remove("de").build();
-	private static final TermUpdate DESCRIPTIONS = TermUpdateBuilder.create().remove("en").build();
-	private static final Map<String, AliasUpdate> ALIASES = new HashMap<>();
+	static final TermUpdate DESCRIPTIONS = TermUpdateBuilder.create().remove("en").build();
+	static final Map<String, AliasUpdate> ALIASES = new HashMap<>();
 
 	static {
 		ALIASES.put("en", AliasUpdateBuilder.create().add(EN).build());

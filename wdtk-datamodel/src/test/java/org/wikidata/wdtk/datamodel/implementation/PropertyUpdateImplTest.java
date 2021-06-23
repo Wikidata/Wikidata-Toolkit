@@ -24,50 +24,62 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
-public class MediaInfoUpdateImplTest {
+public class PropertyUpdateImplTest {
 
-	private static final MediaInfoIdValue M1 = Datamodel.makeWikimediaCommonsMediaInfoIdValue("M1");
+	private static final PropertyIdValue P1 = Datamodel.makeWikidataPropertyIdValue("P1");
 	private static final StatementUpdate STATEMENTS = LabeledDocumentUpdateImplTest.STATEMENTS;
 	private static final TermUpdate LABELS = LabeledDocumentUpdateImplTest.LABELS;
+	private static final TermUpdate DESCRIPTIONS = TermedDocumentUpdateImplTest.DESCRIPTIONS;
+	private static final Map<String, AliasUpdate> ALIASES = TermedDocumentUpdateImplTest.ALIASES;
 
 	@Test
 	public void testFields() {
-		MediaInfoUpdate update = new MediaInfoUpdateImpl(M1, 123, LABELS, STATEMENTS);
-		assertEquals(M1, update.getEntityId());
+		PropertyUpdate update = new PropertyUpdateImpl(P1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS);
+		assertEquals(P1, update.getEntityId());
 		assertEquals(123, update.getBaseRevisionId());
 		assertSame(LABELS, update.getLabels());
+		assertSame(DESCRIPTIONS, update.getDescriptions());
+		assertEquals(ALIASES, update.getAliases());
 		assertSame(STATEMENTS, update.getStatements());
 	}
 
 	@Test
 	public void testEmpty() {
-		assertTrue(new MediaInfoUpdateImpl(M1, 123, TermUpdate.EMPTY, StatementUpdate.EMPTY).isEmpty());
-		assertFalse(new MediaInfoUpdateImpl(M1, 123, LABELS, StatementUpdate.EMPTY).isEmpty());
+		PropertyUpdate empty = new PropertyUpdateImpl(P1, 123, TermUpdate.EMPTY, TermUpdate.EMPTY,
+				Collections.emptyMap(), StatementUpdate.EMPTY);
+		assertTrue(empty.isEmpty());
+		PropertyUpdate nonempty = new PropertyUpdateImpl(P1, 123, TermUpdate.EMPTY, DESCRIPTIONS,
+				Collections.emptyMap(), StatementUpdate.EMPTY);
+		assertFalse(nonempty.isEmpty());
 	}
 
 	@Test
 	@SuppressWarnings("unlikely-arg-type")
 	public void testEquality() {
-		MediaInfoUpdate update = new MediaInfoUpdateImpl(M1, 123, LABELS, STATEMENTS);
+		PropertyUpdate update = new PropertyUpdateImpl(P1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS);
 		assertFalse(update.equals(null));
 		assertFalse(update.equals(this));
 		assertTrue(update.equals(update));
-		assertTrue(update.equals(new MediaInfoUpdateImpl(M1, 123, LABELS, STATEMENTS)));
-		assertFalse(update.equals(new MediaInfoUpdateImpl(M1, 123, TermUpdate.EMPTY, STATEMENTS)));
+		assertTrue(update.equals(new PropertyUpdateImpl(P1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS)));
+		assertFalse(update.equals(new PropertyUpdateImpl(P1, 123, LABELS, TermUpdate.EMPTY, ALIASES, STATEMENTS)));
 	}
 
 	@Test
 	public void testHashCode() {
 		assertEquals(
-				new MediaInfoUpdateImpl(M1, 123, LABELS, STATEMENTS).hashCode(),
-				new MediaInfoUpdateImpl(M1, 123, LABELS, STATEMENTS).hashCode());
+				new PropertyUpdateImpl(P1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS).hashCode(),
+				new PropertyUpdateImpl(P1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS).hashCode());
 	}
 
 }
