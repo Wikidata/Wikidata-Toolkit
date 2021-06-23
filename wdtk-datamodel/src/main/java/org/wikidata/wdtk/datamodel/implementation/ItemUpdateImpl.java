@@ -26,8 +26,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
@@ -72,7 +75,7 @@ public class ItemUpdateImpl extends TermedDocumentUpdateImpl implements ItemUpda
 	 * @param removedSiteLinks
 	 *            site keys of removed site links
 	 * @throws NullPointerException
-	 *             if any required parameter is {@code null}
+	 *             if any required parameter or its item is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if any parameters or their combination is invalid
 	 */
@@ -86,6 +89,21 @@ public class ItemUpdateImpl extends TermedDocumentUpdateImpl implements ItemUpda
 			Collection<SiteLink> modifiedSiteLinks,
 			Collection<String> removedSiteLinks) {
 		super(entityId, revisionId, labels, descriptions, aliases, statements);
+		Objects.requireNonNull(modifiedSiteLinks, "Collection of modified site links cannot be null.");
+		Objects.requireNonNull(removedSiteLinks, "Collection of removed site links cannot be null.");
+		for (SiteLink link : modifiedSiteLinks) {
+			Objects.requireNonNull(link, "Site link cannot be null.");
+		}
+		for (String siteKey : removedSiteLinks) {
+			Validate.notBlank(siteKey, "Site key of removed site link cannot be null or blank.");
+		}
+		long distinctSiteKeys = Stream
+				.concat(
+						modifiedSiteLinks.stream().map(l -> l.getSiteKey()),
+						removedSiteLinks.stream())
+				.distinct()
+				.count();
+		Validate.isTrue(distinctSiteKeys == modifiedSiteLinks.size() + removedSiteLinks.size(), "Duplicate site key.");
 		this.modifiedSiteLinks = Collections.unmodifiableMap(modifiedSiteLinks.stream()
 				.collect(toMap(sl -> sl.getSiteKey(), sl -> sl)));
 		this.removedSiteLinks = Collections.unmodifiableSet(new HashSet<>(removedSiteLinks));

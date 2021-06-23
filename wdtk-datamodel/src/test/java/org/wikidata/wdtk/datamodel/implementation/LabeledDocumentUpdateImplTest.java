@@ -40,7 +40,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 public class LabeledDocumentUpdateImplTest {
 
-	private static final ItemIdValue JOHN = StatementUpdateImplTest.JOHN;
+	static final ItemIdValue JOHN = StatementUpdateImplTest.JOHN;
 	private static final Statement JOHN_HAS_BROWN_HAIR = StatementUpdateImplTest.JOHN_HAS_BROWN_HAIR;
 	private static final Collection<SiteLink> NO_SITELINKS = Collections.emptyList();
 	private static final Collection<String> NO_REMOVED_SITELINKS = Collections.emptyList();
