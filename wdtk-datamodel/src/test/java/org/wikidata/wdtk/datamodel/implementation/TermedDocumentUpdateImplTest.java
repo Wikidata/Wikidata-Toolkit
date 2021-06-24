@@ -46,7 +46,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
 public class TermedDocumentUpdateImplTest {
 
 	private static final ItemIdValue JOHN = StatementUpdateImplTest.JOHN;
-	private static final StatementUpdate STATEMENTS = LabeledDocumentUpdateImplTest.STATEMENTS;
+	private static final StatementUpdate STATEMENTS = StatementDocumentUpdateImplTest.STATEMENTS;
 	private static final MonolingualTextValue EN = Datamodel.makeMonolingualTextValue("hello", "en");
 	private static final MonolingualTextValue SK = Datamodel.makeMonolingualTextValue("ahoj", "sk");
 	private static final TermUpdate LABELS = TermUpdateBuilder.create().remove("de").build();

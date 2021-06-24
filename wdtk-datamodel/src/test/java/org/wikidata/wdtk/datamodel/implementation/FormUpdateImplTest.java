@@ -46,7 +46,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 public class FormUpdateImplTest {
 
 	private static final FormIdValue F1 = Datamodel.makeWikidataFormIdValue("L1-F1");
-	private static final StatementUpdate STATEMENTS = LabeledDocumentUpdateImplTest.STATEMENTS;
+	private static final StatementUpdate STATEMENTS = StatementDocumentUpdateImplTest.STATEMENTS;
 	private static final TermUpdate REPRESENTATIONS = TermUpdateBuilder.create().remove("en").build();
 	private static final ItemIdValue FEATURE1 = Datamodel.makeWikidataItemIdValue("Q1");
 	private static final ItemIdValue FEATURE2 = Datamodel.makeWikidataItemIdValue("Q2");

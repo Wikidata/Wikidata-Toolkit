@@ -20,7 +20,9 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocumentUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
@@ -60,6 +62,10 @@ public abstract class StatementDocumentUpdateImpl extends EntityUpdateImpl imple
 			StatementUpdate statements) {
 		super(entityId, revisionId);
 		Objects.requireNonNull(statements, "Statement update cannot be null.");
+		EntityIdValue subject = Stream.concat(statements.getAdded().stream(), statements.getReplaced().values().stream())
+				.map(s -> s.getSubject())
+				.findFirst().orElse(null);
+		Validate.isTrue(subject == null || subject.equals(entityId), "Statements describe different subject.");
 		this.statements = statements;
 	}
 

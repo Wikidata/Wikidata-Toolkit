@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.StatementUpdateBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
@@ -38,7 +39,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 public class PropertyUpdateImplTest {
 
 	private static final PropertyIdValue P1 = Datamodel.makeWikidataPropertyIdValue("P1");
-	private static final StatementUpdate STATEMENTS = LabeledDocumentUpdateImplTest.STATEMENTS;
+	private static final StatementUpdate STATEMENTS = StatementUpdateBuilder.create().remove("ID123").build();
 	private static final TermUpdate LABELS = LabeledDocumentUpdateImplTest.LABELS;
 	private static final TermUpdate DESCRIPTIONS = TermedDocumentUpdateImplTest.DESCRIPTIONS;
 	private static final Map<String, AliasUpdate> ALIASES = TermedDocumentUpdateImplTest.ALIASES;

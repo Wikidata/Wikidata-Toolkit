@@ -62,7 +62,7 @@ public class StatementUpdateImplTest {
 			.forSubjectAndProperty(JOHN, HAIR)
 			.withValue(BROWN)
 			.build();
-	private static final Statement RITA_HAS_BROWN_HAIR = StatementBuilder
+	static final Statement RITA_HAS_BROWN_HAIR = StatementBuilder
 			.forSubjectAndProperty(RITA, HAIR)
 			.withValue(BROWN)
 			.build();

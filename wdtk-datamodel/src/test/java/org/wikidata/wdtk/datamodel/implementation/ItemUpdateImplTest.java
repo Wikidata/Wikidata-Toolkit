@@ -43,8 +43,8 @@ import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
 public class ItemUpdateImplTest {
 
-	private static final ItemIdValue JOHN = LabeledDocumentUpdateImplTest.JOHN;
-	private static final StatementUpdate STATEMENTS = LabeledDocumentUpdateImplTest.STATEMENTS;
+	private static final ItemIdValue Q1 = LabeledDocumentUpdateImplTest.JOHN;
+	private static final StatementUpdate STATEMENTS = StatementDocumentUpdateImplTest.STATEMENTS;
 	private static final TermUpdate LABELS = LabeledDocumentUpdateImplTest.LABELS;
 	private static final TermUpdate DESCRIPTIONS = TermedDocumentUpdateImplTest.DESCRIPTIONS;
 	private static final Map<String, AliasUpdate> ALIASES = TermedDocumentUpdateImplTest.ALIASES;
@@ -55,8 +55,8 @@ public class ItemUpdateImplTest {
 	@Test
 	public void testFields() {
 		ItemUpdate update = new ItemUpdateImpl(
-				JOHN, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, REMOVED_SITELINKS);
-		assertEquals(JOHN, update.getEntityId());
+				Q1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, REMOVED_SITELINKS);
+		assertEquals(Q1, update.getEntityId());
 		assertEquals(123, update.getBaseRevisionId());
 		assertSame(LABELS, update.getLabels());
 		assertSame(DESCRIPTIONS, update.getDescriptions());
@@ -70,35 +70,35 @@ public class ItemUpdateImplTest {
 	@Test
 	public void testValidation() {
 		assertThrows(NullPointerException.class, () -> new ItemUpdateImpl(
-				JOHN, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, null, REMOVED_SITELINKS));
+				Q1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, null, REMOVED_SITELINKS));
 		assertThrows(NullPointerException.class, () -> new ItemUpdateImpl(
-				JOHN, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, null));
+				Q1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, null));
 		assertThrows(NullPointerException.class, () -> new ItemUpdateImpl(
-				JOHN, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS,
+				Q1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS,
 				Arrays.asList(SITELINK1, null), REMOVED_SITELINKS));
 		assertThrows(NullPointerException.class, () -> new ItemUpdateImpl(
-				JOHN, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, Arrays.asList("skwiki", null)));
+				Q1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, Arrays.asList("skwiki", null)));
 		assertThrows(IllegalArgumentException.class, () -> new ItemUpdateImpl(
-				JOHN, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, Arrays.asList("skwiki", " ")));
+				Q1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, Arrays.asList("skwiki", " ")));
 		assertThrows(IllegalArgumentException.class, () -> new ItemUpdateImpl(
-				JOHN, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS,
+				Q1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS,
 				Arrays.asList(SITELINK1, SITELINK1), REMOVED_SITELINKS));
 		assertThrows(IllegalArgumentException.class, () -> new ItemUpdateImpl(
-				JOHN, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, Arrays.asList("skwiki", "skwiki")));
+				Q1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, Arrays.asList("skwiki", "skwiki")));
 		assertThrows(IllegalArgumentException.class, () -> new ItemUpdateImpl(
-				JOHN, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, Arrays.asList("enwiki")));
+				Q1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, Arrays.asList("enwiki")));
 	}
 
 	@Test
 	public void testEmpty() {
-		ItemUpdate empty = new ItemUpdateImpl(JOHN, 123, TermUpdate.EMPTY, TermUpdate.EMPTY,
+		ItemUpdate empty = new ItemUpdateImpl(Q1, 123, TermUpdate.EMPTY, TermUpdate.EMPTY,
 				Collections.emptyMap(), StatementUpdate.EMPTY, Collections.emptyList(), Collections.emptyList());
 		assertTrue(empty.isEmpty());
-		ItemUpdate nonempty1 = new ItemUpdateImpl(JOHN, 123, TermUpdate.EMPTY, DESCRIPTIONS,
+		ItemUpdate nonempty1 = new ItemUpdateImpl(Q1, 123, TermUpdate.EMPTY, DESCRIPTIONS,
 				Collections.emptyMap(), StatementUpdate.EMPTY, Collections.emptyList(), Collections.emptyList());
-		ItemUpdate nonempty2 = new ItemUpdateImpl(JOHN, 123, TermUpdate.EMPTY, TermUpdate.EMPTY,
+		ItemUpdate nonempty2 = new ItemUpdateImpl(Q1, 123, TermUpdate.EMPTY, TermUpdate.EMPTY,
 				Collections.emptyMap(), StatementUpdate.EMPTY, SITELINKS, Collections.emptyList());
-		ItemUpdate nonempty3 = new ItemUpdateImpl(JOHN, 123, TermUpdate.EMPTY, TermUpdate.EMPTY,
+		ItemUpdate nonempty3 = new ItemUpdateImpl(Q1, 123, TermUpdate.EMPTY, TermUpdate.EMPTY,
 				Collections.emptyMap(), StatementUpdate.EMPTY, Collections.emptyList(), REMOVED_SITELINKS);
 		assertFalse(nonempty1.isEmpty());
 		assertFalse(nonempty2.isEmpty());
@@ -109,26 +109,26 @@ public class ItemUpdateImplTest {
 	@SuppressWarnings("unlikely-arg-type")
 	public void testEquality() {
 		ItemUpdate update = new ItemUpdateImpl(
-				JOHN, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, REMOVED_SITELINKS);
+				Q1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, REMOVED_SITELINKS);
 		assertFalse(update.equals(null));
 		assertFalse(update.equals(this));
 		assertTrue(update.equals(update));
 		assertTrue(update.equals(new ItemUpdateImpl(
-				JOHN, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, REMOVED_SITELINKS)));
+				Q1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, REMOVED_SITELINKS)));
 		assertFalse(update.equals(new ItemUpdateImpl(
-				JOHN, 123, LABELS, TermUpdate.EMPTY, ALIASES, STATEMENTS, SITELINKS, REMOVED_SITELINKS)));
+				Q1, 123, LABELS, TermUpdate.EMPTY, ALIASES, STATEMENTS, SITELINKS, REMOVED_SITELINKS)));
 		assertFalse(update.equals(new ItemUpdateImpl(
-				JOHN, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, Collections.emptyList(), REMOVED_SITELINKS)));
+				Q1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, Collections.emptyList(), REMOVED_SITELINKS)));
 		assertFalse(update.equals(new ItemUpdateImpl(
-				JOHN, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, Collections.emptyList())));
+				Q1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, Collections.emptyList())));
 	}
 
 	@Test
 	public void testHashCode() {
 		ItemUpdate update1 = new ItemUpdateImpl(
-				JOHN, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, REMOVED_SITELINKS);
+				Q1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, REMOVED_SITELINKS);
 		ItemUpdate update2 = new ItemUpdateImpl(
-				JOHN, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, REMOVED_SITELINKS);
+				Q1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS, SITELINKS, REMOVED_SITELINKS);
 		assertEquals(update1.hashCode(), update2.hashCode());
 	}
 

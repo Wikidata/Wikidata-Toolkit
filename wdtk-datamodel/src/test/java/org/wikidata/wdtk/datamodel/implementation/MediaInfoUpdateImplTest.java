@@ -34,7 +34,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 public class MediaInfoUpdateImplTest {
 
 	private static final MediaInfoIdValue M1 = Datamodel.makeWikimediaCommonsMediaInfoIdValue("M1");
-	private static final StatementUpdate STATEMENTS = LabeledDocumentUpdateImplTest.STATEMENTS;
+	private static final StatementUpdate STATEMENTS = StatementDocumentUpdateImplTest.STATEMENTS;
 	private static final TermUpdate LABELS = LabeledDocumentUpdateImplTest.LABELS;
 
 	@Test

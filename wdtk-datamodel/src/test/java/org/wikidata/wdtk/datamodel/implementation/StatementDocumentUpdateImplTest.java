@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.StatementUpdateBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocumentUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
@@ -40,7 +39,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 public class StatementDocumentUpdateImplTest {
 
 	private static final ItemIdValue JOHN = StatementUpdateImplTest.JOHN;
-	private static final Statement JOHN_HAS_BROWN_HAIR = StatementUpdateImplTest.JOHN_HAS_BROWN_HAIR;
+	static final StatementUpdate STATEMENTS = StatementUpdateBuilder.create().remove("ID123").build();
 	private static final Collection<SiteLink> NO_SITELINKS = Collections.emptyList();
 	private static final Collection<String> NO_REMOVED_SITELINKS = Collections.emptyList();
 
@@ -51,43 +50,41 @@ public class StatementDocumentUpdateImplTest {
 
 	@Test
 	public void testFields() {
-		StatementUpdate statements = StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build();
-		StatementDocumentUpdate update = create(JOHN, 123, statements);
+		StatementDocumentUpdate update = create(JOHN, 123, STATEMENTS);
 		assertEquals(JOHN, update.getEntityId());
 		assertEquals(123, update.getBaseRevisionId());
-		assertSame(statements, update.getStatements());
+		assertSame(STATEMENTS, update.getStatements());
 	}
 
 	@Test
 	public void testValidation() {
 		assertThrows(NullPointerException.class, () -> create(JOHN, 0, null));
+		assertThrows(IllegalArgumentException.class, () -> create(JOHN, 0,
+				StatementUpdateBuilder.create().add(StatementUpdateImplTest.RITA_HAS_BROWN_HAIR).build()));
+		assertThrows(IllegalArgumentException.class,
+				() -> create(JOHN, 0, StatementUpdateBuilder.create()
+						.replace(StatementUpdateImplTest.RITA_HAS_BROWN_HAIR.withStatementId("ID99")).build()));
 	}
 
 	@Test
 	public void testEmpty() {
-		StatementUpdate statements = StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build();
-		assertFalse(create(JOHN, 0, statements).isEmpty());
+		assertFalse(create(JOHN, 0, STATEMENTS).isEmpty());
 		assertTrue(create(JOHN, 0, StatementUpdate.EMPTY).isEmpty());
 	}
 
 	@Test
 	public void testEquality() {
-		StatementDocumentUpdate update = create(JOHN, 0,
-				StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build());
+		StatementDocumentUpdate update = create(JOHN, 0, STATEMENTS);
 		assertTrue(update.equals(update));
-		assertTrue(update.equals(create(JOHN, 0,
-				StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())));
-		assertFalse(update.equals(create(JOHN, 123,
-				StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build())));
+		assertTrue(update.equals(create(JOHN, 0, StatementUpdateBuilder.create().remove("ID123").build())));
+		assertFalse(update.equals(create(JOHN, 123, STATEMENTS)));
 		assertFalse(update.equals(create(JOHN, 0, StatementUpdate.EMPTY)));
 	}
 
 	@Test
 	public void testHashCode() {
-		StatementDocumentUpdate update1 = create(JOHN, 123,
-				StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build());
-		StatementDocumentUpdate update2 = create(JOHN, 123,
-				StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build());
+		StatementDocumentUpdate update1 = create(JOHN, 123, STATEMENTS);
+		StatementDocumentUpdate update2 = create(JOHN, 123, StatementUpdateBuilder.create().remove("ID123").build());
 		assertEquals(update1.hashCode(), update2.hashCode());
 	}
 

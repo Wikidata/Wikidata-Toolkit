@@ -36,7 +36,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 public class SenseUpdateImplTest {
 
 	private static final SenseIdValue S1 = Datamodel.makeWikidataSenseIdValue("L1-S1");
-	private static final StatementUpdate STATEMENTS = LabeledDocumentUpdateImplTest.STATEMENTS;
+	private static final StatementUpdate STATEMENTS = StatementDocumentUpdateImplTest.STATEMENTS;
 	private static final TermUpdate GLOSSES = TermUpdateBuilder.create().remove("en").build();
 
 	@Test
