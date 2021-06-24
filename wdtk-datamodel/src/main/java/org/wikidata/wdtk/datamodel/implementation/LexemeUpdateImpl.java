@@ -31,6 +31,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
@@ -102,7 +103,7 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 	 * @param removedForms
 	 *            IDs of removed forms
 	 * @throws NullPointerException
-	 *             if any required parameter is {@code null}
+	 *             if any required parameter or its item is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if any parameters or their combination is invalid
 	 */
@@ -120,18 +121,70 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 			Collection<FormUpdate> updatedForms,
 			Collection<FormIdValue> removedForms) {
 		super(entityId, revisionId, statements);
-		Objects.requireNonNull(lemmas, "Lemma update cannot be null.");
+		Validate.isTrue(language == null || !language.isPlaceholder(), "Language cannot be a placeholder ID.");
 		this.language = language;
+		Validate.isTrue(
+				lexicalCategory == null || !lexicalCategory.isPlaceholder(),
+				"Lexical category cannot be a placeholder ID.");
 		this.lexicalCategory = lexicalCategory;
+		Objects.requireNonNull(lemmas, "Lemma update cannot be null.");
 		this.lemmas = lemmas;
+		Objects.requireNonNull(addedSenses, "List of added senses cannot be null.");
+		for (SenseDocument sense : addedSenses) {
+			Objects.requireNonNull(sense, "Added sense cannot be null.");
+			Validate.isTrue(sense.getEntityId().isPlaceholder(), "Added sense must have placeholder ID.");
+		}
 		this.addedSenses = Collections.unmodifiableList(new ArrayList<>(addedSenses));
-		this.updatedSenses = Collections.unmodifiableMap(
-				updatedSenses.stream().collect(toMap(s -> s.getEntityId(), s -> s)));
+		Objects.requireNonNull(updatedSenses, "List of sense updates cannot be null.");
+		for (SenseUpdate update : updatedSenses) {
+			Objects.requireNonNull(update, "Sense update cannot be null.");
+		}
+		Validate.isTrue(
+				updatedSenses.stream().map(s -> s.getEntityId()).distinct().count() == updatedSenses.size(),
+				"Cannot apply two updates to the same sense.");
+		this.updatedSenses = Collections.unmodifiableMap(updatedSenses.stream()
+				.filter(s -> !s.isEmpty())
+				.collect(toMap(s -> s.getEntityId(), s -> s)));
+		Objects.requireNonNull(removedSenses, "List of removed sense IDs cannot be null.");
+		for (SenseIdValue senseId : removedSenses) {
+			Objects.requireNonNull(senseId, "Removed sense cannot have null ID.");
+			Validate.isTrue(!senseId.isPlaceholder(), "Removed sense cannot have placeholder ID.");
+		}
+		Validate.isTrue(
+				removedSenses.stream().distinct().count() == removedSenses.size(),
+				"Cannot remove the same sense twice.");
 		this.removedSenses = Collections.unmodifiableSet(new HashSet<>(removedSenses));
+		Validate.isTrue(
+				updatedSenses.stream().noneMatch(s -> this.removedSenses.contains(s.getEntityId())),
+				"Cannot remove sense that is being updated.");
+		Objects.requireNonNull(addedForms, "List of added forms cannot be null.");
+		for (FormDocument form : addedForms) {
+			Objects.requireNonNull(form, "Added form cannot be null.");
+			Validate.isTrue(form.getEntityId().isPlaceholder(), "Added form must have placeholder ID.");
+		}
 		this.addedForms = Collections.unmodifiableList(new ArrayList<>(addedForms));
-		this.updatedForms = Collections.unmodifiableMap(
-				updatedForms.stream().collect(toMap(s -> s.getEntityId(), s -> s)));
+		Objects.requireNonNull(updatedForms, "List of form updates cannot be null.");
+		for (FormUpdate update : updatedForms) {
+			Objects.requireNonNull(update, "Form update cannot be null.");
+		}
+		Validate.isTrue(
+				updatedForms.stream().map(s -> s.getEntityId()).distinct().count() == updatedForms.size(),
+				"Cannot apply two updates to the same form.");
+		this.updatedForms = Collections.unmodifiableMap(updatedForms.stream()
+				.filter(f -> !f.isEmpty())
+				.collect(toMap(f -> f.getEntityId(), f -> f)));
+		Objects.requireNonNull(removedForms, "List of removed form IDs cannot be null.");
+		for (FormIdValue formId : removedForms) {
+			Objects.requireNonNull(formId, "Removed form cannot have null ID.");
+			Validate.isTrue(!formId.isPlaceholder(), "Removed form cannot have placeholder ID.");
+		}
+		Validate.isTrue(
+				removedForms.stream().distinct().count() == removedForms.size(),
+				"Cannot remove the same form twice.");
 		this.removedForms = Collections.unmodifiableSet(new HashSet<>(removedForms));
+		Validate.isTrue(
+				updatedForms.stream().noneMatch(s -> this.removedForms.contains(s.getEntityId())),
+				"Cannot remove form that is being updated.");
 	}
 
 	@JsonIgnore
