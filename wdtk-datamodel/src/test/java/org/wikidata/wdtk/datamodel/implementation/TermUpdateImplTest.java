@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.wikidata.wdtk.datamodel.implementation.JsonTestUtils.producesJson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +34,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.TermUpdateBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
 
@@ -112,6 +114,15 @@ public class TermUpdateImplTest {
 		TermUpdate update1 = new TermUpdateImpl(Arrays.asList(EN, SK), Arrays.asList("cs", "fr"));
 		TermUpdate update2 = new TermUpdateImpl(Arrays.asList(EN, SK), Arrays.asList("cs", "fr"));
 		assertEquals(update1.hashCode(), update2.hashCode());
+	}
+
+	@Test
+	public void testJson() {
+		assertThat(TermUpdateBuilder.create().build(), producesJson("{}"));
+		assertThat(TermUpdateBuilder.create().put(EN).build(),
+				producesJson("{'en':{'language':'en','value':'hello'}}"));
+		assertThat(TermUpdateBuilder.create().remove("en").build(),
+				producesJson("{'en':{'language':'en','remove':''}}"));
 	}
 
 }

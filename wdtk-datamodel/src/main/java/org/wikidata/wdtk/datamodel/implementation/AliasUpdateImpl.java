@@ -170,6 +170,9 @@ public class AliasUpdateImpl implements AliasUpdate {
 		}
 		items.addAll(removed);
 		items.addAll(added);
+		if (items.isEmpty() && recreated == null) {
+			return null;
+		}
 		return items;
 	}
 

@@ -27,6 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.wikidata.wdtk.datamodel.implementation.JsonTestUtils.producesJson;
+import static org.wikidata.wdtk.datamodel.implementation.JsonTestUtils.toJson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +38,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.FormUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.TermUpdateBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
@@ -121,6 +124,19 @@ public class FormUpdateImplTest {
 		FormUpdate update2 = new FormUpdateImpl(F1, 123, TermUpdateBuilder.create().remove("en").build(),
 				Arrays.asList(Datamodel.makeWikidataItemIdValue("Q1")), STATEMENTS);
 		assertEquals(update1.hashCode(), update2.hashCode());
+	}
+
+	@Test
+	public void testJson() {
+		assertThat(new FormUpdateImpl(F1, 123, TermUpdate.EMPTY, null, StatementUpdate.EMPTY), producesJson("{}"));
+		assertThat(FormUpdateBuilder.forEntityId(F1).updateRepresentations(REPRESENTATIONS).build(),
+				producesJson("{'representations':" + toJson(REPRESENTATIONS) + "}"));
+		assertThat(FormUpdateBuilder.forEntityId(F1).setGrammaticalFeatures(FEATURES).build(),
+				producesJson("{'grammaticalFeatures':['Q1']}"));
+		assertThat(FormUpdateBuilder.forEntityId(F1).setGrammaticalFeatures(Collections.emptyList()).build(),
+				producesJson("{'grammaticalFeatures':[]}"));
+		assertThat(FormUpdateBuilder.forEntityId(F1).updateStatements(STATEMENTS).build(),
+				producesJson("{'claims':" + toJson(STATEMENTS) + "}"));
 	}
 
 }

@@ -25,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.wikidata.wdtk.datamodel.implementation.JsonTestUtils.producesJson;
+import static org.wikidata.wdtk.datamodel.implementation.JsonTestUtils.toJson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +37,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
+import org.wikidata.wdtk.datamodel.helpers.StatementUpdateBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -182,6 +185,17 @@ public class StatementUpdateImplTest {
 				Arrays.asList(JOHN_ALREADY_HAS_BLUE_EYES),
 				Arrays.asList(JOHN_ALREADY_HAS_SILVER_HAIR.getStatementId()));
 		assertEquals(update1.hashCode(), update2.hashCode());
+	}
+
+	@Test
+	public void testJson() {
+		assertThat(StatementUpdateBuilder.create().build(), producesJson("[]"));
+		assertThat(StatementUpdateBuilder.create().add(JOHN_HAS_BROWN_HAIR).build(),
+				producesJson("[" + toJson(JOHN_HAS_BROWN_HAIR) + "]"));
+		assertThat(StatementUpdateBuilder.create().replace(JOHN_ALREADY_HAS_BLUE_EYES).build(),
+				producesJson("[" + toJson(JOHN_ALREADY_HAS_BLUE_EYES) + "]"));
+		assertThat(StatementUpdateBuilder.create().remove("ID123").build(),
+				producesJson("[{'id':'ID123','remove':''}]"));
 	}
 
 }

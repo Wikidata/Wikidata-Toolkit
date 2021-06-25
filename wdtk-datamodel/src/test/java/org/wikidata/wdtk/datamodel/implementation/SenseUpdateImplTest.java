@@ -19,14 +19,18 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.wikidata.wdtk.datamodel.implementation.JsonTestUtils.producesJson;
+import static org.wikidata.wdtk.datamodel.implementation.JsonTestUtils.toJson;
 
 import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.SenseUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.TermUpdateBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
@@ -78,6 +82,15 @@ public class SenseUpdateImplTest {
 		SenseUpdate update1 = new SenseUpdateImpl(S1, 123, GLOSSES, STATEMENTS);
 		SenseUpdate update2 = new SenseUpdateImpl(S1, 123, TermUpdateBuilder.create().remove("en").build(), STATEMENTS);
 		assertEquals(update1.hashCode(), update2.hashCode());
+	}
+
+	@Test
+	public void testJson() {
+		assertThat(new SenseUpdateImpl(S1, 123, TermUpdate.EMPTY, StatementUpdate.EMPTY), producesJson("{}"));
+		assertThat(SenseUpdateBuilder.forEntityId(S1).updateGlosses(GLOSSES).build(),
+				producesJson("{'glosses':" + toJson(GLOSSES) + "}"));
+		assertThat(SenseUpdateBuilder.forEntityId(S1).updateStatements(STATEMENTS).build(),
+				producesJson("{'claims':" + toJson(STATEMENTS) + "}"));
 	}
 
 }

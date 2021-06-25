@@ -51,10 +51,11 @@ public class TermedDocumentUpdateImplTest {
 	private static final MonolingualTextValue SK = Datamodel.makeMonolingualTextValue("ahoj", "sk");
 	private static final TermUpdate LABELS = TermUpdateBuilder.create().remove("de").build();
 	static final TermUpdate DESCRIPTIONS = TermUpdateBuilder.create().remove("en").build();
+	static final AliasUpdate ALIAS = AliasUpdateBuilder.create().add(EN).build();
 	static final Map<String, AliasUpdate> ALIASES = new HashMap<>();
 
 	static {
-		ALIASES.put("en", AliasUpdateBuilder.create().add(EN).build());
+		ALIASES.put("en", ALIAS);
 	}
 
 	private static TermedStatementDocumentUpdate create(

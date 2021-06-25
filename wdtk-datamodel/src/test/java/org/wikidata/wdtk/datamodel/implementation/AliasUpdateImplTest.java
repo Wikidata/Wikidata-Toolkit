@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.wikidata.wdtk.datamodel.implementation.JsonTestUtils.producesJson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +36,7 @@ import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.wikidata.wdtk.datamodel.helpers.AliasUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -169,6 +171,18 @@ public class AliasUpdateImplTest {
 		AliasUpdate update2b = new AliasUpdateImpl(null, Arrays.asList(EN), Arrays.asList(EN2));
 		assertEquals(update1a.hashCode(), update1b.hashCode());
 		assertEquals(update2a.hashCode(), update2b.hashCode());
+	}
+
+	@Test
+	public void testJson() {
+		assertThat(AliasUpdateBuilder.create().build(), producesJson("null"));
+		assertThat(AliasUpdateBuilder.create().recreate(Collections.emptyList()).build(), producesJson("[]"));
+		assertThat(AliasUpdateBuilder.create().recreate(Arrays.asList(EN, EN2)).build(),
+				producesJson("[{'language':'en','value':'hello'},{'language':'en','value':'hi'}]"));
+		assertThat(AliasUpdateBuilder.create().add(EN).build(),
+				producesJson("[{'add':'','language':'en','value':'hello'}]"));
+		assertThat(AliasUpdateBuilder.create().remove(EN).build(),
+				producesJson("[{'language':'en','remove':'','value':'hello'}]"));
 	}
 
 }

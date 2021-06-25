@@ -19,13 +19,17 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.wikidata.wdtk.datamodel.implementation.JsonTestUtils.producesJson;
+import static org.wikidata.wdtk.datamodel.implementation.JsonTestUtils.toJson;
 
 import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.MediaInfoUpdateBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
@@ -68,6 +72,15 @@ public class MediaInfoUpdateImplTest {
 		assertEquals(
 				new MediaInfoUpdateImpl(M1, 123, LABELS, STATEMENTS).hashCode(),
 				new MediaInfoUpdateImpl(M1, 123, LABELS, STATEMENTS).hashCode());
+	}
+
+	@Test
+	public void testJson() {
+		assertThat(new MediaInfoUpdateImpl(M1, 123, TermUpdate.EMPTY, StatementUpdate.EMPTY), producesJson("{}"));
+		assertThat(MediaInfoUpdateBuilder.forEntityId(M1).updateLabels(LABELS).build(),
+				producesJson("{'labels':" + toJson(LABELS) + "}"));
+		assertThat(MediaInfoUpdateBuilder.forEntityId(M1).updateStatements(STATEMENTS).build(),
+				producesJson("{'claims':" + toJson(STATEMENTS) + "}"));
 	}
 
 }

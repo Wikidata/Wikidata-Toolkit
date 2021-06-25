@@ -28,6 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.wikidata.wdtk.datamodel.implementation.JsonTestUtils.producesJson;
+import static org.wikidata.wdtk.datamodel.implementation.JsonTestUtils.toJson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +39,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.FormUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.LexemeUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.SenseUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.TermUpdateBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
@@ -302,6 +305,34 @@ public class LexemeUpdateImplTest {
 		LexemeUpdate update2 = new LexemeUpdateImpl(L1, 0, Q1, Q2, LEMMAS, STATEMENTS,
 				ADDED_SENSES, UPDATED_SENSES, REMOVED_SENSES, ADDED_FORMS, UPDATED_FORMS, REMOVED_FORMS);
 		assertEquals(update1.hashCode(), update2.hashCode());
+	}
+
+	@Test
+	public void testJson() {
+		assertThat(
+				new LexemeUpdateImpl(L1, 123, null, null, TermUpdate.EMPTY, StatementUpdate.EMPTY,
+						Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+						Collections.emptyList(), Collections.emptyList(), Collections.emptyList()),
+				producesJson("{}"));
+		assertThat(LexemeUpdateBuilder.forEntityId(L1).setLanguage(Q1).build(), producesJson("{'language':'Q1'}"));
+		assertThat(LexemeUpdateBuilder.forEntityId(L1).setLexicalCategory(Q2).build(),
+				producesJson("{'lexicalCategory':'Q2'}"));
+		assertThat(LexemeUpdateBuilder.forEntityId(L1).updateLemmas(LEMMAS).build(),
+				producesJson("{'lemmas':" + toJson(LEMMAS) + "}"));
+		assertThat(LexemeUpdateBuilder.forEntityId(L1).updateStatements(STATEMENTS).build(),
+				producesJson("{'claims':" + toJson(STATEMENTS) + "}"));
+		assertThat(LexemeUpdateBuilder.forEntityId(L1).addSense(ADDED_SENSE).build(),
+				producesJson("{'senses':[{'add':''," + toJson(ADDED_SENSE).substring(1) + "]}"));
+		assertThat(LexemeUpdateBuilder.forEntityId(L1).updateSense(UPDATED_SENSE).build(),
+				producesJson("{'senses':[" + toJson(UPDATED_SENSE) + "]}"));
+		assertThat(LexemeUpdateBuilder.forEntityId(L1).removeSense(S2).build(),
+				producesJson("{'senses':[{'id':'L1-S2','remove':''}]}"));
+		assertThat(LexemeUpdateBuilder.forEntityId(L1).addForm(ADDED_FORM).build(),
+				producesJson("{'forms':[{'add':''," + toJson(ADDED_FORM).substring(1) + "]}"));
+		assertThat(LexemeUpdateBuilder.forEntityId(L1).updateForm(UPDATED_FORM).build(),
+				producesJson("{'forms':[" + toJson(UPDATED_FORM) + "]}"));
+		assertThat(LexemeUpdateBuilder.forEntityId(L1).removeForm(F2).build(),
+				producesJson("{'forms':[{'id':'L1-F2','remove':''}]}"));
 	}
 
 }

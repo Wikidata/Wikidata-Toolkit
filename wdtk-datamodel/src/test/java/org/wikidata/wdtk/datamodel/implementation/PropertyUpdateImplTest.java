@@ -19,16 +19,20 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.wikidata.wdtk.datamodel.implementation.JsonTestUtils.producesJson;
+import static org.wikidata.wdtk.datamodel.implementation.JsonTestUtils.toJson;
 
 import java.util.Collections;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.PropertyUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementUpdateBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -42,6 +46,7 @@ public class PropertyUpdateImplTest {
 	private static final StatementUpdate STATEMENTS = StatementUpdateBuilder.create().remove("ID123").build();
 	private static final TermUpdate LABELS = LabeledDocumentUpdateImplTest.LABELS;
 	private static final TermUpdate DESCRIPTIONS = TermedDocumentUpdateImplTest.DESCRIPTIONS;
+	private static final AliasUpdate ALIAS = TermedDocumentUpdateImplTest.ALIAS;
 	private static final Map<String, AliasUpdate> ALIASES = TermedDocumentUpdateImplTest.ALIASES;
 
 	@Test
@@ -81,6 +86,22 @@ public class PropertyUpdateImplTest {
 		assertEquals(
 				new PropertyUpdateImpl(P1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS).hashCode(),
 				new PropertyUpdateImpl(P1, 123, LABELS, DESCRIPTIONS, ALIASES, STATEMENTS).hashCode());
+	}
+
+	@Test
+	public void testJson() {
+		assertThat(
+				new PropertyUpdateImpl(
+						P1, 123, TermUpdate.EMPTY, TermUpdate.EMPTY, Collections.emptyMap(), StatementUpdate.EMPTY),
+				producesJson("{}"));
+		assertThat(PropertyUpdateBuilder.forEntityId(P1).updateLabels(LABELS).build(),
+				producesJson("{'labels':" + toJson(LABELS) + "}"));
+		assertThat(PropertyUpdateBuilder.forEntityId(P1).updateDescriptions(DESCRIPTIONS).build(),
+				producesJson("{'descriptions':" + toJson(LABELS) + "}"));
+		assertThat(PropertyUpdateBuilder.forEntityId(P1).updateAliases("en", ALIAS).build(),
+				producesJson("{'aliases':{'en':" + toJson(ALIAS) + "}}"));
+		assertThat(PropertyUpdateBuilder.forEntityId(P1).updateStatements(STATEMENTS).build(),
+				producesJson("{'claims':" + toJson(STATEMENTS) + "}"));
 	}
 
 }
