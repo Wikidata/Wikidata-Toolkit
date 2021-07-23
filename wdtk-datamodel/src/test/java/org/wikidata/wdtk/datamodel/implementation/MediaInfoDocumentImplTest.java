@@ -34,6 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -164,7 +165,14 @@ public class MediaInfoDocumentImplTest {
 		assertEquals(s, statements.next());
 		assertFalse(statements.hasNext());
 	}
-	
+
+	@Test
+	public void testWithEntityId() {
+		assertEquals(MediaInfoIdValue.NULL, mi1.withEntityId(MediaInfoIdValue.NULL).getEntityId());
+		MediaInfoIdValue id = Datamodel.makeWikimediaCommonsMediaInfoIdValue("M123");
+		assertEquals(id, mi1.withEntityId(id).getEntityId());
+	}
+
 	@Test
 	public void testWithRevisionId() {
 		assertEquals(1235L, mi1.withRevisionId(1235L).getRevisionId());

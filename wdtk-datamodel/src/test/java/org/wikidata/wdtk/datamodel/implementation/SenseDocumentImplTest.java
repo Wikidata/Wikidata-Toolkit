@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -146,6 +147,13 @@ public class SenseDocumentImplTest {
 		assertTrue(statements.hasNext());
 		assertEquals(s, statements.next());
 		assertFalse(statements.hasNext());
+	}
+
+	@Test
+	public void testWithEntityId() {
+		assertEquals(SenseIdValue.NULL, sd1.withEntityId(SenseIdValue.NULL).getEntityId());
+		SenseIdValue id = Datamodel.makeWikidataSenseIdValue("L123-S45");
+		assertEquals(id, sd1.withEntityId(id).getEntityId());
 	}
 
 	@Test

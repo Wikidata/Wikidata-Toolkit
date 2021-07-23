@@ -34,6 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -161,6 +162,13 @@ public class FormDocumentImplTest {
 		assertTrue(statements.hasNext());
 		assertEquals(s, statements.next());
 		assertFalse(statements.hasNext());
+	}
+
+	@Test
+	public void testWithEntityId() {
+		assertEquals(FormIdValue.NULL, fd1.withEntityId(FormIdValue.NULL).getEntityId());
+		FormIdValue id = Datamodel.makeWikidataFormIdValue("L123-F45");
+		assertEquals(id, fd1.withEntityId(id).getEntityId());
 	}
 
 	@Test
