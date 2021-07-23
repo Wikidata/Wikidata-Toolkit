@@ -80,12 +80,19 @@ public class NullEntityIdsTest {
 		TestValueVisitor tvv = new TestValueVisitor();
 		assertEquals("P0", PropertyIdValue.NULL.accept(tvv));
 		assertEquals("P0", PropertyIdValue.NULL.getId());
-		assertEquals("http://localhost/entity/",
-				PropertyIdValue.NULL.getSiteIri());
-		assertEquals(EntityIdValue.ET_PROPERTY,
-				PropertyIdValue.NULL.getEntityType());
-		assertEquals("http://localhost/entity/P0",
-				PropertyIdValue.NULL.getIri());
+		assertEquals("http://localhost/entity/", PropertyIdValue.NULL.getSiteIri());
+		assertEquals(EntityIdValue.ET_PROPERTY, PropertyIdValue.NULL.getEntityType());
+		assertEquals("http://localhost/entity/P0", PropertyIdValue.NULL.getIri());
+	}
+
+	@Test
+	public void testNullMediaInfoId() {
+		TestValueVisitor tvv = new TestValueVisitor();
+		assertEquals("M0", MediaInfoIdValue.NULL.accept(tvv));
+		assertEquals("M0", MediaInfoIdValue.NULL.getId());
+		assertEquals("http://localhost/entity/", MediaInfoIdValue.NULL.getSiteIri());
+		assertEquals(EntityIdValue.ET_MEDIA_INFO, MediaInfoIdValue.NULL.getEntityType());
+		assertEquals("http://localhost/entity/M0", MediaInfoIdValue.NULL.getIri());
 	}
 
 	@Test
@@ -96,6 +103,26 @@ public class NullEntityIdsTest {
 		assertEquals("http://localhost/entity/", LexemeIdValue.NULL.getSiteIri());
 		assertEquals(EntityIdValue.ET_LEXEME, LexemeIdValue.NULL.getEntityType());
 		assertEquals("http://localhost/entity/L0", LexemeIdValue.NULL.getIri());
+	}
+
+	@Test
+	public void testNullSenseId() {
+		TestValueVisitor tvv = new TestValueVisitor();
+		assertEquals("L0-S0", SenseIdValue.NULL.accept(tvv));
+		assertEquals("L0-S0", SenseIdValue.NULL.getId());
+		assertEquals("http://localhost/entity/", SenseIdValue.NULL.getSiteIri());
+		assertEquals(EntityIdValue.ET_SENSE, SenseIdValue.NULL.getEntityType());
+		assertEquals("http://localhost/entity/L0-S0", SenseIdValue.NULL.getIri());
+	}
+
+	@Test
+	public void testNullFormId() {
+		TestValueVisitor tvv = new TestValueVisitor();
+		assertEquals("L0-F0", FormIdValue.NULL.accept(tvv));
+		assertEquals("L0-F0", FormIdValue.NULL.getId());
+		assertEquals("http://localhost/entity/", FormIdValue.NULL.getSiteIri());
+		assertEquals(EntityIdValue.ET_FORM, FormIdValue.NULL.getEntityType());
+		assertEquals("http://localhost/entity/L0-F0", FormIdValue.NULL.getIri());
 	}
 
 }
