@@ -210,8 +210,9 @@ public class LexemeUpdateBuilderTest {
 				.addForm(form("swim")) // simple case
 				.addForm(form("swim")) // duplicates allowed
 				.addForm(form(2, "swimming")) // strip ID
+				.addForm(form("swam").withRevisionId(123)) // strip revision ID
 				.build();
-		assertEquals(Arrays.asList(form("swim"), form("swim"), form("swimming")), update.getAddedForms());
+		assertEquals(Arrays.asList(form("swim"), form("swim"), form("swimming"), form("swam")), update.getAddedForms());
 	}
 
 	@Test
@@ -231,6 +232,13 @@ public class LexemeUpdateBuilderTest {
 		assertThat(update.getUpdatedForms().keySet(), containsInAnyOrder(formId(1), formId(2)));
 		assertEquals(formUpdate(1, OBSOLETE), update.getUpdatedForms().get(formId(1)));
 		assertEquals(formUpdate(2, RARE, OBSOLETE), update.getUpdatedForms().get(formId(2)));
+		// synchronize revision IDs
+		assertEquals(123, LexemeUpdateBuilder.forBaseRevisionId(L1, 123)
+				.updateForm(formUpdate(1, OBSOLETE))
+				.build()
+				.getUpdatedForms()
+				.get(formId(1))
+				.getBaseRevisionId());
 	}
 
 	@Test
@@ -335,8 +343,11 @@ public class LexemeUpdateBuilderTest {
 				.addSense(sense("move")) // simple case
 				.addSense(sense("move")) // duplicates allowed
 				.addSense(sense(2, "immerse")) // strip ID
+				.addSense(sense("float").withRevisionId(123)) // strip revision ID
 				.build();
-		assertEquals(Arrays.asList(sense("move"), sense("move"), sense("immerse")), update.getAddedSenses());
+		assertEquals(
+				Arrays.asList(sense("move"), sense("move"), sense("immerse"), sense("float")),
+				update.getAddedSenses());
 	}
 
 	@Test
@@ -356,6 +367,13 @@ public class LexemeUpdateBuilderTest {
 		assertThat(update.getUpdatedSenses().keySet(), containsInAnyOrder(senseId(1), senseId(2)));
 		assertEquals(senseUpdate(1, OBSOLETE), update.getUpdatedSenses().get(senseId(1)));
 		assertEquals(senseUpdate(2, RARE, OBSOLETE), update.getUpdatedSenses().get(senseId(2)));
+		// synchronize revision IDs
+		assertEquals(123, LexemeUpdateBuilder.forBaseRevisionId(L1, 123)
+				.updateSense(senseUpdate(1, OBSOLETE))
+				.build()
+				.getUpdatedSenses()
+				.get(senseId(1))
+				.getBaseRevisionId());
 	}
 
 	@Test

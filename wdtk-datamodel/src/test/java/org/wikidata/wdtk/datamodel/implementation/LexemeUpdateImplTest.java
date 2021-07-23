@@ -70,7 +70,11 @@ public class LexemeUpdateImplTest {
 	private static final SenseUpdate UPDATED_SENSE = SenseUpdateBuilder.forEntityId(S1)
 			.updateStatements(STATEMENTS)
 			.build();
+	private static final SenseUpdate UPDATED_SENSE_REVISION = SenseUpdateBuilder.forBaseRevisionId(S1, 123)
+			.append(UPDATED_SENSE)
+			.build();
 	private static final List<SenseUpdate> UPDATED_SENSES = Arrays.asList(UPDATED_SENSE);
+	private static final List<SenseUpdate> UPDATED_SENSE_REVISIONS = Arrays.asList(UPDATED_SENSE_REVISION);
 	private static final List<SenseIdValue> REMOVED_SENSES = Arrays.asList(S2);
 	private static final FormIdValue F1 = Datamodel.makeWikidataFormIdValue("L1-F1");
 	private static final FormIdValue F2 = Datamodel.makeWikidataFormIdValue("L1-F2");
@@ -81,13 +85,18 @@ public class LexemeUpdateImplTest {
 	private static final FormUpdate UPDATED_FORM = FormUpdateBuilder.forEntityId(F1)
 			.updateStatements(STATEMENTS)
 			.build();
+	private static final FormUpdate UPDATED_FORM_REVISION = FormUpdateBuilder.forBaseRevisionId(F1, 123)
+			.append(UPDATED_FORM)
+			.build();
 	private static final List<FormUpdate> UPDATED_FORMS = Arrays.asList(UPDATED_FORM);
+	private static final List<FormUpdate> UPDATED_FORM_REVISIONS = Arrays.asList(UPDATED_FORM_REVISION);
 	private static final List<FormIdValue> REMOVED_FORMS = Arrays.asList(F2);
 
 	@Test
 	public void testFields() {
 		LexemeUpdate update = new LexemeUpdateImpl(L1, 123, Q1, Q2, LEMMAS, STATEMENTS,
-				ADDED_SENSES, UPDATED_SENSES, REMOVED_SENSES, ADDED_FORMS, UPDATED_FORMS, REMOVED_FORMS);
+				ADDED_SENSES, UPDATED_SENSE_REVISIONS, REMOVED_SENSES,
+				ADDED_FORMS, UPDATED_FORM_REVISIONS, REMOVED_FORMS);
 		assertEquals(L1, update.getEntityId());
 		assertEquals(123, update.getBaseRevisionId());
 		assertEquals(Q1, update.getLanguage().get());
@@ -96,15 +105,15 @@ public class LexemeUpdateImplTest {
 		assertSame(STATEMENTS, update.getStatements());
 		assertEquals(ADDED_SENSES, update.getAddedSenses());
 		assertThat(update.getUpdatedSenses().keySet(), containsInAnyOrder(S1));
-		assertEquals(UPDATED_SENSE, update.getUpdatedSenses().get(S1));
+		assertEquals(UPDATED_SENSE_REVISION, update.getUpdatedSenses().get(S1));
 		assertThat(update.getRemovedSenses(), containsInAnyOrder(S2));
 		assertEquals(ADDED_FORMS, update.getAddedForms());
 		assertThat(update.getUpdatedForms().keySet(), containsInAnyOrder(F1));
-		assertEquals(UPDATED_FORM, update.getUpdatedForms().get(F1));
+		assertEquals(UPDATED_FORM_REVISION, update.getUpdatedForms().get(F1));
 		assertThat(update.getRemovedForms(), containsInAnyOrder(F2));
 		update = new LexemeUpdateImpl(L1, 123, null, null, LEMMAS, STATEMENTS,
-				ADDED_SENSES, Arrays.asList(SenseUpdateBuilder.forEntityId(S1).build()), REMOVED_SENSES,
-				ADDED_FORMS, Arrays.asList(FormUpdateBuilder.forEntityId(F1).build()), REMOVED_FORMS);
+				ADDED_SENSES, Arrays.asList(SenseUpdateBuilder.forBaseRevisionId(S1, 123).build()), REMOVED_SENSES,
+				ADDED_FORMS, Arrays.asList(FormUpdateBuilder.forBaseRevisionId(F1, 123).build()), REMOVED_FORMS);
 		assertFalse(update.getLanguage().isPresent());
 		assertFalse(update.getLexicalCategory().isPresent());
 		assertThat(update.getUpdatedSenses(), is(anEmptyMap()));
@@ -186,15 +195,22 @@ public class LexemeUpdateImplTest {
 		assertThrows(IllegalArgumentException.class, () -> new LexemeUpdateImpl(L1, 0, Q1, Q2, LEMMAS, STATEMENTS,
 				ADDED_SENSES, UPDATED_SENSES, REMOVED_SENSES,
 				ADDED_FORMS, UPDATED_FORMS, Arrays.asList(F1)));
+		// consistent revision
+		assertThrows(IllegalArgumentException.class, () -> new LexemeUpdateImpl(L1, 0, Q1, Q2, LEMMAS, STATEMENTS,
+				ADDED_SENSES, UPDATED_SENSE_REVISIONS, REMOVED_SENSES,
+				ADDED_FORMS, UPDATED_FORMS, REMOVED_FORMS));
+		assertThrows(IllegalArgumentException.class, () -> new LexemeUpdateImpl(L1, 0, Q1, Q2, LEMMAS, STATEMENTS,
+				ADDED_SENSES, UPDATED_SENSES, REMOVED_SENSES,
+				ADDED_FORMS, UPDATED_FORM_REVISIONS, REMOVED_FORMS));
 	}
 
 	@Test
 	public void testImmutability() {
 		List<SenseDocument> addedSenses = new ArrayList<>(ADDED_SENSES);
-		List<SenseUpdate> updatedSenses = new ArrayList<>(UPDATED_SENSES);
+		List<SenseUpdate> updatedSenses = new ArrayList<>(UPDATED_SENSE_REVISIONS);
 		List<SenseIdValue> removedSenses = new ArrayList<>(REMOVED_SENSES);
 		List<FormDocument> addedForms = new ArrayList<>(ADDED_FORMS);
-		List<FormUpdate> updatedForms = new ArrayList<>(UPDATED_FORMS);
+		List<FormUpdate> updatedForms = new ArrayList<>(UPDATED_FORM_REVISIONS);
 		List<FormIdValue> removedForms = new ArrayList<>(REMOVED_FORMS);
 		LexemeUpdate update = new LexemeUpdateImpl(L1, 123, Q1, Q2, LEMMAS, STATEMENTS,
 				addedSenses, updatedSenses, removedSenses, addedForms, updatedForms, removedForms);

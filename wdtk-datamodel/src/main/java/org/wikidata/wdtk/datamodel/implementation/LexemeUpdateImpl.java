@@ -138,6 +138,8 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 		Objects.requireNonNull(updatedSenses, "List of sense updates cannot be null.");
 		for (SenseUpdate update : updatedSenses) {
 			Objects.requireNonNull(update, "Sense update cannot be null.");
+			Validate.isTrue(update.getBaseRevisionId() == revisionId,
+					"Nested sense update must have the same revision ID as lexeme update.");
 		}
 		Validate.isTrue(
 				updatedSenses.stream().map(s -> s.getEntityId()).distinct().count() == updatedSenses.size(),
@@ -166,6 +168,8 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 		Objects.requireNonNull(updatedForms, "List of form updates cannot be null.");
 		for (FormUpdate update : updatedForms) {
 			Objects.requireNonNull(update, "Form update cannot be null.");
+			Validate.isTrue(update.getBaseRevisionId() == revisionId,
+					"Nested form update must have the same revision ID as lexeme update.");
 		}
 		Validate.isTrue(
 				updatedForms.stream().map(s -> s.getEntityId()).distinct().count() == updatedForms.size(),

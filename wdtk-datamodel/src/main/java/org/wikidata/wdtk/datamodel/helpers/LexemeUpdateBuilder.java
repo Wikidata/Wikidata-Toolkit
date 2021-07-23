@@ -220,6 +220,9 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 		if (!sense.getEntityId().isPlaceholder()) {
 			sense = sense.withEntityId(SenseIdValue.NULL);
 		}
+		if (sense.getRevisionId() != 0) {
+			sense = sense.withRevisionId(0);
+		}
 		addedSenses.add(sense);
 		return this;
 	}
@@ -252,9 +255,9 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 					.filter(s -> s.getEntityId().equals(id))
 					.findFirst().orElse(null);
 			Validate.isTrue(original != null, "Cannot update sense that is not in the base revision.");
-			builder = SenseUpdateBuilder.forBaseRevision(original);
+			builder = SenseUpdateBuilder.forBaseRevision(original.withRevisionId(getBaseRevisionId()));
 		} else {
-			builder = SenseUpdateBuilder.forEntityId(id);
+			builder = SenseUpdateBuilder.forBaseRevisionId(id, getBaseRevisionId());
 		}
 		SenseUpdate prior = updatedSenses.get(id);
 		if (prior != null) {
@@ -309,8 +312,12 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 */
 	public LexemeUpdateBuilder addForm(FormDocument form) {
 		Objects.requireNonNull(form, "Form cannot be null.");
-		if (!form.getEntityId().isPlaceholder())
+		if (!form.getEntityId().isPlaceholder()) {
 			form = form.withEntityId(FormIdValue.NULL);
+		}
+		if (form.getRevisionId() != 0) {
+			form = form.withRevisionId(0);
+		}
 		addedForms.add(form);
 		return this;
 	}
@@ -343,9 +350,9 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 					.filter(s -> s.getEntityId().equals(id))
 					.findFirst().orElse(null);
 			Validate.isTrue(original != null, "Cannot update form that is not in the base revision.");
-			builder = FormUpdateBuilder.forBaseRevision(original);
+			builder = FormUpdateBuilder.forBaseRevision(original.withRevisionId(getBaseRevisionId()));
 		} else {
-			builder = FormUpdateBuilder.forEntityId(id);
+			builder = FormUpdateBuilder.forBaseRevisionId(id, getBaseRevisionId());
 		}
 		FormUpdate prior = updatedForms.get(id);
 		if (prior != null) {
