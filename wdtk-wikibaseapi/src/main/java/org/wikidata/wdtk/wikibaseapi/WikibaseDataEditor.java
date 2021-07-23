@@ -135,6 +135,13 @@ public class WikibaseDataEditor {
 		this.guidGenerator = generator;
 	}
 
+	WikibaseDataEditor(WbEditingAction action, WikibaseDataFetcher fetcher, String siteUri, GuidGenerator generator) {
+		this.wbEditingAction = action;
+		this.wikibaseDataFetcher = fetcher;
+		this.siteIri = siteUri;
+		this.guidGenerator = generator;
+	}
+
 	/**
 	 * Returns true if edits should be flagged as bot edits. See
 	 * {@link #setEditAsBot(boolean)} for details.
@@ -496,7 +503,7 @@ public class WikibaseDataEditor {
 					Statement statement = typed.getStatements().getAdded().stream().findFirst().get();
 					builder.updateStatements(StatementUpdateBuilder.create().add(statement).build());
 					if (builder.build().equals(update)) {
-						String statementId = new RandomGuidGenerator().freshStatementId(typed.getEntityId().getId());
+						String statementId = guidGenerator.freshStatementId(typed.getEntityId().getId());
 						Statement prepared = statement.withStatementId(statementId);
 						wbEditingAction.wbSetClaim(JsonSerializer.getJsonString(prepared),
 								editAsBot, revisionId, summary, tags);
