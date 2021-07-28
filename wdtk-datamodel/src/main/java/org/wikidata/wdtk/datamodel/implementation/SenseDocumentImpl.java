@@ -143,6 +143,11 @@ public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDoc
 	}
 
 	@Override
+	public SenseDocument withEntityId(SenseIdValue newEntityId) {
+		return new SenseDocumentImpl(newEntityId, glosses, claims, revisionId);
+	}
+
+	@Override
 	public SenseDocument withRevisionId(long newRevisionId) {
 		return new SenseDocumentImpl(getEntityId(),
 				glosses,

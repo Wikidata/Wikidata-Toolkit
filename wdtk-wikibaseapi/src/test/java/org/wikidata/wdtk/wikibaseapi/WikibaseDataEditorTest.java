@@ -24,6 +24,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.only;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.wikidata.wdtk.datamodel.helpers.Datamodel.makeStringValue;
+import static org.wikidata.wdtk.datamodel.helpers.Datamodel.makeWikidataFormIdValue;
+import static org.wikidata.wdtk.datamodel.helpers.Datamodel.makeWikidataItemIdValue;
+import static org.wikidata.wdtk.datamodel.helpers.Datamodel.makeWikidataLexemeIdValue;
+import static org.wikidata.wdtk.datamodel.helpers.Datamodel.makeWikidataPropertyIdValue;
+import static org.wikidata.wdtk.datamodel.helpers.Datamodel.makeWikidataSenseIdValue;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -34,19 +44,31 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.wikidata.wdtk.datamodel.helpers.AliasUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.FormUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
+import org.wikidata.wdtk.datamodel.helpers.ItemUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
+import org.wikidata.wdtk.datamodel.helpers.LexemeUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.PropertyDocumentBuilder;
+import org.wikidata.wdtk.datamodel.helpers.SenseUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
+import org.wikidata.wdtk.datamodel.helpers.StatementUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.TermUpdateBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
@@ -58,6 +80,8 @@ public class WikibaseDataEditorTest {
 	MockBasicApiConnection con;
 	ItemIdValue Q5 = Datamodel.makeWikidataItemIdValue("Q5");
 	PropertyIdValue P31 = Datamodel.makeWikidataPropertyIdValue("P31");
+	static final String TEST_GUID = "427C0317-BA8C-95B0-16C8-1A1B5FAC1081";
+	MockGuidGenerator guids = new MockGuidGenerator(TEST_GUID);
 
 	@BeforeEach
 	public void setUp() throws IOException {
@@ -379,6 +403,7 @@ public class WikibaseDataEditorTest {
 	}
 
 	@Test
+	@Deprecated
 	public void testEditItem() throws IOException, MediaWikiApiErrorException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
@@ -413,6 +438,7 @@ public class WikibaseDataEditorTest {
 	}
 
 	@Test
+	@Deprecated
 	public void testEditMediaInfo() throws IOException, MediaWikiApiErrorException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIMEDIA_COMMONS);
@@ -447,6 +473,7 @@ public class WikibaseDataEditorTest {
 	}
 	
 	@Test
+	@Deprecated
 	public void testStatementUpdateWithoutChanges() throws MediaWikiApiErrorException, IOException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
@@ -480,6 +507,7 @@ public class WikibaseDataEditorTest {
 	}
 	
 	@Test
+	@Deprecated
 	public void testTermStatementUpdateWithoutChanges() throws MediaWikiApiErrorException, IOException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
@@ -553,6 +581,7 @@ public class WikibaseDataEditorTest {
 	}
 	
 	@Test
+	@Deprecated
 	public void testLabelEdit() throws MediaWikiApiErrorException, IOException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
@@ -593,6 +622,7 @@ public class WikibaseDataEditorTest {
 	}
 	
 	@Test
+	@Deprecated
 	public void testDescriptionEdit() throws MediaWikiApiErrorException, IOException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
@@ -633,6 +663,7 @@ public class WikibaseDataEditorTest {
 	}
 	
 	@Test
+	@Deprecated
 	public void testAliasEdit() throws MediaWikiApiErrorException, IOException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
@@ -679,6 +710,7 @@ public class WikibaseDataEditorTest {
 	}
 	
 	@Test
+	@Deprecated
 	public void testNewSingleStatement() throws MediaWikiApiErrorException, IOException {
 		String guid = "8372EF7A-B72C-7DE2-98D0-DFB4-8EC8392AC28E";
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
@@ -718,6 +750,7 @@ public class WikibaseDataEditorTest {
 	}
 	
 	@Test
+	@Deprecated
 	public void testDeleteStatements() throws MediaWikiApiErrorException, IOException {
 		String guid1 = "8372EF7A-B72C-7DE2-98D0-DFB4-8EC8392AC28E";
 		String guid2 = "4311895D-9091-4BC9-9B34-DFB4-1B00EE8CFA62";
@@ -759,6 +792,7 @@ public class WikibaseDataEditorTest {
 	}
 
 	@Test
+	@Deprecated
 	public void testEditProperty() throws IOException,
 			MediaWikiApiErrorException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
@@ -796,6 +830,8 @@ public class WikibaseDataEditorTest {
 	}
 	
 	@Test
+	@Deprecated
+	@SuppressWarnings("deprecation")
 	public void testApplyInvalidTag() throws MediaWikiApiErrorException, IOException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
@@ -830,6 +866,171 @@ public class WikibaseDataEditorTest {
 				Collections.singletonList(description),	Collections.<MonolingualTextValue>emptyList(),
 				Collections.<MonolingualTextValue>emptyList(), Collections.<Statement>emptyList(),
 				Collections.<Statement>emptyList(), "testing tags", Collections.singletonList("tag_which_does_not_exist")));
+	}
+
+	private WbEditingAction mockEntityUpdate(EntityUpdate update) throws MediaWikiApiErrorException, IOException {
+		WbEditingAction action = mock(WbEditingAction.class);
+		WikibaseDataFetcher fetcher = new WikibaseDataFetcher(con, Datamodel.SITE_WIKIDATA);
+		WikibaseDataEditor wde = new WikibaseDataEditor(action, fetcher, Datamodel.SITE_WIKIDATA, guids);
+		wde.editEntityDocument(update, false, "test summary", Arrays.asList("tag1"));
+		return action;
+	}
+
+	@Test
+	public void testReductionToSetNewClaim() throws MediaWikiApiErrorException, IOException {
+		ItemIdValue subject = makeWikidataItemIdValue("Q1");
+		Statement statement = StatementBuilder.forSubjectAndProperty(subject, makeWikidataPropertyIdValue("P1"))
+				.withValue(makeStringValue("some value"))
+				.build();
+		WbEditingAction action = mockEntityUpdate(ItemUpdateBuilder.forBaseRevisionId(subject, 123)
+				.updateStatements(StatementUpdateBuilder.create()
+						.add(statement)
+						.build())
+				.build());
+		Statement statementWithId = statement.withStatementId(guids.freshStatementId(subject.getId()));
+		verify(action, only()).wbSetClaim(
+				JsonSerializer.getJsonString(statementWithId), false, 123, "test summary", Arrays.asList("tag1"));
+	}
+
+	@Test
+	public void testReductionToSetExistingClaim() throws MediaWikiApiErrorException, IOException {
+		ItemIdValue subject = makeWikidataItemIdValue("Q1");
+		Statement statement = StatementBuilder.forSubjectAndProperty(subject, makeWikidataPropertyIdValue("P1"))
+				.withValue(makeStringValue("some value"))
+				.withId(guids.freshStatementId(subject.getId()))
+				.build();
+		WbEditingAction action = mockEntityUpdate(ItemUpdateBuilder.forBaseRevisionId(subject, 123)
+				.updateStatements(StatementUpdateBuilder.create().replace(statement).build())
+				.build());
+		verify(action, only()).wbSetClaim(
+				JsonSerializer.getJsonString(statement), false, 123, "test summary", Arrays.asList("tag1"));
+	}
+
+	@Test
+	public void testReductionToRemoveClaims() throws MediaWikiApiErrorException, IOException {
+		ItemIdValue subject = makeWikidataItemIdValue("Q1");
+		String id = guids.freshStatementId(subject.getId());
+		WbEditingAction action = mockEntityUpdate(ItemUpdateBuilder.forBaseRevisionId(subject, 123)
+				.updateStatements(StatementUpdateBuilder.create().remove(id).build())
+				.build());
+		verify(action, only()).wbRemoveClaims(Arrays.asList(id), false, 123, "test summary", Arrays.asList("tag1"));
+	}
+
+	@Test
+	public void testReductionToSetLabel() throws MediaWikiApiErrorException, IOException {
+		WbEditingAction action = mockEntityUpdate(ItemUpdateBuilder
+				.forBaseRevisionId(makeWikidataItemIdValue("Q1"), 123)
+				.updateLabels(TermUpdateBuilder.create()
+						.put(Datamodel.makeMonolingualTextValue("hello", "en"))
+						.build())
+				.build());
+		verify(action, only()).wbSetLabel(
+				"Q1", null, null, null, "en", "hello", false, 123, "test summary", Arrays.asList("tag1"));
+	}
+
+	@Test
+	public void testReductionToSetNullLabel() throws MediaWikiApiErrorException, IOException {
+		WbEditingAction action = mockEntityUpdate(ItemUpdateBuilder
+				.forBaseRevisionId(makeWikidataItemIdValue("Q1"), 123)
+				.updateLabels(TermUpdateBuilder.create().remove("en").build())
+				.build());
+		verify(action, only()).wbSetLabel(
+				"Q1", null, null, null, "en", null, false, 123, "test summary", Arrays.asList("tag1"));
+	}
+
+	@Test
+	public void testReductionToSetDescription() throws MediaWikiApiErrorException, IOException {
+		WbEditingAction action = mockEntityUpdate(ItemUpdateBuilder
+				.forBaseRevisionId(makeWikidataItemIdValue("Q1"), 123)
+				.updateDescriptions(TermUpdateBuilder.create()
+						.put(Datamodel.makeMonolingualTextValue("hello", "en"))
+						.build())
+				.build());
+		verify(action, only()).wbSetDescription(
+				"Q1", null, null, null, "en", "hello", false, 123, "test summary", Arrays.asList("tag1"));
+	}
+
+	@Test
+	public void testReductionToSetNullDescription() throws MediaWikiApiErrorException, IOException {
+		WbEditingAction action = mockEntityUpdate(ItemUpdateBuilder
+				.forBaseRevisionId(makeWikidataItemIdValue("Q1"), 123)
+				.updateDescriptions(TermUpdateBuilder.create().remove("en").build())
+				.build());
+		verify(action, only()).wbSetDescription(
+				"Q1", null, null, null, "en", null, false, 123, "test summary", Arrays.asList("tag1"));
+	}
+
+	@Test
+	public void testReductionToSetAliases() throws MediaWikiApiErrorException, IOException {
+		WbEditingAction action = mockEntityUpdate(ItemUpdateBuilder
+				.forBaseRevisionId(makeWikidataItemIdValue("Q1"), 123)
+				.updateAliases("en", AliasUpdateBuilder.create()
+						.add(Datamodel.makeMonolingualTextValue("hello", "en"))
+						.remove(Datamodel.makeMonolingualTextValue("bye", "en"))
+						.build())
+				.build());
+		verify(action, only()).wbSetAliases("Q1", null, null, null, "en",
+				Arrays.asList("hello"), Arrays.asList("bye"), null, false, 123, "test summary", Arrays.asList("tag1"));
+	}
+
+	@Test
+	public void testReductionToSenseEdit() throws MediaWikiApiErrorException, IOException {
+		SenseUpdate update = SenseUpdateBuilder
+				.forEntityId(makeWikidataSenseIdValue("L1-S1"))
+				.updateGlosses(TermUpdateBuilder.create().remove("en").build())
+				.build();
+		WbEditingAction action = mockEntityUpdate(LexemeUpdateBuilder
+				.forBaseRevisionId(makeWikidataLexemeIdValue("L1"), 123)
+				.updateSense(update)
+				.build());
+		verify(action, only()).wbEditEntity("L1-S1", null, null, null, JsonSerializer.getJsonString(update),
+				false, false, 123, "test summary", Arrays.asList("tag1"));
+	}
+
+	@Test
+	public void testReductionToFormEdit() throws MediaWikiApiErrorException, IOException {
+		FormUpdate update = FormUpdateBuilder
+				.forEntityId(makeWikidataFormIdValue("L1-F1"))
+				.updateRepresentations(TermUpdateBuilder.create().remove("en").build())
+				.build();
+		WbEditingAction action = mockEntityUpdate(LexemeUpdateBuilder
+				.forBaseRevisionId(makeWikidataLexemeIdValue("L1"), 123)
+				.updateForm(update)
+				.build());
+		verify(action, only()).wbEditEntity("L1-F1", null, null, null, JsonSerializer.getJsonString(update),
+				false, false, 123, "test summary", Arrays.asList("tag1"));
+	}
+
+	@Test
+	public void testUnreducedEntityEdit() throws MediaWikiApiErrorException, IOException {
+		LexemeUpdate update = LexemeUpdateBuilder
+				.forBaseRevisionId(makeWikidataLexemeIdValue("L1"), 123)
+				.setLanguage(Datamodel.makeWikidataItemIdValue("Q1"))
+				.build();
+		WbEditingAction action = mockEntityUpdate(update);
+		verify(action, only()).wbEditEntity("L1", null, null, null, JsonSerializer.getJsonString(update),
+				false, false, 123, "test summary", Arrays.asList("tag1"));
+	}
+
+	@Test
+	public void testIrreducibleClearingEdit() throws MediaWikiApiErrorException, IOException {
+		ItemUpdate update = ItemUpdateBuilder
+				.forBaseRevisionId(makeWikidataItemIdValue("Q1"), 123)
+				.updateLabels(TermUpdateBuilder.create().remove("en").build())
+				.build();
+		WbEditingAction action = mock(WbEditingAction.class);
+		WikibaseDataFetcher fetcher = new WikibaseDataFetcher(con, Datamodel.SITE_WIKIDATA);
+		WikibaseDataEditor wde = new WikibaseDataEditor(action, fetcher, Datamodel.SITE_WIKIDATA, guids);
+		wde.editEntityDocument(update, true, "test summary", Arrays.asList("tag1"));
+		verify(action, only()).wbEditEntity("Q1", null, null, null, JsonSerializer.getJsonString(update),
+				true, false, 123, "test summary", Arrays.asList("tag1"));
+	}
+
+	@Test
+	public void testReductionToNoEdit() throws MediaWikiApiErrorException, IOException {
+		verifyNoInteractions(mockEntityUpdate(LexemeUpdateBuilder
+				.forBaseRevisionId(makeWikidataLexemeIdValue("L1"), 123)
+				.build()));
 	}
 
 }

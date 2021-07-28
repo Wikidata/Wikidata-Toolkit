@@ -75,6 +75,12 @@ public class LexemeIdValueImpl extends EntityIdValueImpl implements LexemeIdValu
 		return EntityIdValue.ET_LEXEME;
 	}
 
+	@JsonIgnore
+	@Override
+	public boolean isPlaceholder() {
+		return getId().equals("L0");
+	}
+
 	@Override
 	public <T> T accept(ValueVisitor<T> valueVisitor) {
 		return valueVisitor.visit(this);
@@ -94,4 +100,5 @@ public class LexemeIdValueImpl extends EntityIdValueImpl implements LexemeIdValu
 	public String toString() {
 		return ToString.toString(this);
 	}
+
 }

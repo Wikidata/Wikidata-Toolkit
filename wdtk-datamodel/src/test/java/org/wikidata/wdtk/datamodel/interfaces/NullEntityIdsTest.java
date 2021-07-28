@@ -21,6 +21,7 @@
 package org.wikidata.wdtk.datamodel.interfaces;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -73,6 +74,7 @@ public class NullEntityIdsTest {
 		assertEquals("http://localhost/entity/", ItemIdValue.NULL.getSiteIri());
 		assertEquals(EntityIdValue.ET_ITEM, ItemIdValue.NULL.getEntityType());
 		assertEquals("http://localhost/entity/Q0", ItemIdValue.NULL.getIri());
+		assertTrue(ItemIdValue.NULL.isPlaceholder());
 	}
 
 	@Test
@@ -80,12 +82,21 @@ public class NullEntityIdsTest {
 		TestValueVisitor tvv = new TestValueVisitor();
 		assertEquals("P0", PropertyIdValue.NULL.accept(tvv));
 		assertEquals("P0", PropertyIdValue.NULL.getId());
-		assertEquals("http://localhost/entity/",
-				PropertyIdValue.NULL.getSiteIri());
-		assertEquals(EntityIdValue.ET_PROPERTY,
-				PropertyIdValue.NULL.getEntityType());
-		assertEquals("http://localhost/entity/P0",
-				PropertyIdValue.NULL.getIri());
+		assertEquals("http://localhost/entity/", PropertyIdValue.NULL.getSiteIri());
+		assertEquals(EntityIdValue.ET_PROPERTY, PropertyIdValue.NULL.getEntityType());
+		assertEquals("http://localhost/entity/P0", PropertyIdValue.NULL.getIri());
+		assertTrue(PropertyIdValue.NULL.isPlaceholder());
+	}
+
+	@Test
+	public void testNullMediaInfoId() {
+		TestValueVisitor tvv = new TestValueVisitor();
+		assertEquals("M0", MediaInfoIdValue.NULL.accept(tvv));
+		assertEquals("M0", MediaInfoIdValue.NULL.getId());
+		assertEquals("http://localhost/entity/", MediaInfoIdValue.NULL.getSiteIri());
+		assertEquals(EntityIdValue.ET_MEDIA_INFO, MediaInfoIdValue.NULL.getEntityType());
+		assertEquals("http://localhost/entity/M0", MediaInfoIdValue.NULL.getIri());
+		assertTrue(MediaInfoIdValue.NULL.isPlaceholder());
 	}
 
 	@Test
@@ -96,6 +107,29 @@ public class NullEntityIdsTest {
 		assertEquals("http://localhost/entity/", LexemeIdValue.NULL.getSiteIri());
 		assertEquals(EntityIdValue.ET_LEXEME, LexemeIdValue.NULL.getEntityType());
 		assertEquals("http://localhost/entity/L0", LexemeIdValue.NULL.getIri());
+		assertTrue(LexemeIdValue.NULL.isPlaceholder());
+	}
+
+	@Test
+	public void testNullSenseId() {
+		TestValueVisitor tvv = new TestValueVisitor();
+		assertEquals("L0-S0", SenseIdValue.NULL.accept(tvv));
+		assertEquals("L0-S0", SenseIdValue.NULL.getId());
+		assertEquals("http://localhost/entity/", SenseIdValue.NULL.getSiteIri());
+		assertEquals(EntityIdValue.ET_SENSE, SenseIdValue.NULL.getEntityType());
+		assertEquals("http://localhost/entity/L0-S0", SenseIdValue.NULL.getIri());
+		assertTrue(SenseIdValue.NULL.isPlaceholder());
+	}
+
+	@Test
+	public void testNullFormId() {
+		TestValueVisitor tvv = new TestValueVisitor();
+		assertEquals("L0-F0", FormIdValue.NULL.accept(tvv));
+		assertEquals("L0-F0", FormIdValue.NULL.getId());
+		assertEquals("http://localhost/entity/", FormIdValue.NULL.getSiteIri());
+		assertEquals(EntityIdValue.ET_FORM, FormIdValue.NULL.getEntityType());
+		assertEquals("http://localhost/entity/L0-F0", FormIdValue.NULL.getIri());
+		assertTrue(FormIdValue.NULL.isPlaceholder());
 	}
 
 }

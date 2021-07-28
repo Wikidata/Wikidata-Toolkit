@@ -21,6 +21,7 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -114,4 +115,10 @@ public class UnsupportedEntityIdValueTest {
 		assertEquals("shiny", secondValue.getEntityTypeJsonString());
 		assertNull(noType.getEntityTypeJsonString());
 	}
+
+	@Test
+	public void testIsPlaceholder() {
+		assertFalse(firstValue.isPlaceholder());
+	}
+
 }

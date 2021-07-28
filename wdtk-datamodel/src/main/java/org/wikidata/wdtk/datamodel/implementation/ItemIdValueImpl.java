@@ -95,6 +95,12 @@ public class ItemIdValueImpl extends EntityIdValueImpl implements
 		return EntityIdValue.ET_ITEM;
 	}
 
+	@JsonIgnore
+	@Override
+	public boolean isPlaceholder() {
+		return getId().equals("Q0");
+	}
+
 	@Override
 	public <T> T accept(ValueVisitor<T> valueVisitor) {
 		return valueVisitor.visit(this);
@@ -114,4 +120,5 @@ public class ItemIdValueImpl extends EntityIdValueImpl implements
 	public String toString() {
 		return ToString.toString(this);
 	}
+
 }

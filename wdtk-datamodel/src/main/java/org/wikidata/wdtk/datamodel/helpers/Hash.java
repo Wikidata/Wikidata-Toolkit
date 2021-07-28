@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.helpers;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -19,8 +17,47 @@ package org.wikidata.wdtk.datamodel.helpers;
  * limitations under the License.
  * #L%
  */
+package org.wikidata.wdtk.datamodel.helpers;
 
-import org.wikidata.wdtk.datamodel.interfaces.*;
+import java.util.Objects;
+
+import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityRedirectDocument;
+import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
+import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocumentUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
+import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocumentUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
+import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 /**
  * Static class for computing a hashcode of arbitrary data objects using only
@@ -37,7 +74,7 @@ public class Hash {
 	/**
 	 * Prime number used to build hashes.
 	 */
-	final static int prime = 31;
+	private static final int PRIME = 31;
 
 	/**
 	 * Returns a hash code for the given object.
@@ -50,8 +87,8 @@ public class Hash {
 	public static int hashCode(EntityIdValue o) {
 		int result;
 		result = o.getId().hashCode();
-		result = prime * result + o.getSiteIri().hashCode();
-		result = prime * result + o.getEntityType().hashCode();
+		result = PRIME * result + o.getSiteIri().hashCode();
+		result = PRIME * result + o.getEntityType().hashCode();
 		return result;
 	}
 
@@ -78,16 +115,16 @@ public class Hash {
 	public static int hashCode(TimeValue o) {
 		int result;
 		result = Long.hashCode(o.getYear());
-		result = prime * result + o.getMonth();
-		result = prime * result + o.getDay();
-		result = prime * result + o.getHour();
-		result = prime * result + o.getMinute();
-		result = prime * result + o.getSecond();
-		result = prime * result + o.getPrecision();
-		result = prime * result + o.getBeforeTolerance();
-		result = prime * result + o.getAfterTolerance();
-		result = prime * result + o.getTimezoneOffset();
-		result = prime * result + o.getPreferredCalendarModel().hashCode();
+		result = PRIME * result + o.getMonth();
+		result = PRIME * result + o.getDay();
+		result = PRIME * result + o.getHour();
+		result = PRIME * result + o.getMinute();
+		result = PRIME * result + o.getSecond();
+		result = PRIME * result + o.getPrecision();
+		result = PRIME * result + o.getBeforeTolerance();
+		result = PRIME * result + o.getAfterTolerance();
+		result = PRIME * result + o.getTimezoneOffset();
+		result = PRIME * result + o.getPreferredCalendarModel().hashCode();
 		return result;
 	}
 
@@ -104,11 +141,11 @@ public class Hash {
 		result = o.getGlobe().hashCode();
 		long value;
 		value = Double.valueOf(o.getLatitude()).hashCode();
-		result = prime * result + (int) (value ^ (value >>> 32));
+		result = PRIME * result + (int) (value ^ (value >>> 32));
 		value = Double.valueOf(o.getLongitude()).hashCode();
-		result = prime * result + (int) (value ^ (value >>> 32));
+		result = PRIME * result + (int) (value ^ (value >>> 32));
 		value = Double.valueOf(o.getPrecision()).hashCode();
-		result = prime * result + (int) (value ^ (value >>> 32));
+		result = PRIME * result + (int) (value ^ (value >>> 32));
 		return result;
 	}
 
@@ -135,7 +172,7 @@ public class Hash {
 	public static int hashCode(MonolingualTextValue o) {
 		int result;
 		result = o.getLanguageCode().hashCode();
-		result = prime * result + o.getText().hashCode();
+		result = PRIME * result + o.getText().hashCode();
 		return result;
 	}
 
@@ -150,12 +187,12 @@ public class Hash {
 	public static int hashCode(QuantityValue o) {
 		int result;
 		result = o.getNumericValue().hashCode();
-		result = prime * result + o.getUnit().hashCode();
+		result = PRIME * result + o.getUnit().hashCode();
 		if(o.getLowerBound() != null) {
-			result = prime * result + o.getLowerBound().hashCode();
+			result = PRIME * result + o.getLowerBound().hashCode();
 		}
 		if(o.getUpperBound() != null) {
-			result = prime * result + o.getUpperBound().hashCode();
+			result = PRIME * result + o.getUpperBound().hashCode();
 		}
 		return result;
 	}
@@ -171,7 +208,7 @@ public class Hash {
 	public static int hashCode(ValueSnak o) {
 		int result;
 		result = o.getValue().hashCode();
-		result = prime * result + o.getPropertyId().hashCode();
+		result = PRIME * result + o.getPropertyId().hashCode();
 		return result;
 	}
 
@@ -222,8 +259,8 @@ public class Hash {
 	public static int hashCode(Claim o) {
 		int result;
 		result = o.getSubject().hashCode();
-		result = prime * result + o.getMainSnak().hashCode();
-		result = prime * result + o.getQualifiers().hashCode();
+		result = PRIME * result + o.getMainSnak().hashCode();
+		result = PRIME * result + o.getQualifiers().hashCode();
 		return result;
 	}
 
@@ -250,11 +287,11 @@ public class Hash {
 	public static int hashCode(Statement o) {
 		int result;
 		result = o.getSubject().hashCode();
-		result = prime * result + o.getMainSnak().hashCode();
-		result = prime * result + o.getQualifiers().hashCode();
-		result = prime * result + o.getReferences().hashCode();
-		result = prime * result + o.getRank().hashCode();
-		result = prime * result + o.getStatementId().hashCode();
+		result = PRIME * result + o.getMainSnak().hashCode();
+		result = PRIME * result + o.getQualifiers().hashCode();
+		result = PRIME * result + o.getReferences().hashCode();
+		result = PRIME * result + o.getRank().hashCode();
+		result = PRIME * result + o.getStatementId().hashCode();
 		return result;
 	}
 
@@ -281,8 +318,8 @@ public class Hash {
 	public static int hashCode(SiteLink o) {
 		int result;
 		result = o.getBadges().hashCode();
-		result = prime * result + o.getPageTitle().hashCode();
-		result = prime * result + o.getSiteKey().hashCode();
+		result = PRIME * result + o.getPageTitle().hashCode();
+		result = PRIME * result + o.getSiteKey().hashCode();
 		return result;
 	}
 
@@ -297,8 +334,8 @@ public class Hash {
 	public static int hashCode(PropertyDocument o) {
 		int result;
 		result = hashCodeForTermedDocument(o);
-		result = prime * result + o.getStatementGroups().hashCode();
-		result = prime * result + o.getDatatype().hashCode();
+		result = PRIME * result + o.getStatementGroups().hashCode();
+		result = PRIME * result + o.getDatatype().hashCode();
 		return result;
 	}
 
@@ -313,8 +350,8 @@ public class Hash {
 	public static int hashCode(ItemDocument o) {
 		int result;
 		result = hashCodeForTermedDocument(o);
-		result = prime * result + o.getStatementGroups().hashCode();
-		result = prime * result + o.getSiteLinks().hashCode();
+		result = PRIME * result + o.getStatementGroups().hashCode();
+		result = PRIME * result + o.getSiteLinks().hashCode();
 		return result;
 	}
 
@@ -329,10 +366,10 @@ public class Hash {
 	public static int hashCode(LexemeDocument o) {
 		int result;
 		result = o.getLexicalCategory().hashCode();
-		result = prime * result + o.getLanguage().hashCode();
-		result = prime * result + o.getLemmas().hashCode();
-		result = prime * result + Long.hashCode(o.getRevisionId());
-		result = prime * result + o.getStatementGroups().hashCode();
+		result = PRIME * result + o.getLanguage().hashCode();
+		result = PRIME * result + o.getLemmas().hashCode();
+		result = PRIME * result + Long.hashCode(o.getRevisionId());
+		result = PRIME * result + o.getStatementGroups().hashCode();
 		return result;
 	}
 
@@ -347,9 +384,9 @@ public class Hash {
 	public static int hashCode(FormDocument o) {
 		int result;
 		result = o.getGrammaticalFeatures().hashCode();
-		result = prime * result + o.getRepresentations().hashCode();
-		result = prime * result + Long.hashCode(o.getRevisionId());
-		result = prime * result + o.getStatementGroups().hashCode();
+		result = PRIME * result + o.getRepresentations().hashCode();
+		result = PRIME * result + Long.hashCode(o.getRevisionId());
+		result = PRIME * result + o.getStatementGroups().hashCode();
 		return result;
 	}
 
@@ -364,8 +401,8 @@ public class Hash {
 	public static int hashCode(SenseDocument o) {
 		int result;
 		result = o.getGlosses().hashCode();
-		result = prime * result + Long.hashCode(o.getRevisionId());
-		result = prime * result + o.getStatementGroups().hashCode();
+		result = PRIME * result + Long.hashCode(o.getRevisionId());
+		result = PRIME * result + o.getStatementGroups().hashCode();
 		return result;
 	}
 
@@ -380,7 +417,7 @@ public class Hash {
 	public static int hashCode(MediaInfoDocument o) {
 		int result;
 		result = o.getLabels().hashCode();
-		result = prime * result + o.getStatementGroups().hashCode();
+		result = PRIME * result + o.getStatementGroups().hashCode();
 		return result;
 	}
 
@@ -395,9 +432,9 @@ public class Hash {
 	private static int hashCodeForTermedDocument(TermedDocument o) {
 		int result;
 		result = o.getAliases().hashCode();
-		result = prime * result + o.getDescriptions().hashCode();
-		result = prime * result + o.getLabels().hashCode();
-		result = prime * result + Long.hashCode(o.getRevisionId());
+		result = PRIME * result + o.getDescriptions().hashCode();
+		result = PRIME * result + o.getLabels().hashCode();
+		result = PRIME * result + Long.hashCode(o.getRevisionId());
 		return result;
 	}
 
@@ -412,8 +449,144 @@ public class Hash {
 	public static int hashCode(EntityRedirectDocument o) {
 		int result;
 		result = o.getEntityId().hashCode();
-		result = prime * result + o.getTargetId().hashCode();
-		result = prime * result + Long.hashCode(o.getRevisionId());
+		result = PRIME * result + o.getTargetId().hashCode();
+		result = PRIME * result + Long.hashCode(o.getRevisionId());
 		return result;
 	}
+
+	/**
+	 * Calculates hash code for given {@link TermUpdate} object.
+	 *
+	 * @see Object#hashCode()
+	 * @param o
+	 *            the object to create a hash for
+	 * @return object's hash code
+	 */
+	public static int hashCode(TermUpdate o) {
+		return Objects.hash(o.getModified(), o.getRemoved());
+	}
+
+	/**
+	 * Calculates hash code for given {@link AliasUpdate} object.
+	 *
+	 * @see Object#hashCode()
+	 * @param o
+	 *            the object to create a hash for
+	 * @return object's hash code
+	 */
+	public static int hashCode(AliasUpdate o) {
+		return Objects.hash(o.getRecreated(), o.getAdded(), o.getRemoved());
+	}
+
+	/**
+	 * Calculates hash code for given {@link StatementUpdate} object.
+	 *
+	 * @see Object#hashCode()
+	 * @param o
+	 *            the object to create a hash for
+	 * @return object's hash code
+	 */
+	public static int hashCode(StatementUpdate o) {
+		return Objects.hash(o.getAdded(), o.getReplaced(), o.getRemoved());
+	}
+
+	private static int hashCodeForEntityUpdate(EntityUpdate o) {
+		return Objects.hash(o.getEntityId(), o.getBaseRevisionId());
+	}
+
+	private static int hashCodeForStatementDocumentUpdate(StatementDocumentUpdate o) {
+		return hashCodeForEntityUpdate(o) * PRIME + Objects.hash(o.getStatements());
+	}
+
+	private static int hashCodeForLabeledStatementDocumentUpdate(LabeledStatementDocumentUpdate o) {
+		return hashCodeForStatementDocumentUpdate(o) * PRIME + Objects.hash(o.getLabels());
+	}
+
+	private static int hashCodeForTermedStatementDocumentUpdate(TermedStatementDocumentUpdate o) {
+		return hashCodeForLabeledStatementDocumentUpdate(o) * PRIME + Objects.hash(o.getDescriptions(), o.getAliases());
+	}
+
+	/**
+	 * Calculates hash code for given {@link MediaInfoUpdate} object.
+	 *
+	 * @see Object#hashCode()
+	 * @param o
+	 *            the object to create a hash for
+	 * @return object's hash code
+	 */
+	public static int hashCode(MediaInfoUpdate o) {
+		return hashCodeForLabeledStatementDocumentUpdate(o);
+	}
+
+	/**
+	 * Calculates hash code for given {@link ItemUpdate} object.
+	 *
+	 * @see Object#hashCode()
+	 * @param o
+	 *            the object to create a hash for
+	 * @return object's hash code
+	 */
+	public static int hashCode(ItemUpdate o) {
+		return hashCodeForTermedStatementDocumentUpdate(o) * PRIME
+				+ Objects.hash(o.getModifiedSiteLinks(), o.getRemovedSiteLinks());
+	}
+
+	/**
+	 * Calculates hash code for given {@link PropertyUpdate} object.
+	 *
+	 * @see Object#hashCode()
+	 * @param o
+	 *            the object to create a hash for
+	 * @return object's hash code
+	 */
+	public static int hashCode(PropertyUpdate o) {
+		return hashCodeForTermedStatementDocumentUpdate(o);
+	}
+
+	/**
+	 * Calculates hash code for given {@link SenseUpdate} object.
+	 *
+	 * @see Object#hashCode()
+	 * @param o
+	 *            the object to create a hash for
+	 * @return object's hash code
+	 */
+	public static int hashCode(SenseUpdate o) {
+		return hashCodeForStatementDocumentUpdate(o) * PRIME + Objects.hash(o.getGlosses());
+	}
+
+	/**
+	 * Calculates hash code for given {@link FormUpdate} object.
+	 *
+	 * @see Object#hashCode()
+	 * @param o
+	 *            the object to create a hash for
+	 * @return object's hash code
+	 */
+	public static int hashCode(FormUpdate o) {
+		return hashCodeForStatementDocumentUpdate(o) * PRIME
+				+ Objects.hash(o.getRepresentations(), o.getGrammaticalFeatures());
+	}
+
+	/**
+	 * Calculates hash code for given {@link LexemeUpdate} object.
+	 *
+	 * @see Object#hashCode()
+	 * @param o
+	 *            the object to create a hash for
+	 * @return object's hash code
+	 */
+	public static int hashCode(LexemeUpdate o) {
+		return hashCodeForStatementDocumentUpdate(o) * PRIME + Objects.hash(
+				o.getLanguage(),
+				o.getLexicalCategory(),
+				o.getLemmas(),
+				o.getAddedSenses(),
+				o.getUpdatedSenses(),
+				o.getRemovedSenses(),
+				o.getAddedForms(),
+				o.getUpdatedForms(),
+				o.getRemovedForms());
+	}
+
 }

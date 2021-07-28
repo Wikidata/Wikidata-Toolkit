@@ -75,6 +75,12 @@ public class MediaInfoIdValueImpl extends EntityIdValueImpl implements MediaInfo
 		return EntityIdValue.ET_MEDIA_INFO;
 	}
 
+	@JsonIgnore
+	@Override
+	public boolean isPlaceholder() {
+		return getId().equals("M0");
+	}
+
 	@Override
 	public <T> T accept(ValueVisitor<T> valueVisitor) {
 		return valueVisitor.visit(this);

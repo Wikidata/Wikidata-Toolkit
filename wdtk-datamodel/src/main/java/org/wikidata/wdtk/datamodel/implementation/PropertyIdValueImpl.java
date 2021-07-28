@@ -77,6 +77,12 @@ public class PropertyIdValueImpl extends EntityIdValueImpl implements
 		return EntityIdValue.ET_PROPERTY;
 	}
 
+	@JsonIgnore
+	@Override
+	public boolean isPlaceholder() {
+		return getId().equals("P0");
+	}
+
 	@Override
 	public <T> T accept(ValueVisitor<T> valueVisitor) {
 		return valueVisitor.visit(this);
@@ -96,4 +102,5 @@ public class PropertyIdValueImpl extends EntityIdValueImpl implements
 	public String toString() {
 		return ToString.toString(this);
 	}
+
 }

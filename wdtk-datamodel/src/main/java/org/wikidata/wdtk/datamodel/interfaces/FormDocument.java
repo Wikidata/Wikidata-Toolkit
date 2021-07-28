@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.interfaces;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -19,6 +17,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * limitations under the License.
  * #L%
  */
+package org.wikidata.wdtk.datamodel.interfaces;
 
 import java.util.List;
 import java.util.Map;
@@ -53,6 +52,15 @@ public interface FormDocument extends StatementDocument {
 	 * @return item ids
 	 */
 	List<ItemIdValue> getGrammaticalFeatures();
+
+	/**
+	 * Returns a new version of this document with updated ID.
+	 * 
+	 * @param newEntityId
+	 *            new ID of the document
+	 * @return document with updated ID
+	 */
+	FormDocument withEntityId(FormIdValue newEntityId);
 
 	/**
 	 * Returns a copy of this document with an updated revision id.

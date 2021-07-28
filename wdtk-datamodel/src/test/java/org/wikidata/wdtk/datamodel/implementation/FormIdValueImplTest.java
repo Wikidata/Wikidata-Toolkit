@@ -21,6 +21,7 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -129,4 +130,10 @@ public class FormIdValueImplTest {
 	public void testToJavaWithoutNumericalID() throws IOException {
 		assertEquals(form1, mapper.readValue(JSON_FORM_ID_VALUE_WITHOUT_TYPE, ValueImpl.class));
 	}
+
+	@Test
+	public void testIsPlaceholder() {
+		assertFalse(form1.isPlaceholder());
+	}
+
 }

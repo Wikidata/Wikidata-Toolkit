@@ -138,10 +138,10 @@ public class MockStringContentFactory {
 		InputStream is = Mockito.mock(InputStream.class);
 		try {
 			Mockito.doThrow(new IOException()).when(is).read();
-			Mockito.doThrow(new IOException()).when(is).read(Mockito.anyObject());
+			Mockito.doThrow(new IOException()).when(is).read(Mockito.any());
 			Mockito.doThrow(new IOException())
 					.when(is)
-					.read(Mockito.anyObject(), Mockito.anyInt(), Mockito.anyInt());
+					.read(Mockito.any(), Mockito.anyInt(), Mockito.anyInt());
 		} catch (IOException e) {
 			throw new RuntimeException(
 					"Mockito should not throw anything here. Strange.", e);

@@ -92,6 +92,15 @@ public interface LexemeDocument extends StatementDocument {
 	SenseDocument getSense(SenseIdValue formId);
 
 	/**
+	 * Returns a new version of this document with updated ID.
+	 * 
+	 * @param newEntityId
+	 *            new ID of the document
+	 * @return document with updated ID
+	 */
+	LexemeDocument withEntityId(LexemeIdValue newEntityId);
+
+	/**
 	 * Returns a copy of this document with an updated revision id.
 	 */
 	@Override

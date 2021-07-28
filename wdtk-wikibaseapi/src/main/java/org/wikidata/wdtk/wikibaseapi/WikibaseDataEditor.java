@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.wikibaseapi;
-
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -19,14 +17,44 @@ package org.wikidata.wdtk.wikibaseapi;
  * limitations under the License.
  * #L%
  */
+package org.wikidata.wdtk.wikibaseapi;
 
-import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
-import org.wikidata.wdtk.datamodel.interfaces.*;
-import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
+import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.wikidata.wdtk.datamodel.helpers.EntityUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
+import org.wikidata.wdtk.datamodel.helpers.LabeledDocumentUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.LexemeUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.StatementDocumentUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.StatementUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.TermUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.TermedDocumentUpdateBuilder;
+import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocumentUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocumentUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
+import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 /**
  * Class that provides high-level editing functionality for Wikibase data.
@@ -103,6 +131,13 @@ public class WikibaseDataEditor {
 	public WikibaseDataEditor(ApiConnection connection, String siteUri, GuidGenerator generator) {
 		this.wbEditingAction = new WbEditingAction(connection, siteUri);
 		this.wikibaseDataFetcher = new WikibaseDataFetcher(connection, siteUri);
+		this.siteIri = siteUri;
+		this.guidGenerator = generator;
+	}
+
+	WikibaseDataEditor(WbEditingAction action, WikibaseDataFetcher fetcher, String siteUri, GuidGenerator generator) {
+		this.wbEditingAction = action;
+		this.wikibaseDataFetcher = fetcher;
 		this.siteIri = siteUri;
 		this.guidGenerator = generator;
 	}
@@ -258,78 +293,122 @@ public class WikibaseDataEditor {
 		this.wbEditingAction.setRemainingEdits(0);
 	}
 
-	/**
-	 * Creates a new item document with the summary message as provided.
-	 * <p>
-	 * The item document that is given as a parameter must use a local item id,
-	 * such as {@link ItemIdValue#NULL}, and its revision id must be 0. The
-	 * newly created document is returned. It will contain the new id. Note that
-	 * the site IRI used in this ID is not part of the API response; the site
-	 * IRI given when constructing this object is used in this place.
-	 * <p>
-	 * Statements in the given data must have empty statement IDs.
-	 *
-	 * @param itemDocument
-	 *            the document that contains the data to be written
-	 * @param summary
-	 *            summary for the edit; will be prepended by an automatically
-	 *            generated comment; the length limit of the autocomment
-	 *            together with the summary is 260 characters: everything above
-	 *            that limit will be cut off
-	 * @param tags
-	 *            string identifiers of the tags to apply to the edit.
-	 *            Ignored if null or empty.
-	 * @return newly created item document, or null if there was an error
-	 * @throws IOException
-	 *             if there was an IO problem, such as missing network
-	 *             connection
-	 * @throws MediaWikiApiErrorException
-	 */
-	public ItemDocument createItemDocument(ItemDocument itemDocument,
-			String summary, List<String> tags) throws IOException, MediaWikiApiErrorException {
-		String data = JsonSerializer.getJsonString(itemDocument);
-		return (ItemDocument) this.wbEditingAction.wbEditEntity(null, null,
-				null, "item", data, false, this.editAsBot, 0, summary, tags);
+	private EntityDocument createDocument(
+			String type, EntityDocument document, String summary, List<String> tags)
+			throws IOException, MediaWikiApiErrorException {
+		String data = JsonSerializer.getJsonString(document);
+		return this.wbEditingAction.wbEditEntity(
+				null, null, null, type, data, false, editAsBot, 0, summary, tags);
 	}
 
 	/**
-	 * Creates a new property document with the summary message as provided.
+	 * Creates new item document. Provided item document must use a local item ID,
+	 * such as {@link ItemIdValue#NULL}, and its revision ID must be 0.
 	 * <p>
-	 * The property document that is given as a parameter must use a local
-	 * property id, such as {@link PropertyIdValue#NULL}, and its revision id
-	 * must be 0. The newly created document is returned. It will contain the
-	 * new property id and revision id. Note that the site IRI used in the
-	 * property id is not part of the API response; the site IRI given when
-	 * constructing this object is used in this place.
+	 * The newly created document is returned. It will contain the new item ID and
+	 * revision ID. Note that the site IRI used in the item ID is not part of the
+	 * API response. The site IRI given when constructing this object is used in its
+	 * place.
 	 * <p>
-	 * Statements in the given data must have empty statement IDs.
+	 * Statements in the provided document must not have IDs.
+	 * <p>
+	 * Summary message will be prepended by an automatically generated comment. The
+	 * length limit of the autocomment together with the summary is 260 characters.
+	 * Everything above that limit will be cut off.
 	 *
-	 * @param propertyDocument
-	 *            the document that contains the data to be written
+	 * @param document
+	 *            document that contains the data to be written
 	 * @param summary
-	 *            summary for the edit; will be prepended by an automatically
-	 *            generated comment; the length limit of the autocomment
-	 *            together with the summary is 260 characters: everything above
-	 *            that limit will be cut off
+	 *            summary for the edit
 	 * @param tags
-	 *            string identifiers of the tags to apply to the edit.
-	 *            Ignored if null or empty.
-	 * @return newly created property document, or null if there was an error
+	 *            string identifiers of the tags to apply to the edit, {@code null}
+	 *            or empty for no tags
+	 * @return newly created item document or {@code null} for simulated edit (see
+	 *         {@link #disableEditing()}
 	 * @throws IOException
-	 *             if there was an IO problem, such as missing network
-	 *             connection
+	 *             if there was an IO problem, such as missing network connection
 	 * @throws MediaWikiApiErrorException
+	 *             if MediaWiki API returned an error response
+	 */
+	public ItemDocument createItemDocument(
+			ItemDocument document, String summary, List<String> tags)
+			throws IOException, MediaWikiApiErrorException {
+		return (ItemDocument) createDocument("item", document, summary, tags);
+	}
+
+	/**
+	 * Creates new property document. Provided property document must use a local
+	 * property ID, such as {@link PropertyIdValue#NULL}, and its revision ID must
+	 * be 0.
+	 * <p>
+	 * The newly created document is returned. It will contain the new property ID
+	 * and revision ID. Note that the site IRI used in the property ID is not part
+	 * of the API response. The site IRI given when constructing this object is used
+	 * in its place.
+	 * <p>
+	 * Statements in the provided document must not have IDs.
+	 * <p>
+	 * Summary message will be prepended by an automatically generated comment. The
+	 * length limit of the autocomment together with the summary is 260 characters.
+	 * Everything above that limit will be cut off.
+	 *
+	 * @param document
+	 *            document that contains the data to be written
+	 * @param summary
+	 *            summary for the edit
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit, {@code null}
+	 *            or empty for no tags
+	 * @return newly created property document or {@code null} for simulated edit
+	 *         (see {@link #disableEditing()}
+	 * @throws IOException
+	 *             if there was an IO problem, such as missing network connection
+	 * @throws MediaWikiApiErrorException
+	 *             if MediaWiki API returned an error response
 	 */
 	public PropertyDocument createPropertyDocument(
-			PropertyDocument propertyDocument, String summary, List<String> tags)
+			PropertyDocument document, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		String data = JsonSerializer.getJsonString(propertyDocument);
-		return (PropertyDocument) this.wbEditingAction
-				.wbEditEntity(null, null, null, "property", data, false,
-						this.editAsBot, 0, summary, tags);
+		return (PropertyDocument) createDocument("property", document, summary, tags);
 	}
 
 	/**
+	 * Creates new lexeme document. Provided lexeme document must use a local lexeme
+	 * ID, such as {@link LexemeIdValue#NULL}, and its revision ID must be 0.
+	 * <p>
+	 * The newly created document is returned. It will contain the new lexeme ID and
+	 * revision ID. Note that the site IRI used in the lexeme ID is not part of the
+	 * API response. The site IRI given when constructing this object is used in its
+	 * place.
+	 * <p>
+	 * Statements, senses, and forms in the provided document must not have IDs.
+	 * <p>
+	 * Summary message will be prepended by an automatically generated comment. The
+	 * length limit of the autocomment together with the summary is 260 characters.
+	 * Everything above that limit will be cut off.
+	 *
+	 * @param document
+	 *            document that contains the data to be written
+	 * @param summary
+	 *            summary for the edit
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit, {@code null}
+	 *            or empty for no tags
+	 * @return newly created lexeme document or {@code null} for simulated edit (see
+	 *         {@link #disableEditing()}
+	 * @throws IOException
+	 *             if there was an IO problem, such as missing network connection
+	 * @throws MediaWikiApiErrorException
+	 *             if MediaWiki API returned an error response
+	 */
+	public LexemeDocument createLexemeDocument(
+			LexemeDocument document, String summary, List<String> tags)
+			throws IOException, MediaWikiApiErrorException {
+		return (LexemeDocument) createDocument("lexeme", document, summary, tags);
+	}
+
+	/**
+	 * @deprecated Use {@link #editEntityDocument(EntityUpdate, boolean, String, List)} instead.
 	 * Writes the data for the given item document with the summary message as
 	 * given. Optionally, the existing data is cleared (deleted).
 	 * <p>
@@ -370,6 +449,7 @@ public class WikibaseDataEditor {
 	 *             connection
 	 * @throws MediaWikiApiErrorException
 	 */
+	@Deprecated
 	public ItemDocument editItemDocument(ItemDocument itemDocument,
 			boolean clear, String summary, List<String> tags) throws IOException,
 			MediaWikiApiErrorException {
@@ -380,6 +460,187 @@ public class WikibaseDataEditor {
 	}
 
 	/**
+	 * Updates {@link EntityDocument} entity. ID of the entity to update is taken
+	 * from the update object. Its site IRI is ignored. No action is taken if the
+	 * update is empty.
+	 * <p>
+	 * If the update object references base revision of the document, its revision
+	 * ID is used to specify the base revision in the API request, enabling the API
+	 * to detect edit conflicts. It is strongly recommended to specify base revision
+	 * document in the update object.
+	 * <p>
+	 * Summary message will be prepended by an automatically generated comment. The
+	 * length limit of the autocomment together with the summary is 260 characters.
+	 * Everything above that limit will be cut off.
+	 *
+	 * @param update
+	 *            collection of changes to be written
+	 * @param clear
+	 *            if set to {@code true}, existing entity data will be removed and
+	 *            the update will be applied to empty entity
+	 * @param summary
+	 *            summary for the edit
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit, {@code null}
+	 *            or empty for no tags
+	 * @throws IOException
+	 *             if there was an IO problem, such as missing network connection
+	 * @throws MediaWikiApiErrorException
+	 *             if MediaWiki API returned an error response
+	 */
+	public void editEntityDocument(
+			EntityUpdate update, boolean clear, String summary, List<String> tags)
+			throws IOException, MediaWikiApiErrorException {
+		long revisionId = update.getBaseRevisionId();
+		if (!clear) {
+			if (update.isEmpty())
+				return;
+			if (update instanceof StatementDocumentUpdate) {
+				StatementDocumentUpdate typed = (StatementDocumentUpdate) update;
+				if (typed.getStatements().getAdded().size() == 1) {
+					StatementDocumentUpdateBuilder builder = StatementDocumentUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
+					Statement statement = typed.getStatements().getAdded().stream().findFirst().get();
+					builder.updateStatements(StatementUpdateBuilder.create().add(statement).build());
+					if (builder.build().equals(update)) {
+						String statementId = guidGenerator.freshStatementId(typed.getEntityId().getId());
+						Statement prepared = statement.withStatementId(statementId);
+						wbEditingAction.wbSetClaim(JsonSerializer.getJsonString(prepared),
+								editAsBot, revisionId, summary, tags);
+						return;
+					}
+				}
+				if (typed.getStatements().getReplaced().size() == 1) {
+					StatementDocumentUpdateBuilder builder = StatementDocumentUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
+					Statement statement = typed.getStatements().getReplaced().values().stream().findFirst().get();
+					builder.updateStatements(StatementUpdateBuilder.create().replace(statement).build());
+					if (builder.build().equals(update)) {
+						wbEditingAction.wbSetClaim(JsonSerializer.getJsonString(statement),
+								editAsBot, revisionId, summary, tags);
+						return;
+					}
+				}
+				if (!typed.getStatements().getRemoved().isEmpty()
+						&& typed.getStatements().getRemoved().size() <= 50) {
+					StatementDocumentUpdateBuilder builder = StatementDocumentUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
+					List<String> statementIds = new ArrayList<>(typed.getStatements().getRemoved());
+					StatementUpdateBuilder statementBuilder = StatementUpdateBuilder.create();
+					for (String statementId : statementIds) {
+						statementBuilder.remove(statementId);
+					}
+					builder.updateStatements(statementBuilder.build());
+					if (builder.build().equals(update)) {
+						wbEditingAction.wbRemoveClaims(statementIds, editAsBot, revisionId, summary, tags);
+						return;
+					}
+				}
+			}
+			if (update instanceof LabeledStatementDocumentUpdate) {
+				LabeledStatementDocumentUpdate typed = (LabeledStatementDocumentUpdate) update;
+				if (typed.getLabels().getModified().size() == 1) {
+					LabeledDocumentUpdateBuilder builder = LabeledDocumentUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
+					MonolingualTextValue label = typed.getLabels().getModified().values().stream().findFirst().get();
+					builder.updateLabels(TermUpdateBuilder.create().put(label).build());
+					if (builder.build().equals(update)) {
+						wbEditingAction.wbSetLabel(update.getEntityId().getId(), null, null, null,
+								label.getLanguageCode(), label.getText(), editAsBot, revisionId, summary, tags);
+						return;
+					}
+				}
+				if (typed.getLabels().getRemoved().size() == 1) {
+					LabeledDocumentUpdateBuilder builder = LabeledDocumentUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
+					String language = typed.getLabels().getRemoved().stream().findFirst().get();
+					builder.updateLabels(TermUpdateBuilder.create().remove(language).build());
+					if (builder.build().equals(update)) {
+						wbEditingAction.wbSetLabel(update.getEntityId().getId(), null, null, null,
+								language, null, editAsBot, revisionId, summary, tags);
+						return;
+					}
+				}
+			}
+			if (update instanceof TermedStatementDocumentUpdate) {
+				TermedStatementDocumentUpdate typed = (TermedStatementDocumentUpdate) update;
+				if (typed.getDescriptions().getModified().size() == 1) {
+					TermedDocumentUpdateBuilder builder = TermedDocumentUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
+					MonolingualTextValue description = typed.getDescriptions().getModified()
+							.values().stream().findFirst().get();
+					builder.updateDescriptions(TermUpdateBuilder.create().put(description).build());
+					if (builder.build().equals(update)) {
+						wbEditingAction.wbSetDescription(update.getEntityId().getId(), null, null, null,
+								description.getLanguageCode(), description.getText(),
+								editAsBot, revisionId, summary, tags);
+						return;
+					}
+				}
+				if (typed.getDescriptions().getRemoved().size() == 1) {
+					TermedDocumentUpdateBuilder builder = TermedDocumentUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
+					String language = typed.getDescriptions().getRemoved().stream().findFirst().get();
+					builder.updateDescriptions(TermUpdateBuilder.create().remove(language).build());
+					if (builder.build().equals(update)) {
+						wbEditingAction.wbSetDescription(update.getEntityId().getId(), null, null, null,
+								language, null, editAsBot, revisionId, summary, tags);
+						return;
+					}
+				}
+				if (typed.getAliases().size() == 1) {
+					TermedDocumentUpdateBuilder builder = TermedDocumentUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
+					String language = typed.getAliases().keySet().stream().findFirst().get();
+					AliasUpdate aliases = typed.getAliases().get(language);
+					builder.updateAliases(language, aliases);
+					if (builder.build().equals(update)) {
+						List<String> added = !aliases.getAdded().isEmpty()
+								? aliases.getAdded().stream().map(a -> a.getText()).collect(toList())
+								: null;
+						List<String> removed = !aliases.getRemoved().isEmpty()
+								? aliases.getRemoved().stream().map(a -> a.getText()).collect(toList())
+								: null;
+						List<String> recreated = aliases.getRecreated()
+								.map(l -> l.stream().map(a -> a.getText()).collect(toList()))
+								.orElse(null);
+						wbEditingAction.wbSetAliases(update.getEntityId().getId(), null, null, null,
+								language, added, removed, recreated, editAsBot, revisionId, summary, tags);
+						return;
+					}
+				}
+			}
+			if (update instanceof LexemeUpdate) {
+				LexemeUpdate typed = (LexemeUpdate) update;
+				if (typed.getUpdatedSenses().size() == 1) {
+					LexemeUpdateBuilder builder = LexemeUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
+					SenseUpdate sense = typed.getUpdatedSenses().values().stream().findFirst().get();
+					builder.updateSense(sense);
+					if (builder.build().equals(update)) {
+						editEntityDocument(sense, false, summary, tags);
+						return;
+					}
+				}
+				if (typed.getUpdatedForms().size() == 1) {
+					LexemeUpdateBuilder builder = LexemeUpdateBuilder
+							.forBaseRevisionId(typed.getEntityId(), typed.getBaseRevisionId());
+					FormUpdate form = typed.getUpdatedForms().values().stream().findFirst().get();
+					builder.updateForm(form);
+					if (builder.build().equals(update)) {
+						editEntityDocument(form, false, summary, tags);
+						return;
+					}
+				}
+			}
+		}
+		String data = JsonSerializer.getJsonString(update);
+		wbEditingAction.wbEditEntity(
+				update.getEntityId().getId(), null, null, null, data, clear, editAsBot, revisionId, summary, tags);
+	}
+
+	/**
+	 * @deprecated Use {@link #editEntityDocument(EntityUpdate, boolean, String, List)} instead.
 	 * Writes the data for the given property document with the summary message
 	 * as given. Optionally, the existing data is cleared (deleted).
 	 * <p>
@@ -420,6 +681,7 @@ public class WikibaseDataEditor {
 	 *             connection
 	 * @throws MediaWikiApiErrorException
 	 */
+	@Deprecated
 	public PropertyDocument editPropertyDocument(
 			PropertyDocument propertyDocument, boolean clear, String summary,
 			List<String> tags)
@@ -432,6 +694,7 @@ public class WikibaseDataEditor {
 	}
 
 	/**
+	 * @deprecated Use {@link #editEntityDocument(EntityUpdate, boolean, String, List)} instead.
 	 * Writes the data for the given media info document with the summary message
 	 * as given. Optionally, the existing data is cleared (deleted).
 	 * It creates the media info if needed.
@@ -470,6 +733,7 @@ public class WikibaseDataEditor {
 	 *             if there was an IO problem, such as missing network
 	 *             connection
 	 */
+	@Deprecated
 	public MediaInfoDocument editMediaInfoDocument(
 			MediaInfoDocument mediaInfoDocument, boolean clear, String summary,
 			List<String> tags)
@@ -482,6 +746,7 @@ public class WikibaseDataEditor {
 	}
 
 	/**
+	 * @deprecated Use {@link #editEntityDocument(EntityUpdate, boolean, String, List)} instead.
 	 * Updates the statements of the item document identified by the given item
 	 * id. The updates are computed with respect to the current data found
 	 * online, making sure that no redundant deletions or duplicate insertions
@@ -510,6 +775,7 @@ public class WikibaseDataEditor {
 	 * @throws IOException
 	 *             if there are IO problems, such as missing network connection
 	 */
+	@Deprecated
 	public ItemDocument updateStatements(ItemIdValue itemIdValue,
 			List<Statement> addStatements, List<Statement> deleteStatements,
 			String summary, List<String> tags)
@@ -524,6 +790,7 @@ public class WikibaseDataEditor {
 	
 	
 	/**
+	 * @deprecated Use {@link #editEntityDocument(EntityUpdate, boolean, String, List)} instead.
 	 * Updates the terms and statements of the item document identified by the
 	 * given item id. The updates are computed with respect to the current data
 	 * found online, making sure that no redundant deletions or duplicate insertions
@@ -563,6 +830,7 @@ public class WikibaseDataEditor {
 	 * @throws IOException
 	 *          if there are any IO errors, such as missing network connection
 	 */
+	@Deprecated
 	public ItemDocument updateTermsStatements(ItemIdValue itemIdValue,
 			List<MonolingualTextValue> addLabels,
 			List<MonolingualTextValue> addDescriptions,
@@ -581,6 +849,7 @@ public class WikibaseDataEditor {
 	}
 
 	/**
+	 * @deprecated Use {@link #editEntityDocument(EntityUpdate, boolean, String, List)} instead.
 	 * Updates the statements of the property document identified by the given
 	 * property id. The computation of updates is the same as for
 	 * {@link #updateStatements(ItemIdValue, List, List, String, List)}.
@@ -608,6 +877,7 @@ public class WikibaseDataEditor {
 	 * @throws IOException
 	 *             if there are IO problems, such as missing network connection
 	 */
+	@Deprecated
 	public PropertyDocument updateStatements(PropertyIdValue propertyIdValue,
 			List<Statement> addStatements, List<Statement> deleteStatements,
 			String summary, List<String> tags)
@@ -621,6 +891,7 @@ public class WikibaseDataEditor {
 	}
 
 	/**
+	 * @deprecated Use {@link #editEntityDocument(EntityUpdate, boolean, String, List)} instead.
 	 * Updates statements of the given document. The document should be the
 	 * current revision of the data that is to be updated. The updates are
 	 * computed with respect to the data found in the document, making sure that
@@ -658,6 +929,7 @@ public class WikibaseDataEditor {
 	 *             if there are IO problems, such as missing network connection
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	public <T extends StatementDocument> T updateStatements(T currentDocument,
 			List<Statement> addStatements, List<Statement> deleteStatements,
 			String summary, List<String> tags)
@@ -678,6 +950,7 @@ public class WikibaseDataEditor {
 	}
 	
 	/**
+	 * @deprecated Use {@link #editEntityDocument(EntityUpdate, boolean, String, List)} instead.
 	 * Updates the terms and statements of the current document.
 	 * The updates are computed with respect to the current data in the document,
 	 * making sure that no redundant deletions or duplicate insertions
@@ -720,6 +993,7 @@ public class WikibaseDataEditor {
 	 *          if there are any IO errors, such as missing network connection
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	public <T extends TermedStatementDocument> T updateTermsStatements(T currentDocument,
 			List<MonolingualTextValue> addLabels,
 			List<MonolingualTextValue> addDescriptions,
@@ -739,6 +1013,22 @@ public class WikibaseDataEditor {
 	}
 	
 	/**
+	 * Performs a null edit on an entity. This has some effects on Wikibase, such as
+	 * refreshing the labels of the referred items in the UI.
+	 * 
+	 * @param entityId
+	 *            the document to perform a null edit on
+	 * @throws MediaWikiApiErrorException
+	 *             if the API returns errors
+	 * @throws IOException
+	 *             if there are any IO errors, such as missing network connection
+	 */
+	public void nullEdit(EntityIdValue entityId) throws IOException, MediaWikiApiErrorException {
+		nullEdit(wikibaseDataFetcher.getEntityDocument(entityId.getId()));
+	}
+
+	/**
+	 * @deprecated Use {@link #nullEdit(EntityIdValue)} instead.
 	 * Performs a null edit on an item. This has some effects on Wikibase,
 	 * such as refreshing the labels of the referred items in the UI.
 	 * 
@@ -749,6 +1039,7 @@ public class WikibaseDataEditor {
 	 * @throws IOException 
 	 * 		    if there are any IO errors, such as missing network connection
 	 */
+	@Deprecated
 	public <T extends StatementDocument> void nullEdit(ItemIdValue itemId)
 			throws IOException, MediaWikiApiErrorException {
 		ItemDocument currentDocument = (ItemDocument) this.wikibaseDataFetcher
@@ -758,6 +1049,7 @@ public class WikibaseDataEditor {
 	}
 	
 	/**
+	 * @deprecated Use {@link #nullEdit(EntityIdValue)} instead.
 	 * Performs a null edit on a property. This has some effects on Wikibase,
 	 * such as refreshing the labels of the referred items in the UI.
 	 * 
@@ -768,6 +1060,7 @@ public class WikibaseDataEditor {
 	 * @throws IOException 
 	 * 		    if there are any IO errors, such as missing network connection
 	 */
+	@Deprecated
 	public <T extends StatementDocument> void nullEdit(PropertyIdValue propertyId)
 			throws IOException, MediaWikiApiErrorException {
 		PropertyDocument currentDocument = (PropertyDocument) this.wikibaseDataFetcher
@@ -777,26 +1070,23 @@ public class WikibaseDataEditor {
 	}
 	
 	/**
-	 * Performs a null edit on an entity. This has some effects on Wikibase,
-	 * such as refreshing the labels of the referred items in the UI.
+	 * Performs a null edit on an entity. This has some effects on Wikibase, such as
+	 * refreshing the labels of the referred items in the UI.
 	 * 
 	 * @param currentDocument
-	 * 			the document to perform a null edit on
+	 *            the document to perform a null edit on
+	 * @return new version of the document returned by Wikibase API
 	 * @throws MediaWikiApiErrorException
-	 * 	        if the API returns errors
-	 * @throws IOException 
-	 * 		    if there are any IO errors, such as missing network connection
+	 *             if the API returns errors
+	 * @throws IOException
+	 *             if there are any IO errors, such as missing network connection
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends StatementDocument> T nullEdit(T currentDocument)
+	public <T extends EntityDocument> T nullEdit(T currentDocument)
 			throws IOException, MediaWikiApiErrorException {
-		StatementUpdate statementUpdate = new StatementUpdate(currentDocument,
-				Collections.emptyList(), Collections.emptyList());
-		statementUpdate.setGuidGenerator(guidGenerator);
-		
-	    return (T) this.wbEditingAction.wbEditEntity(currentDocument
-				.getEntityId().getId(), null, null, null, statementUpdate
-				.getJsonUpdateString(), false, this.editAsBot, currentDocument
-				.getRevisionId(), null, null);
+		EntityUpdate update = EntityUpdateBuilder.forBaseRevision(currentDocument).build();
+		return (T) wbEditingAction.wbEditEntity(currentDocument.getEntityId().getId(), null, null, null,
+				JsonSerializer.getJsonString(update), false, editAsBot, currentDocument.getRevisionId(), null, null);
 	}
+
 }

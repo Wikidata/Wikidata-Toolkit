@@ -223,6 +223,13 @@ public class LexemeDocumentImplTest {
 	}
 
 	@Test
+	public void testWithEntityId() {
+		assertEquals(LexemeIdValue.NULL, ld1.withEntityId(LexemeIdValue.NULL).getEntityId());
+		LexemeIdValue id = Datamodel.makeWikidataLexemeIdValue("L123");
+		assertEquals(id, ld1.withEntityId(id).getEntityId());
+	}
+
+	@Test
 	public void testWithRevisionId() {
 		assertEquals(1235L, ld1.withRevisionId(1235L).getRevisionId());
 		assertEquals(ld1, ld1.withRevisionId(1325L).withRevisionId(ld1.getRevisionId()));

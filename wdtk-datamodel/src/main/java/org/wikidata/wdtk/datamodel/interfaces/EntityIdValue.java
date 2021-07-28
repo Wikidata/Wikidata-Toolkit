@@ -107,4 +107,12 @@ public interface EntityIdValue extends IriIdentifiedValue {
 	 */
 	String getSiteIri();
 
+	/**
+	 * Checks whether this is a placeholder ID. Placeholder IDs, for example
+	 * {@link ItemIdValue#NULL}, are often used when creating new entities.
+	 * 
+	 * @return {@code true} if this is a placeholder ID, {@code false} otherwise
+	 */
+	boolean isPlaceholder();
+
 }

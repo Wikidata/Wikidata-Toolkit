@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.helpers;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -19,9 +17,11 @@ package org.wikidata.wdtk.datamodel.helpers;
  * limitations under the License.
  * #L%
  */
+package org.wikidata.wdtk.datamodel.helpers;
 
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 /**
  * Same as Jackson's celebrated ObjectMapper, except
@@ -48,5 +48,9 @@ public class DatamodelMapper extends ObjectMapper {
 		InjectableValues injection = new InjectableValues.Std()
 				.addValue("siteIri", siteIri);
 		this.setInjectableValues(injection);
+		/*
+		 * Support for Optional properties.
+		 */
+		registerModule(new Jdk8Module());
 	}
 }

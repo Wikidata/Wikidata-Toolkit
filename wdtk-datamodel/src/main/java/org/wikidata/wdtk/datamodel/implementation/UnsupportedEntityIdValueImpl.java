@@ -148,7 +148,13 @@ public class UnsupportedEntityIdValueImpl extends ValueImpl implements Unsupport
 	public String getIri() {
 		return siteIri.concat(value.getId());
 	}
-	
+
+	@JsonIgnore
+	@Override
+	public boolean isPlaceholder() {
+		return false;
+	}
+
 	@Override
 	public int hashCode() {
 		return Hash.hashCode(this);

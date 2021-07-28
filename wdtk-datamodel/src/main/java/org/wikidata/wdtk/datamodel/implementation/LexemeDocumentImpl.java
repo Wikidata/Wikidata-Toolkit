@@ -187,7 +187,7 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 	@JsonIgnore
 	@Override
 	public LexemeIdValue getEntityId() {
-		return new LexemeIdValueImpl(this.entityId, this.siteIri);
+		return new LexemeIdValueImpl(entityId, siteIri);
 	}
 
 	@JsonIgnore
@@ -266,6 +266,12 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 	@Override
 	public String toString() {
 		return ToString.toString(this);
+	}
+
+	@Override
+	public LexemeDocument withEntityId(LexemeIdValue newEntityId) {
+		return new LexemeDocumentImpl(newEntityId, lexicalCategory, language, lemmas,
+				claims, forms, senses, revisionId, nextFormId, nextSenseId);
 	}
 
 	@Override

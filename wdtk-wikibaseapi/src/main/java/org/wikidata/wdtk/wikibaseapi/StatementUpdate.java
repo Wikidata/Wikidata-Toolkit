@@ -17,7 +17,6 @@
  * limitations under the License.
  * #L%
  */
-
 package org.wikidata.wdtk.wikibaseapi;
 
 import java.io.IOException;
@@ -36,6 +35,7 @@ import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
 import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
@@ -56,11 +56,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
+ * @deprecated Use {@link WikibaseDataEditor#editEntityDocument(EntityUpdate, boolean, String, List)} instead.
  * Class to plan a statement update operation.
  *
  * @author Markus Kroetzsch
  *
  */
+@Deprecated
 public class StatementUpdate {
 
 	static final Logger logger = LoggerFactory.getLogger(StatementUpdate.class);

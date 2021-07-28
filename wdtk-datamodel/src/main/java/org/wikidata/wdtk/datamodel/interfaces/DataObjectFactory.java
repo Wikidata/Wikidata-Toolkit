@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.interfaces;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -19,15 +17,25 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * limitations under the License.
  * #L%
  */
+package org.wikidata.wdtk.datamodel.interfaces;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.wikidata.wdtk.datamodel.helpers.FormUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
+import org.wikidata.wdtk.datamodel.helpers.ItemUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.LexemeUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.MediaInfoUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.PropertyDocumentBuilder;
+import org.wikidata.wdtk.datamodel.helpers.PropertyUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.ReferenceBuilder;
+import org.wikidata.wdtk.datamodel.helpers.SenseUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
+import org.wikidata.wdtk.datamodel.helpers.StatementUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.TermUpdateBuilder;
 
 /**
  * Interface for factories that create data objects that implement the
@@ -583,5 +591,257 @@ public interface DataObjectFactory {
 										   List<MonolingualTextValue> labels,
 										   List<StatementGroup> statementGroups,
 										   long revisionId);
+
+	/**
+	 * Creates new {@link TermUpdate}. It might be more convenient to
+	 * use {@link TermUpdateBuilder}.
+	 * 
+	 * @param modified
+	 *            added or changed values
+	 * @param removed
+	 *            language codes of removed values
+	 * @return new {@link TermUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	TermUpdate getTermUpdate(
+			Collection<MonolingualTextValue> modified,
+			Collection<String> removed);
+
+	/**
+	 * Creates new {@link AliasUpdate}. Callers should specify either
+	 * {@code recreated} parameter or {@code added} and {@code removed} parameters,
+	 * because combination of the two update approaches is not possible. To remove
+	 * all aliases, pass empty list in {@code recreated} parameter.
+	 * 
+	 * @param recreated
+	 *            new list of aliases that completely replaces the old ones or
+	 *            {@code null} to not recreate aliases
+	 * @param added
+	 *            aliases added in this update or empty collection for no additions
+	 * @param removed
+	 *            aliases removed in this update or empty collection for no removals
+	 * @return new {@link AliasUpdate}
+	 * @throws NullPointerException
+	 *             if {@code added}, {@code removed}, or any alias is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if given invalid combination of parameters
+	 */
+	AliasUpdate getAliasUpdate(
+			List<MonolingualTextValue> recreated,
+			List<MonolingualTextValue> added,
+			Collection<MonolingualTextValue> removed);
+
+	/**
+	 * Creates new {@link StatementUpdate}. It might be more convenient to use
+	 * {@link StatementUpdateBuilder}.
+	 * 
+	 * @param added
+	 *            added statements
+	 * @param replaced
+	 *            replaced statements
+	 * @param removed
+	 *            IDs of removed statements
+	 * @return new {@link StatementUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	StatementUpdate getStatementUpdate(
+			Collection<Statement> added,
+			Collection<Statement> replaced,
+			Collection<String> removed);
+
+	/**
+	 * Creates new {@link SenseUpdate}. It might be more convenient to use
+	 * {@link SenseUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the sense that is to be updated
+	 * @param revisionId
+	 *            base sense revision to be updated or zero if not available
+	 * @param glosses
+	 *            changes in sense glosses or {@code null} for no change
+	 * @param statements
+	 *            changes in entity statements, possibly empty
+	 * @return new {@link SenseUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	SenseUpdate getSenseUpdate(
+			SenseIdValue entityId,
+			long revisionId,
+			TermUpdate glosses,
+			StatementUpdate statements);
+
+	/**
+	 * Creates new {@link FormUpdate}. It might be more convenient to use
+	 * {@link FormUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the form that is to be updated
+	 * @param revisionId
+	 *            base form revision to be updated or zero if not available
+	 * @param representations
+	 *            changes in form representations or {@code null} for no change
+	 * @param grammaticalFeatures
+	 *            new grammatical features of the form or {@code null} for no change
+	 * @param statements
+	 *            changes in entity statements, possibly empty
+	 * @return new {@link FormUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	FormUpdate getFormUpdate(
+			FormIdValue entityId,
+			long revisionId,
+			TermUpdate representations,
+			Collection<ItemIdValue> grammaticalFeatures,
+			StatementUpdate statements);
+
+	/**
+	 * Creates new {@link LexemeUpdate}. It might be more convenient to use
+	 * {@link LexemeUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the lexeme that is to be updated
+	 * @param revisionId
+	 *            base lexeme revision to be updated or zero if not available
+	 * @param language
+	 *            new lexeme language or {@code null} for no change
+	 * @param lexicalCategory
+	 *            new lexical category of the lexeme or {@code null} for no change
+	 * @param lemmas
+	 *            changes in lemmas or {@code null} for no change
+	 * @param statements
+	 *            changes in entity statements, possibly empty
+	 * @param addedSenses
+	 *            added senses
+	 * @param updatedSenses
+	 *            updated senses
+	 * @param removedSenses
+	 *            IDs of removed senses
+	 * @param addedForms
+	 *            added forms
+	 * @param updatedForms
+	 *            updated forms
+	 * @param removedForms
+	 *            IDs of removed forms
+	 * @return new {@link LexemeUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	LexemeUpdate getLexemeUpdate(
+			LexemeIdValue entityId,
+			long revisionId,
+			ItemIdValue language,
+			ItemIdValue lexicalCategory,
+			TermUpdate lemmas,
+			StatementUpdate statements,
+			Collection<SenseDocument> addedSenses,
+			Collection<SenseUpdate> updatedSenses,
+			Collection<SenseIdValue> removedSenses,
+			Collection<FormDocument> addedForms,
+			Collection<FormUpdate> updatedForms,
+			Collection<FormIdValue> removedForms);
+
+	/**
+	 * Creates new {@link MediaInfoUpdate}. It might be more convenient to use
+	 * {@link MediaInfoUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the media that is to be updated
+	 * @param revisionId
+	 *            base media revision to be updated or zero if not available
+	 * @param labels
+	 *            changes in entity labels or {@code null} for no change
+	 * @param statements
+	 *            changes in entity statements, possibly empty
+	 * @return new {@link MediaInfoUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	MediaInfoUpdate getMediaInfoUpdate(
+			MediaInfoIdValue entityId,
+			long revisionId,
+			TermUpdate labels,
+			StatementUpdate statements);
+
+	/**
+	 * Creates new {@link ItemUpdate}. It might be more convenient to use
+	 * {@link ItemUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the item that is to be updated
+	 * @param revisionId
+	 *            base item revision to be updated or zero if not available
+	 * @param labels
+	 *            changes in entity labels or {@code null} for no change
+	 * @param descriptions
+	 *            changes in entity descriptions or {@code null} for no change
+	 * @param aliases
+	 *            changes in entity aliases, possibly empty
+	 * @param statements
+	 *            changes in entity statements, possibly empty
+	 * @param modifiedSiteLinks
+	 *            added or replaced site links
+	 * @param removedSiteLinks
+	 *            site keys of removed site links
+	 * @return new {@link ItemUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	ItemUpdate getItemUpdate(
+			ItemIdValue entityId,
+			long revisionId,
+			TermUpdate labels,
+			TermUpdate descriptions,
+			Map<String, AliasUpdate> aliases,
+			StatementUpdate statements,
+			Collection<SiteLink> modifiedSiteLinks,
+			Collection<String> removedSiteLinks);
+
+	/**
+	 * Creates new {@link PropertyUpdate}. It might be more convenient to use
+	 * {@link PropertyUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the property entity that is to be updated
+	 * @param revisionId
+	 *            base property revision to be updated or zero if not available
+	 * @param labels
+	 *            changes in entity labels or {@code null} for no change
+	 * @param descriptions
+	 *            changes in entity descriptions or {@code null} for no change
+	 * @param aliases
+	 *            changes in entity aliases, possibly empty
+	 * @param statements
+	 *            changes in entity statements, possibly empty
+	 * @return new {@link PropertyUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	PropertyUpdate getPropertyUpdate(
+			PropertyIdValue entityId,
+			long revisionId,
+			TermUpdate labels,
+			TermUpdate descriptions,
+			Map<String, AliasUpdate> aliases,
+			StatementUpdate statements);
 
 }

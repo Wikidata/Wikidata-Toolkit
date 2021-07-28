@@ -1,5 +1,13 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import org.wikidata.wdtk.datamodel.interfaces.AliasUpdate;
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -19,15 +27,46 @@ package org.wikidata.wdtk.datamodel.implementation;
  * limitations under the License.
  * #L%
  */
-
-
-import org.wikidata.wdtk.datamodel.interfaces.*;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
+import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
+import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+import org.wikidata.wdtk.datamodel.interfaces.TermUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
+import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 /**
  * Factory implementation to create Jackson versions of the datamodel objects,
@@ -280,4 +319,101 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 		return new MediaInfoDocumentImpl(
 				mediaInfoIdValue, labels, statementGroups, revisionId);
 	}
+
+	@Override
+	public TermUpdate getTermUpdate(
+			Collection<MonolingualTextValue> modified,
+			Collection<String> removed) {
+		return new TermUpdateImpl(modified, removed);
+	}
+
+	@Override
+	public AliasUpdate getAliasUpdate(
+			List<MonolingualTextValue> recreated,
+			List<MonolingualTextValue> added,
+			Collection<MonolingualTextValue> removed) {
+		return new AliasUpdateImpl(recreated, added, removed);
+	}
+
+	@Override
+	public StatementUpdate getStatementUpdate(
+			Collection<Statement> added,
+			Collection<Statement> replaced,
+			Collection<String> removed) {
+		return new StatementUpdateImpl(added, replaced, removed);
+	}
+
+	@Override
+	public SenseUpdate getSenseUpdate(
+			SenseIdValue entityId,
+			long revisionId,
+			TermUpdate glosses,
+			StatementUpdate statements) {
+		return new SenseUpdateImpl(entityId, revisionId, glosses, statements);
+	}
+
+	@Override
+	public FormUpdate getFormUpdate(
+			FormIdValue entityId,
+			long revisionId,
+			TermUpdate representations,
+			Collection<ItemIdValue> grammaticalFeatures,
+			StatementUpdate statements) {
+		return new FormUpdateImpl(entityId, revisionId, representations, grammaticalFeatures, statements);
+	}
+
+	@Override
+	public LexemeUpdate getLexemeUpdate(
+			LexemeIdValue entityId,
+			long revisionId,
+			ItemIdValue language,
+			ItemIdValue lexicalCategory,
+			TermUpdate lemmas,
+			StatementUpdate statements,
+			Collection<SenseDocument> addedSenses,
+			Collection<SenseUpdate> updatedSenses,
+			Collection<SenseIdValue> removedSenses,
+			Collection<FormDocument> addedForms,
+			Collection<FormUpdate> updatedForms,
+			Collection<FormIdValue> removedForms) {
+		return new LexemeUpdateImpl(entityId, revisionId,
+				language, lexicalCategory, lemmas, statements,
+				addedSenses, updatedSenses, removedSenses,
+				addedForms, updatedForms, removedForms);
+	}
+
+	@Override
+	public MediaInfoUpdate getMediaInfoUpdate(
+			MediaInfoIdValue entityId,
+			long revisionId,
+			TermUpdate labels,
+			StatementUpdate statements) {
+		return new MediaInfoUpdateImpl(entityId, revisionId, labels, statements);
+	}
+
+	@Override
+	public ItemUpdate getItemUpdate(
+			ItemIdValue entityId,
+			long revisionId,
+			TermUpdate labels,
+			TermUpdate descriptions,
+			Map<String, AliasUpdate> aliases,
+			StatementUpdate statements,
+			Collection<SiteLink> modifiedSiteLinks,
+			Collection<String> removedSiteLinks) {
+		return new ItemUpdateImpl(entityId, revisionId, labels, descriptions, aliases, statements,
+				modifiedSiteLinks, removedSiteLinks);
+	}
+
+	@Override
+	public PropertyUpdate getPropertyUpdate(
+			PropertyIdValue entityId,
+			long revisionId,
+			TermUpdate labels,
+			TermUpdate descriptions,
+			Map<String, AliasUpdate> aliases,
+			StatementUpdate statements) {
+		return new PropertyUpdateImpl(entityId, revisionId, labels, descriptions, aliases, statements);
+	}
+
 }

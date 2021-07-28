@@ -203,7 +203,14 @@ public class PropertyDocumentImplTest {
 		assertThrows(IllegalArgumentException.class, () -> new PropertyDocumentImpl(pid, labelList, descriptions2, aliasList,
 				statementGroups, datatypeId, 1234));
 	}
-	
+
+	@Test
+	public void testWithEntityId() {
+		assertEquals(PropertyIdValue.NULL, pd1.withEntityId(PropertyIdValue.NULL).getEntityId());
+		PropertyIdValue id = Datamodel.makeWikidataPropertyIdValue("P123");
+		assertEquals(id, pd1.withEntityId(id).getEntityId());
+	}
+
 	@Test
 	public void testWithRevisionId() {
 		assertEquals(1235L, pd1.withRevisionId(1235L).getRevisionId());

@@ -17,7 +17,6 @@
  * limitations under the License.
  * #L%
  */
-
 package org.wikidata.wdtk.datamodel.implementation;
 
 import java.util.List;
@@ -143,7 +142,7 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	@JsonIgnore
 	@Override
 	public PropertyIdValue getEntityId() {
-		return new PropertyIdValueImpl(this.entityId, this.siteIri);
+		return new PropertyIdValueImpl(entityId, siteIri);
 	}
 
 	@JsonIgnore
@@ -167,6 +166,11 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 		return ToString.toString(this);
 	}
 	
+	@Override
+	public PropertyDocument withEntityId(PropertyIdValue newEntityId) {
+		return new PropertyDocumentImpl(newEntityId, labels, descriptions, aliases, claims, datatype, revisionId);
+	}
+
 	@Override
 	public PropertyDocument withRevisionId(long newRevisionId) {
 		return new PropertyDocumentImpl(getEntityId(),

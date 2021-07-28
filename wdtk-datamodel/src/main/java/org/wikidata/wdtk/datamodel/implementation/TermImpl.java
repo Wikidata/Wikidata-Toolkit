@@ -71,6 +71,17 @@ public class TermImpl implements MonolingualTextValue {
 		this.text = text;
 	}
 
+	/**
+	 * Copy constructor. This constructor is useful for converting from
+	 * {@link MonolingualTextValueImpl}.
+	 * 
+	 * @param other
+	 *            monolingual text value to copy
+	 */
+	public TermImpl(MonolingualTextValue other) {
+		this(other.getLanguageCode(), other.getText());
+	}
+
 	@Override
 	public <T> T accept(ValueVisitor<T> valueVisitor) {
 		return valueVisitor.visit(this);

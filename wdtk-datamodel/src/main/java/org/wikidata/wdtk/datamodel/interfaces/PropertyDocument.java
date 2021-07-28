@@ -48,7 +48,16 @@ public interface PropertyDocument extends TermedStatementDocument {
 	 * @return {@link DatatypeIdValue}
 	 */
 	DatatypeIdValue getDatatype();
-	
+
+	/**
+	 * Returns a new version of this document with updated ID.
+	 * 
+	 * @param newEntityId
+	 *            new ID of the document
+	 * @return document with updated ID
+	 */
+	PropertyDocument withEntityId(PropertyIdValue newEntityId);
+
 	@Override
 	PropertyDocument withRevisionId(long newRevisionId);
 

@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -19,6 +17,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * limitations under the License.
  * #L%
  */
+package org.wikidata.wdtk.datamodel.implementation;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -142,7 +141,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	@JsonIgnore
 	@Override
 	public ItemIdValue getEntityId() {
-		return new ItemIdValueImpl(this.entityId, this.siteIri);
+		return new ItemIdValueImpl(entityId, siteIri);
 	}
 
 	@JsonProperty("sitelinks")
@@ -164,6 +163,11 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	@Override
 	public String toString() {
 		return ToString.toString(this);
+	}
+
+	@Override
+	public ItemDocument withEntityId(ItemIdValue itemId) {
+		return new ItemDocumentImpl(itemId, labels, descriptions, aliases, claims, sitelinks, revisionId);
 	}
 
 	@Override

@@ -38,6 +38,15 @@ public interface MediaInfoDocument extends LabeledStatementDocument {
 	@Override
 	MediaInfoIdValue getEntityId();
 
+	/**
+	 * Returns a new version of this document with updated ID.
+	 * 
+	 * @param newEntityId
+	 *            new ID of the document
+	 * @return document with updated ID
+	 */
+	MediaInfoDocument withEntityId(MediaInfoIdValue newEntityId);
+
 	@Override
 	MediaInfoDocument withRevisionId(long newRevisionId);
 
