@@ -90,6 +90,7 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 	 *            unit
 	 * @deprecated supply the unit as an ItemIdValue instead
 	 */
+    @Deprecated
 	public QuantityValueImpl(
 			BigDecimal numericValue,
 			BigDecimal lowerBound,

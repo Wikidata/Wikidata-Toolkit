@@ -47,14 +47,11 @@ public class QuantityValueImplTest {
 	private final BigDecimal ub = new BigDecimal(
 			"0.123456789012345678901234567890123456790");
 	private final String unitMeter = "http://wikidata.org/entity/Q11573";
-	private final String unitKilometer = "http://wikidata.org/entity/Q828224";
 	private final ItemIdValue unitMeterId = ItemIdValueImpl.fromIri(unitMeter);
-	private final ItemIdValue unitKilometerId = ItemIdValueImpl.fromIri(unitKilometer);
 	private final QuantityValue q1 = new QuantityValueImpl(nv, lb, ub, unitMeterId);
 	private final QuantityValue q2 = new QuantityValueImpl(nv, lb, ub, unitMeterId);
 	private final QuantityValue q3 = new QuantityValueImpl(nv, null, null, unitMeterId);
 	private final QuantityValue q4 = new QuantityValueImpl(nv, lb, ub, (ItemIdValue) null);
-	private final QuantityValue q5 = new QuantityValueImpl(nv, lb, ub, unitKilometerId);
 	private static String JSON_QUANTITY_VALUE = "{\"value\":{\"amount\":\"+0.123456789012345678901234567890123456789\",\"lowerBound\":\"+0.123456789012345678901234567890123456788\",\"upperBound\":\"+0.123456789012345678901234567890123456790\",\"unit\":\"http://wikidata.org/entity/Q11573\"},\"type\":\"quantity\"}";
 	private static String JSON_UNBOUNDED_QUANTITY_VALUE = "{\"value\":{\"amount\":\"+0.123456789012345678901234567890123456789\",\"unit\":\"http://wikidata.org/entity/Q11573\"},\"type\":\"quantity\"}";
 	private static String JSON_INVALID_UNIT = "{\"value\":{\"amount\":\"+0.1234567890123\",\"unit\":\"not_a_url\"},\"type\":\"quantity\"}";
@@ -78,6 +75,7 @@ public class QuantityValueImplTest {
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void getUnitItemIdInvalidIri() {
 		assertThrows(IllegalArgumentException.class, () -> new QuantityValueImpl(nv, lb, ub, "foobar"));
 	}
@@ -142,11 +140,13 @@ public class QuantityValueImplTest {
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void unitNotNull() {
 		assertThrows(NullPointerException.class, () -> new QuantityValueImpl(nv, lb, ub, (String) null));
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void unitNotEmpty() {
 		assertThrows(IllegalArgumentException.class, () -> new QuantityValueImpl(nv, lb, ub, (String) ""));
 	}

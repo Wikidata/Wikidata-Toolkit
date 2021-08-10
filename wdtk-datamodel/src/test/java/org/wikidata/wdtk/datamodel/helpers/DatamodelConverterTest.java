@@ -290,7 +290,7 @@ public class DatamodelConverterTest {
 		BigDecimal ub = new BigDecimal(seed
 				+ ".123456789012345678901234567890123456790");
 		return new QuantityValueImpl(nv, lb, ub,
-				"http://wikidata.org/entity/Q11573");
+				Datamodel.makeWikidataItemIdValue("Q11573"));
 	}
 
 	private Value getTestValue(ValueType valueType, int seed) {
