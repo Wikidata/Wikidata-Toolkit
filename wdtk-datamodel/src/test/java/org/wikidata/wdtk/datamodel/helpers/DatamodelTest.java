@@ -253,7 +253,7 @@ public class DatamodelTest {
 				"0.123456789012345678901234567890123456789");
 		ItemIdValue unit = factory.getItemIdValue("Q1", "http://www.wikidata.org/entity/");
 		QuantityValue o1 = Datamodel.makeQuantityValue(nv, unit);
-		QuantityValue o2 = factory.getQuantityValue(nv, unit.getIri());
+		QuantityValue o2 = factory.getQuantityValue(nv, unit);
 		assertEquals(o1, o2);
 	}
 

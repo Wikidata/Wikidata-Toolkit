@@ -125,6 +125,10 @@ abstract public class AbstractRdfConverter {
 		this.owlDeclarationBuffer.writePropertyDeclarations(this.rdfWriter, true, true);
 	}
 
+	/*
+	 * Suppress spurious warning about IRI.toString() caused by deprecation of base URI interface.
+	 */
+	@SuppressWarnings("deprecation")
 	public void writeDocumentType(Resource subject, IRI type) {
 		this.rdfWriter.writeTripleUriObject(subject, RdfWriter.RDF_TYPE, type.toString());
 	}
