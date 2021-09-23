@@ -76,7 +76,7 @@
 		<apacheCommonsLangVersion>3.12.0</apacheCommonsLangVersion>
 		<apacheCommonsIOVersion>2.11.0</apacheCommonsIOVersion>
 		<jacksonVersion>2.12.5</jacksonVersion>
-		<junitVersion>5.8.0</junitVersion>
+		<junitVersion>5.8.1</junitVersion>
 		<hamcrestVersion>2.2</hamcrestVersion>
 		<mockitoVersion>3.12.4</mockitoVersion>
 		<rdf4jVersion>3.7.3</rdf4jVersion>
