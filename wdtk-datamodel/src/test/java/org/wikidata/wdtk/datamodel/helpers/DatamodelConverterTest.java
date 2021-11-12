@@ -41,12 +41,20 @@ import org.wikidata.wdtk.datamodel.implementation.StringValueImpl;
 import org.wikidata.wdtk.datamodel.implementation.TimeValueImpl;
 import org.wikidata.wdtk.datamodel.implementation.ValueSnakImpl;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
+import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
+import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
@@ -217,7 +225,78 @@ public class DatamodelConverterTest {
 		DatamodelConverter converter = new DatamodelConverter(new DataObjectFactoryImpl());
 		assertEquals(item, converter.copy(item));
 	}
-
+	
+	
+    @Test
+    public void testCopyMediaInfoIdValue() {
+        DatamodelConverter converter = new DatamodelConverter(new DataObjectFactoryImpl());
+        MediaInfoIdValue mediaInfo = getTestMediaInfoIdValue(34);
+        assertEquals(mediaInfo, converter.copy(mediaInfo));
+    }
+    
+    @Test
+    public void testCopyLexemeIdValue() {
+        DatamodelConverter converter = new DatamodelConverter(new DataObjectFactoryImpl());
+        LexemeIdValue lexeme = getTestLexemeIdValue(45);
+        assertEquals(lexeme, converter.copy(lexeme));
+    }
+    
+    @Test
+    public void testCopyFormIdValue() {
+        DatamodelConverter converter = new DatamodelConverter(new DataObjectFactoryImpl());
+        FormIdValue form = getTestFormIdValue(56);
+        assertEquals(form, converter.copy(form));
+    }
+    
+    @Test
+    public void testCopySenseIdValue() {
+        DatamodelConverter converter = new DatamodelConverter(new DataObjectFactoryImpl());
+        SenseIdValue sense = getTestSenseIdValue(56);
+        assertEquals(sense, converter.copy(sense));
+    }
+    
+    @Test
+    public void testMediaInfoDocument() {
+        DatamodelConverter converter = new DatamodelConverter(new DataObjectFactoryImpl());
+        MediaInfoDocument document = Datamodel.makeMediaInfoDocument(
+                getTestMediaInfoIdValue(78),
+                Collections.singletonList(Datamodel.makeMonolingualTextValue("en", "label")),
+                Collections.emptyList());
+        assertEquals(document, converter.copy(document));
+    }
+    
+    @Test
+    public void testLexemeDocument() {
+        DatamodelConverter converter = new DatamodelConverter(new DataObjectFactoryImpl());
+        LexemeDocument document = Datamodel.makeLexemeDocument(
+                getTestLexemeIdValue(90),
+                getTestItemIdValue(38),
+                getTestItemIdValue(39),
+                Collections.singletonList(Datamodel.makeMonolingualTextValue("en", "lemma")));
+        assertEquals(document, converter.copy(document));
+    }
+    
+    @Test
+    public void testFormDocument() {
+        DatamodelConverter converter = new DatamodelConverter(new DataObjectFactoryImpl());
+        FormDocument document = Datamodel.makeFormDocument(
+                getTestFormIdValue(92),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList());
+        assertEquals(document, converter.copy(document));
+    }
+    
+    @Test
+    public void testSenseDocument() {
+        DatamodelConverter converter = new DatamodelConverter(new DataObjectFactoryImpl());
+        SenseDocument document = Datamodel.makeSenseDocument(
+                getTestSenseIdValue(738),
+                Collections.singletonList(Datamodel.makeMonolingualTextValue("en", "gloss")),
+                Collections.emptyList());
+        assertEquals(document, converter.copy(document));
+    }
+	
 	public enum ValueType {
 		STRING, ITEM, GLOBE_COORDINATES, TIME, QUANTITY, MONOLINGUAL_TEXT;
 
@@ -247,6 +326,22 @@ public class DatamodelConverterTest {
 	private PropertyIdValue getTestPropertyIdValue(int seed) {
 		return new PropertyIdValueImpl("P4" + seed, "foo:");
 	}
+	
+	private MediaInfoIdValue getTestMediaInfoIdValue(int seed) {
+        return Datamodel.makeMediaInfoIdValue("M4" + seed, "foo:");
+    }
+
+    private LexemeIdValue getTestLexemeIdValue(int seed) {
+        return Datamodel.makeLexemeIdValue("L4" + seed, "foo:");
+    }
+    
+    private FormIdValue getTestFormIdValue(int seed) {
+        return Datamodel.makeFormIdValue("L4" + seed + "-F1", "foo:");
+    }
+    
+    private SenseIdValue getTestSenseIdValue(int seed) {
+        return Datamodel.makeSenseIdValue("L4" + seed + "-S1", "foo:");
+    }
 
 	private EntityIdValue getTestEntityIdValue(int seed, String entityType) {
 		switch (entityType) {
