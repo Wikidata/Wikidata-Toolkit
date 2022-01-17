@@ -236,7 +236,14 @@ public class WbGetEntitiesAction {
 					EntityIdValue entityIdValue = EntityIdValueImpl.fromId(entityNode.get("id").asText(), siteIri);
 					if(entityIdValue instanceof MediaInfoIdValue) {
 						//TODO: bad hack, it would be much nicer if the API would return the page title
-						result.put(titlesList.get(i), Datamodel.makeMediaInfoDocument((MediaInfoIdValue) entityIdValue));
+                                                MediaInfoDocument emptyDocument = Datamodel.makeMediaInfoDocument((MediaInfoIdValue) entityIdValue);
+                                                String key = null;
+                                                if (titles != null) {
+                                                        key = titlesList.get(i);
+                                                } else {
+                                                        key = entityIdValue.getId();
+                                                }
+                                                result.put(key, emptyDocument);
 					}
 				} catch (IllegalArgumentException e) {
 					throw new MalformedResponseException(
