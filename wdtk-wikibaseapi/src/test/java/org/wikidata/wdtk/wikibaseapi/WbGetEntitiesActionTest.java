@@ -61,6 +61,13 @@ public class WbGetEntitiesActionTest {
 		params.put("sitefilter", "enwiki");
 		this.con.setWebResourceFromPath(params, getClass(),
 				"/wbgetentities-Q6-Q42-P31.json", CompressionType.NONE);
+		
+		params.clear();
+		params.put("action", "wbgetentities");
+		params.put("format", "json");
+		params.put("ids", "M91629437");
+		this.con.setWebResourceFromPath(params, getClass(),
+				"/wbgetentities-missing-mid.json", CompressionType.NONE);
 
 		this.action = new WbGetEntitiesAction(this.con, Datamodel.SITE_WIKIDATA);
 
@@ -141,6 +148,12 @@ public class WbGetEntitiesActionTest {
 	@Test
 	public void testNoTitlesOrIds() throws MediaWikiApiErrorException, IOException {
 		assertThrows(IllegalArgumentException.class, () -> action.wbGetEntities(null, "enwiki", null, null, null, null));
+	}
+	
+	// for https://github.com/Wikidata/Wikidata-Toolkit/issues/643
+	@Test
+	public void testMissingMid() throws MediaWikiApiErrorException, IOException {
+		action.wbGetEntities("M91629437", null, null, null, null, null);
 	}
 
 }
