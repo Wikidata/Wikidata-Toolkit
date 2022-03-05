@@ -1,6 +1,11 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.13.1
+--------------
+
+Minor changes to the CI configuration for artifact deployment in Maven Central, no changes in the library itself.
+
 Version 0.13.0
 --------------
 
