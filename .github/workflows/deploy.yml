@@ -20,8 +20,7 @@ jobs:
       - name: Import GPG Key
         run: |
           mkdir -p ~/.gnupg/
-          printf "$MAVEN_SIGNING_KEY" > ~/.gnupg/maven-signing-key.asc
-          gpg --import ~/.gnupg/maven-signing-key.asc
+          echo "$MAVEN_SIGNING_KEY" | gpg --import -
         env:
           MAVEN_SIGNING_KEY: ${{ secrets.MAVEN_SIGNING_KEY }}
       - name: Maven Deploy
