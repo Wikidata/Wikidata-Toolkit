@@ -1,6 +1,18 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.13.0
+--------------
+
+New features:
+* New API to edit Wikibase entities
+
+Bug fixes:
+* Fetching of non-existent Mids on Commons
+* Support for missing entity types in DatamodelConverter
+* Store QuantityValue units as ItemIdValue instead of String.
+* Allow lexeme lemma list to be empty.
+
 Version 0.12.1
 --------------
 
