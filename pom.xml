@@ -75,7 +75,7 @@
 		<apacheCommonsCompressVersion>1.21</apacheCommonsCompressVersion>
 		<apacheCommonsLangVersion>3.12.0</apacheCommonsLangVersion>
 		<apacheCommonsIOVersion>2.11.0</apacheCommonsIOVersion>
-		<jacksonVersion>2.13.1</jacksonVersion>
+		<jacksonVersion>2.13.2</jacksonVersion>
 		<junitVersion>5.8.2</junitVersion>
 		<hamcrestVersion>2.2</hamcrestVersion>
 		<mockitoVersion>4.3.1</mockitoVersion>
