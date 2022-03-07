@@ -79,7 +79,7 @@
 		<junitVersion>5.8.2</junitVersion>
 		<hamcrestVersion>2.2</hamcrestVersion>
 		<mockitoVersion>4.3.1</mockitoVersion>
-		<rdf4jVersion>3.7.4</rdf4jVersion>
+		<rdf4jVersion>3.7.5</rdf4jVersion>
 		<slf4jVersion>1.7.36</slf4jVersion>
 		<threetenVersion>1.7.0</threetenVersion>
 		<okhttpSignpostVersion>1.1.0</okhttpSignpostVersion>
