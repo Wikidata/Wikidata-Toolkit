@@ -21,12 +21,14 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
@@ -100,7 +102,9 @@ public class MockBasicApiConnection extends BasicApiConnection {
 
 	@Override
 	public InputStream sendRequest(String requestMethod,
-			Map<String, String> parameters) throws IOException {
+			Map<String, String> parameters,
+			Map<String, ImmutablePair<String, File>> files) throws IOException {
+		// files parameter purposely ignored because we do not support mocking that yet
 		if (this.webResources.containsKey(parameters.hashCode())) {
 			return new ByteArrayInputStream(this.webResources.get(parameters
 					.hashCode()));
