@@ -437,6 +437,17 @@ public class WikibaseDataEditorTest {
 
 		assertEquals(expectedResultDocument, result);
 	}
+	
+	@Test
+	public void testCreateMediaInfo() {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIMEDIA_COMMONS);
+
+		MediaInfoDocument mediaInfoDocument = Datamodel.makeMediaInfoDocument(MediaInfoIdValue.NULL)
+				.withLabel(Datamodel.makeMonolingualTextValue("test", "en"));
+		
+		assertThrows(UnsupportedOperationException.class, () -> wde.createEntityDocument(mediaInfoDocument, "summary", Collections.emptyList()));
+	}
 
 	@Test
 	@Deprecated
