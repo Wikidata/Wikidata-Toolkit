@@ -300,6 +300,48 @@ public class WikibaseDataEditor {
 		return this.wbEditingAction.wbEditEntity(
 				null, null, null, type, data, false, editAsBot, 0, summary, tags);
 	}
+	
+	/**
+	 * Creates new entity document. Provided entity document must use a local item ID,
+	 * such as {@link ItemIdValue#NULL}, and its revision ID must be 0.
+	 * <p>
+	 * The newly created document is returned. It will contain the new item ID and
+	 * revision ID. Note that the site IRI used in the item ID is not part of the
+	 * API response. The site IRI given when constructing this object is used in its
+	 * place.
+	 * <p>
+	 * Statements in the provided document must not have IDs.
+	 * <p>
+	 * Summary message will be prepended by an automatically generated comment. The
+	 * length limit of the autocomment together with the summary is 260 characters.
+	 * Everything above that limit will be cut off.
+	 *
+	 * @param document
+	 *            document that contains the data to be written
+	 * @param summary
+	 *            summary for the edit
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit, {@code null}
+	 *            or empty for no tags
+	 * @return newly created item document or {@code null} for simulated edit (see
+	 *         {@link #disableEditing()}
+	 * @throws IOException
+	 *             if there was an IO problem, such as missing network connection
+	 * @throws MediaWikiApiErrorException
+	 *             if MediaWiki API returned an error response
+	 */
+	public EntityDocument createEntityDocument(
+			EntityDocument document, String summary, List<String> tags) throws IOException, MediaWikiApiErrorException {
+		if (document instanceof ItemDocument) {
+			return createItemDocument((ItemDocument) document, summary, tags);
+		} else if (document instanceof PropertyDocument) {
+			return createPropertyDocument((PropertyDocument) document, summary, tags);
+		} else if (document instanceof LexemeDocument) {
+			return createLexemeDocument((LexemeDocument) document, summary, tags);
+		} else {
+			throw new UnsupportedOperationException("Creation of entities of this type is not supported");
+		}
+	}
 
 	/**
 	 * Creates new item document. Provided item document must use a local item ID,

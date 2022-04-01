@@ -57,6 +57,7 @@ import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.TermUpdateBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -217,8 +218,8 @@ public class WikibaseDataEditorTest {
 		params.put("data", data);
 		con.setWebResource(params, expectedResult);
 
-		ItemDocument result = wde
-				.createItemDocument(itemDocument, "My summary", Collections.singletonList("my-tag"));
+		EntityDocument result = wde
+				.createEntityDocument(itemDocument, "My summary", Collections.singletonList("my-tag"));
 
 		assertEquals(expectedResultDocument, result);
 		assertEquals(-1, wde.getRemainingEdits());
@@ -395,7 +396,7 @@ public class WikibaseDataEditorTest {
 		params.put("data", data);
 		con.setWebResource(params, expectedResult);
 
-		PropertyDocument result = wde.createPropertyDocument(propertyDocument,
+		EntityDocument result = wde.createEntityDocument(propertyDocument,
 				null, null);
 
 		assertTrue(wde.editAsBot());
