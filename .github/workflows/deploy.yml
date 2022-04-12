@@ -28,3 +28,10 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+      - name: Generate javadocs
+        run: mvn compile javadoc:aggregate
+      - name: Publish javadocs
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        with:
+          branch: gh-pages
+          folder: target/site/apidocs
