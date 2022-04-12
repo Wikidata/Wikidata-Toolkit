@@ -28,6 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.HttpCookie;
 import java.net.URL;
@@ -40,6 +42,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -97,7 +100,16 @@ public class BasicApiConnectionTest {
 							.setBody("{\"entities\":{\"Q8\":{\"pageid\":134,\"ns\":0,\"title\":\"Q8\",\"lastrevid\":1174289176,\"modified\":\"2020-05-05T12:39:07Z\",\"type\":\"item\",\"id\":\"Q8\"}},\"success\":1}\n");
 				}
 				try {
-					switch (request.getBody().readUtf8()) {
+					String requestBody = request.getBody().readUtf8();
+					// in the case of file uploads, the string representation of the request body is not stable
+					// so we only check that some file was uploaded (for testPostFile)
+					if (requestBody.contains("Content-Disposition: form-data; name=\"file\"; filename=\"hello.txt\"")) {
+						return new MockResponse()
+								.setHeader("Content-Type", "application/json; charset=utf-8")
+								.setBody("{\"success\":\"true\"}");
+					}
+					// otherwise, check for equality on the request body
+					switch (requestBody) {
 						case "meta=tokens&format=json&action=query&type=login":
 							return makeJsonResponseFrom("/query-login-token.json");
 						case "lgtoken=b5780b6e2f27e20b450921d9461010b4&lgpassword=password&format=json&action=login&lgname=username":
@@ -111,6 +123,7 @@ public class BasicApiConnectionTest {
 						case "assert=user&format=json&action=query":
 							return makeJsonResponseFrom("/assert-user-failed.json");
 					}
+					
 				}catch (Exception e) {
 					return new MockResponse().setResponseCode(404);
 				}
@@ -222,6 +235,27 @@ public class BasicApiConnectionTest {
 				split("lgtoken=b5780b6e2f27e20b450921d9461010b4&lgpassword=password"
 						+ "&action=login&lgname=username&format=json", '&'),
 				split(connection.getQueryString(params), '&'));
+	}
+	
+	@Test
+	public void testPostFile() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> formParams = new HashMap<>();
+		formParams.put("foo", "bar");
+
+		File file = File.createTempFile("upload_test", ".txt");
+		try {
+			FileWriter writer = new FileWriter(file);
+			writer.write("contents");
+			writer.close();
+			Map<String, ImmutablePair<String, File>> fileParams = new HashMap<>();
+			fileParams.put("file", new ImmutablePair<String,File>("hello.txt", file));
+			
+			JsonNode node = connection.sendJsonRequest("POST", formParams, fileParams);
+			assertEquals(node.get("success").asText(), "true");
+		} finally {
+			file.delete();
+		}
+		
 	}
 
 	@Test

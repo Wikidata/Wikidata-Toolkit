@@ -20,6 +20,7 @@
 
 package org.wikidata.wdtk.wikibaseapi;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -34,6 +35,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.wikibaseapi.apierrors.AssertUserFailedException;
@@ -47,6 +49,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -339,7 +342,7 @@ public abstract class ApiConnection {
 		JsonNode root = this.sendJsonRequest("POST", params);
 		return root.path("query").path("tokens").path(tokenType + "token").textValue();
 	}
-
+	
 	/**
 	 * Sends a request to the API with the given parameters and the given
 	 * request method and returns the result JSON tree. It automatically fills the
@@ -356,12 +359,41 @@ public abstract class ApiConnection {
 	 * @throws IOException
 	 * @throws MediaWikiApiErrorException if the API returns an error
 	 */
-	public JsonNode sendJsonRequest(String requestMethod, Map<String,String> parameters) throws IOException, MediaWikiApiErrorException {
+	public JsonNode sendJsonRequest(String requestMethod,
+			Map<String,String> parameters) throws IOException, MediaWikiApiErrorException {
+		return sendJsonRequest(requestMethod, parameters, null);
+	}
+
+	/**
+	 * Sends a request to the API with the given parameters and the given
+	 * request method and returns the result JSON tree. It automatically fills the
+	 * cookie map with cookies in the result header after the request.
+	 * It logs the request warnings and adds makes sure that "format": "json"
+	 * parameter is set.
+	 *
+	 * @param requestMethod
+	 *            either POST or GET
+	 * @param parameters
+	 *            Maps parameter keys to values. Out of this map the function
+	 *            will create a query string for the request.
+	 * @param files
+	 *            If GET, this should be null. If POST, this can contain
+	 *            a list of files to upload, indexed by the parameter to pass them with.
+	 *            The first component of the pair is the filename exposed to the server,
+	 *            and the second component is the path to the local file to upload.
+	 *            Set to null or empty map to avoid uploading any file.
+	 * @return API result
+	 * @throws IOException
+	 * @throws MediaWikiApiErrorException if the API returns an error
+	 */
+	public JsonNode sendJsonRequest(String requestMethod,
+			Map<String,String> parameters,
+			Map<String, ImmutablePair<String,File>> files) throws IOException, MediaWikiApiErrorException {
 		parameters.put(ApiConnection.PARAM_FORMAT, "json");
 		if (loggedIn) {
 			parameters.put(ApiConnection.ASSERT_PARAMETER, "user");
 		}
-		try (InputStream response = sendRequest(requestMethod, parameters)) {
+		try (InputStream response = sendRequest(requestMethod, parameters, files)) {
 			JsonNode root = this.mapper.readTree(response);
 			this.checkErrors(root);
 			this.logWarnings(root);
@@ -383,17 +415,36 @@ public abstract class ApiConnection {
 	 * @param parameters
 	 *            Maps parameter keys to values. Out of this map the function
 	 *            will create a query string for the request.
+	 * @param files
+	 *            If GET, this should be null. If POST, this can contain
+	 *            a list of files to upload, indexed by the parameter to pass them with.
+	 *            The first component of the pair is the filename exposed to the server,
+	 *            and the second component is the path to the local file to upload.
+	 *            Set to null or empty map to avoid uploading any file.
 	 * @return API result
 	 * @throws IOException
 	 */
 	public InputStream sendRequest(String requestMethod,
-			Map<String, String> parameters) throws IOException {
+			Map<String, String> parameters,
+			Map<String, ImmutablePair<String,File>> files) throws IOException {
 		Request request;
 		String queryString = getQueryString(parameters);
 		if ("GET".equalsIgnoreCase(requestMethod)) {
 			request = new Request.Builder().url(apiBaseUrl + "?" + queryString).build();
 		} else if ("POST".equalsIgnoreCase(requestMethod)) {
-			request = new Request.Builder().url(apiBaseUrl).post(RequestBody.create(queryString, URLENCODED_MEDIA_TYPE)).build();
+			RequestBody body;
+			if (files != null && !files.isEmpty()) {
+				MultipartBody.Builder builder = new MultipartBody.Builder();
+				parameters.entrySet().stream()
+					.forEach(entry -> builder.addFormDataPart(entry.getKey(), entry.getValue()));
+				files.entrySet().stream()
+					.forEach(entry -> builder.addFormDataPart(entry.getKey(), entry.getValue().getLeft(),
+							RequestBody.create(MediaType.parse("application/octet-stream"),entry.getValue().getRight())));
+				body = builder.build();
+			} else {
+				body = RequestBody.create(queryString, URLENCODED_MEDIA_TYPE);
+			}
+			request = new Request.Builder().url(apiBaseUrl).post(body).build();
 		} else {
 			throw new IllegalArgumentException("Expected the requestMethod to be either GET or POST, but got " + requestMethod);
 		}
