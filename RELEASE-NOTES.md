@@ -1,6 +1,12 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.13.2
+--------------
+
+* new method to create an EntityDocument independently of its type
+* new utility method to execute an authenticated HTTP method which posts files 
+
 Version 0.13.1
 --------------
 
