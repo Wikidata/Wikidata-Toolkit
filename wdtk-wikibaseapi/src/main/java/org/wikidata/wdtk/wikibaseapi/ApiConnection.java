@@ -169,7 +169,7 @@ public abstract class ApiConnection {
 	}
 
 	/**
-	 * Subclasses can customized their own {@link OkHttpClient.Builder} instances.
+	 * Subclasses can customize their own {@link OkHttpClient.Builder} instances.
 	 *
 	 * An example:
 	 * <pre>
