@@ -1,6 +1,11 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.13.3
+--------------
+
+* fixed media type when uploading files to a MediaWiki API endpoint
+
 Version 0.13.2
 --------------
 
