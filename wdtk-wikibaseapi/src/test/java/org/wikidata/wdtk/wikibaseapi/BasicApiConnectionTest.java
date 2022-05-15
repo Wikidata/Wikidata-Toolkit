@@ -103,7 +103,8 @@ public class BasicApiConnectionTest {
 					String requestBody = request.getBody().readUtf8();
 					// in the case of file uploads, the string representation of the request body is not stable
 					// so we only check that some file was uploaded (for testPostFile)
-					if (requestBody.contains("Content-Disposition: form-data; name=\"file\"; filename=\"hello.txt\"")) {
+					if (requestBody.contains("Content-Disposition: form-data; name=\"file\"; filename=\"hello.txt\"") &&
+							requestBody.contains("multipart/form-data")) {
 						return new MockResponse()
 								.setHeader("Content-Type", "application/json; charset=utf-8")
 								.setBody("{\"success\":\"true\"}");

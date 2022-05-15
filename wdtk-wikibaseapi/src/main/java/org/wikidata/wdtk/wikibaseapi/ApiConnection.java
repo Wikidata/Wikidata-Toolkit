@@ -169,7 +169,7 @@ public abstract class ApiConnection {
 	}
 
 	/**
-	 * Subclasses can customized their own {@link OkHttpClient.Builder} instances.
+	 * Subclasses can customize their own {@link OkHttpClient.Builder} instances.
 	 *
 	 * An example:
 	 * <pre>
@@ -434,12 +434,14 @@ public abstract class ApiConnection {
 		} else if ("POST".equalsIgnoreCase(requestMethod)) {
 			RequestBody body;
 			if (files != null && !files.isEmpty()) {
+				MediaType formDataMediaType = MediaType.parse("multipart/form-data");
 				MultipartBody.Builder builder = new MultipartBody.Builder();
+				builder.setType(formDataMediaType);
 				parameters.entrySet().stream()
 					.forEach(entry -> builder.addFormDataPart(entry.getKey(), entry.getValue()));
 				files.entrySet().stream()
 					.forEach(entry -> builder.addFormDataPart(entry.getKey(), entry.getValue().getLeft(),
-							RequestBody.create(MediaType.parse("application/octet-stream"),entry.getValue().getRight())));
+							RequestBody.create(formDataMediaType,entry.getValue().getRight())));
 				body = builder.build();
 			} else {
 				body = RequestBody.create(queryString, URLENCODED_MEDIA_TYPE);
