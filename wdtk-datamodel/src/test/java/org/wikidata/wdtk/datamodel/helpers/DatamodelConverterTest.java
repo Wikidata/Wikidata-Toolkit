@@ -27,19 +27,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.implementation.GlobeCoordinatesValueImpl;
-import org.wikidata.wdtk.datamodel.implementation.ItemIdValueImpl;
-import org.wikidata.wdtk.datamodel.implementation.MonolingualTextValueImpl;
-import org.wikidata.wdtk.datamodel.implementation.PropertyIdValueImpl;
-import org.wikidata.wdtk.datamodel.implementation.QuantityValueImpl;
-import org.wikidata.wdtk.datamodel.implementation.SnakGroupImpl;
-import org.wikidata.wdtk.datamodel.implementation.StatementGroupImpl;
-import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
-import org.wikidata.wdtk.datamodel.implementation.StringValueImpl;
-import org.wikidata.wdtk.datamodel.implementation.TimeValueImpl;
-import org.wikidata.wdtk.datamodel.implementation.ValueSnakImpl;
+import org.wikidata.wdtk.datamodel.implementation.*;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
@@ -225,7 +215,19 @@ public class DatamodelConverterTest {
 		DatamodelConverter converter = new DatamodelConverter(new DataObjectFactoryImpl());
 		assertEquals(item, converter.copy(item));
 	}
-	
+
+	@Test
+	public void testGetJsonId() throws Exception {
+		ItemDocument item = Datamodel.makeItemDocument(
+				Datamodel.makeWikidataItemIdValue("Q42"),
+				Collections.singletonList(Datamodel.makeMonolingualTextValue("en", "label")),
+				Collections.singletonList(Datamodel.makeMonolingualTextValue("en", "desc")),
+				Collections.singletonList(Datamodel.makeMonolingualTextValue("en", "alias")),
+				Collections.emptyList(),
+				Collections.singletonMap("enwiki", Datamodel.makeSiteLink("foo", "enwiki", Collections.emptyList())));
+		DatamodelConverter converter = new DatamodelConverter(new DataObjectFactoryImpl());
+		Assertions.assertEquals("Q42", ((ItemDocumentImpl) (item)).getJsonId());
+	}
 	
     @Test
     public void testCopyMediaInfoIdValue() {
