@@ -27,9 +27,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.wikidata.wdtk.datamodel.implementation.*;
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.implementation.GlobeCoordinatesValueImpl;
+import org.wikidata.wdtk.datamodel.implementation.ItemIdValueImpl;
+import org.wikidata.wdtk.datamodel.implementation.MonolingualTextValueImpl;
+import org.wikidata.wdtk.datamodel.implementation.PropertyIdValueImpl;
+import org.wikidata.wdtk.datamodel.implementation.QuantityValueImpl;
+import org.wikidata.wdtk.datamodel.implementation.SnakGroupImpl;
+import org.wikidata.wdtk.datamodel.implementation.StatementGroupImpl;
+import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
+import org.wikidata.wdtk.datamodel.implementation.StringValueImpl;
+import org.wikidata.wdtk.datamodel.implementation.TimeValueImpl;
+import org.wikidata.wdtk.datamodel.implementation.ValueSnakImpl;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
@@ -215,6 +225,7 @@ public class DatamodelConverterTest {
 		DatamodelConverter converter = new DatamodelConverter(new DataObjectFactoryImpl());
 		assertEquals(item, converter.copy(item));
 	}
+	
 	
     @Test
     public void testCopyMediaInfoIdValue() {
