@@ -215,19 +215,6 @@ public class DatamodelConverterTest {
 		DatamodelConverter converter = new DatamodelConverter(new DataObjectFactoryImpl());
 		assertEquals(item, converter.copy(item));
 	}
-
-	@Test
-	public void testGetJsonId() throws Exception {
-		ItemDocument item = Datamodel.makeItemDocument(
-				Datamodel.makeWikidataItemIdValue("Q42"),
-				Collections.singletonList(Datamodel.makeMonolingualTextValue("en", "label")),
-				Collections.singletonList(Datamodel.makeMonolingualTextValue("en", "desc")),
-				Collections.singletonList(Datamodel.makeMonolingualTextValue("en", "alias")),
-				Collections.emptyList(),
-				Collections.singletonMap("enwiki", Datamodel.makeSiteLink("foo", "enwiki", Collections.emptyList())));
-		DatamodelConverter converter = new DatamodelConverter(new DataObjectFactoryImpl());
-		Assertions.assertEquals("Q42", ((ItemDocumentImpl) (item)).getJsonId());
-	}
 	
     @Test
     public void testCopyMediaInfoIdValue() {
