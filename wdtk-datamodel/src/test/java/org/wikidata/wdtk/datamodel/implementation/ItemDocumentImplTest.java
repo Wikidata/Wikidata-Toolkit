@@ -415,4 +415,16 @@ public class ItemDocumentImplTest {
 		);
 	}
 
+	@Test
+	public void testGetJsonId() throws Exception {
+		ItemDocument item = Datamodel.makeItemDocument(
+				Datamodel.makeWikidataItemIdValue("Q42"),
+				Collections.singletonList(Datamodel.makeMonolingualTextValue("en", "label")),
+				Collections.singletonList(Datamodel.makeMonolingualTextValue("en", "desc")),
+				Collections.singletonList(Datamodel.makeMonolingualTextValue("en", "alias")),
+				Collections.emptyList(),
+				Collections.singletonMap("enwiki", Datamodel.makeSiteLink("foo", "enwiki", Collections.emptyList())));
+		assertEquals("Q42", ((ItemDocumentImpl) (item)).getJsonId());
+	}
+
 }
