@@ -444,7 +444,7 @@ public abstract class ApiConnection {
 							RequestBody.create(formDataMediaType,entry.getValue().getRight())));
 				body = builder.build();
 			} else {
-				body = RequestBody.create(queryString, URLENCODED_MEDIA_TYPE);
+				body = RequestBody.create(URLENCODED_MEDIA_TYPE, queryString);
 			}
 			request = new Request.Builder().url(apiBaseUrl).post(body).build();
 		} else {
