@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.dumpfiles;
+
 /*
  * #%L
  * Wikidata Toolkit Dump File Handling
@@ -18,9 +20,7 @@
  * #L%
  */
 
-package org.wikidata.wdtk.dumpfiles;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.URL;
@@ -30,8 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mockito;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -99,7 +99,7 @@ public class MwDumpFileProcessingTest {
 
 	}
 
-	@BeforeEach
+	@Before
 	public void configureDirectoryManager() {
 		DirectoryManagerFactory
 				.setDirectoryManagerClass(MockDirectoryManager.class);
@@ -204,30 +204,30 @@ public class MwDumpFileProcessingTest {
 	 */
 	private void assertEqualRevisions(MwRevision rev1, MwRevision rev2,
 			String test) {
-		assertEquals(rev1.getPrefixedTitle(), rev2.getPrefixedTitle(),
-				"[" + test + "] Revision prefixed titles do not match:");
-		assertEquals(rev1.getNamespace(), rev2.getNamespace(),
-				"[" + test + "] Revision namespaces do not match:");
-		assertEquals(rev1.getPageId(), rev2.getPageId(),
-				"[" + test + "] Revision page ids do not match:");
-		assertEquals(rev1.getRevisionId(), rev2.getRevisionId(),
-				"[" + test + "] Revision ids do not match:");
-		assertEquals(rev1.getParentRevisionId(), rev2.getParentRevisionId(),
-				"[" + test + "] Revision parent ids do not match:");
-		assertEquals(rev1.getTimeStamp(), rev2.getTimeStamp(),
-				"[" + test + "] Revision timestamps do not match:");
-		assertEquals(rev1.getFormat(), rev2.getFormat(),
-				"[" + test + "] Revision formats do not match:");
-		assertEquals(rev1.getModel(), rev2.getModel(),
-				"[" + test + "] Revision models do not match:");
-		assertEquals(rev1.getComment(), rev2.getComment(),
-				"[" + test + "] Revision comments do not match:");
-		assertEquals(rev1.getText(), rev2.getText(),
-				"[" + test + "] Revision texts do not match:");
-		assertEquals(rev1.getContributor(), rev2.getContributor(),
-				"[" + test + "] Revision contributors do not match:");
-		assertEquals(rev1.getContributorId(), rev2.getContributorId(),
-				"[" + test + "] Revision contributor ids do not match:");
+		assertEquals("[" + test + "] Revision prefixed titles do not match:",
+				rev1.getPrefixedTitle(), rev2.getPrefixedTitle());
+		assertEquals("[" + test + "] Revision namespaces do not match:",
+				rev1.getNamespace(), rev2.getNamespace());
+		assertEquals("[" + test + "] Revision page ids do not match:",
+				rev1.getPageId(), rev2.getPageId());
+		assertEquals("[" + test + "] Revision ids do not match:",
+				rev1.getRevisionId(), rev2.getRevisionId());
+		assertEquals("[" + test + "] Revision parent ids do not match:",
+				rev1.getParentRevisionId(), rev2.getParentRevisionId());
+		assertEquals("[" + test + "] Revision timestamps do not match:",
+				rev1.getTimeStamp(), rev2.getTimeStamp());
+		assertEquals("[" + test + "] Revision formats do not match:",
+				rev1.getFormat(), rev2.getFormat());
+		assertEquals("[" + test + "] Revision models do not match:",
+				rev1.getModel(), rev2.getModel());
+		assertEquals("[" + test + "] Revision comments do not match:",
+				rev1.getComment(), rev2.getComment());
+		assertEquals("[" + test + "] Revision texts do not match:",
+				rev1.getText(), rev2.getText());
+		assertEquals("[" + test + "] Revision contributors do not match:",
+				rev1.getContributor(), rev2.getContributor());
+		assertEquals("[" + test + "] Revision contributor ids do not match:",
+				rev1.getContributorId(), rev2.getContributorId());
 	}
 
 	/**
@@ -238,8 +238,8 @@ public class MwDumpFileProcessingTest {
 	 */
 	private void assertEqualRevisionLists(List<MwRevision> list1,
 			List<MwRevision> list2, String test) {
-		assertEquals(list1.size(), list2.size(),
-				"[" + test + "] Size of revision lists does not match:");
+		assertEquals("[" + test + "] Size of revision lists does not match:",
+				list1.size(), list2.size());
 		for (int i = 0; i < list1.size(); i++) {
 			assertEqualRevisions(list1.get(i), list2.get(i), test + "-item" + i);
 		}

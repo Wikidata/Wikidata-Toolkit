@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.util;
+
 /*
  * #%L
  * Wikidata Toolkit Utilities
@@ -18,19 +20,14 @@
  * #L%
  */
 
-package org.wikidata.wdtk.util;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class NestedIteratorTest {
 
@@ -65,25 +62,25 @@ public class NestedIteratorTest {
 		assertFalse(nestedIterator.hasNext());
 	}
 
-	@Test
+	@Test(expected = UnsupportedOperationException.class)
 	public void removeNotSupported() {
 		NestedIterator<String> nestedIterator = new NestedIterator<>(
 				Collections.singletonList(Collections.singletonList("Test")));
-		assertThrows(UnsupportedOperationException.class, () -> nestedIterator.remove());
+		nestedIterator.remove();
 	}
 
-	@Test
+	@Test(expected = NoSuchElementException.class)
 	public void iterateBeyondInnerList() {
 		NestedIterator<String> nestedIterator = new NestedIterator<>(
 				Collections.singletonList(Collections.emptyList()));
-		assertThrows(NoSuchElementException.class, () -> nestedIterator.next());
+		nestedIterator.next();
 	}
 
-	@Test
+	@Test(expected = NoSuchElementException.class)
 	public void iterateBeyondOuterList() {
 		NestedIterator<String> nestedIterator = new NestedIterator<>(
 				Collections.emptyList());
-		assertThrows(NoSuchElementException.class, () -> nestedIterator.next());
+		nestedIterator.next();
 	}
 
 }

@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.datamodel.implementation;
+
 /*-
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,18 +20,15 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.implementation;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
-import java.io.IOException;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.UnsupportedValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
+
+import static org.junit.Assert.*;
+import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,7 +41,7 @@ public class UnsupportedValueImplTest {
 	
 	private UnsupportedValue firstValue, secondValue;
 	
-	@BeforeEach
+	@Before
 	public void deserializeFirstValue() throws IOException {
 		firstValue = mapper.readValue(JSON_UNSUPPORTED_VALUE_1, UnsupportedValueImpl.class);
 		secondValue = mapper.readValue(JSON_UNSUPPORTED_VALUE_2, UnsupportedValueImpl.class);

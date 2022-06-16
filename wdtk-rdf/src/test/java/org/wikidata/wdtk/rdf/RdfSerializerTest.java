@@ -20,7 +20,7 @@
 
 package org.wikidata.wdtk.rdf;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,8 +30,8 @@ import org.eclipse.rdf4j.model.util.Models;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFParseException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 
 public class RdfSerializerTest {
@@ -42,7 +42,7 @@ public class RdfSerializerTest {
 
 	RdfSerializer rdfSerializer;
 
-	@BeforeEach
+	@Before
 	public void setUp() {
 		this.out = new ByteArrayOutputStream();
 		this.rdfSerializer = new RdfSerializer(RDFFormat.TURTLE, this.out,

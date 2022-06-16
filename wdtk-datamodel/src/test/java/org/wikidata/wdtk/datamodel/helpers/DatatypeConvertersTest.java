@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.datamodel.helpers;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,13 +20,11 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.helpers;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
 public class DatatypeConvertersTest {

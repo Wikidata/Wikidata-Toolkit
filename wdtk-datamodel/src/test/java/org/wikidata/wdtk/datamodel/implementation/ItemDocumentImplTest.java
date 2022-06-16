@@ -20,12 +20,7 @@
 
 package org.wikidata.wdtk.datamodel.implementation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +28,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
@@ -102,7 +97,7 @@ public class ItemDocumentImplTest {
 	@Test
 	public void findTerms() {
 		assertEquals("label", ir1.findLabel("en"));
-		assertNull(ir1.findLabel("ja"));
+		assertNull( ir1.findLabel("ja"));
 		assertEquals("des", ir1.findDescription("fr"));
 		assertNull( ir1.findDescription("ja"));
 	}
@@ -161,13 +156,13 @@ public class ItemDocumentImplTest {
 		assertEquals(ir1.hashCode(), ir2.hashCode());
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void idNotNull() {
-		assertThrows(NullPointerException.class, () -> new ItemDocumentImpl(null,
+		new ItemDocumentImpl(null,
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
-				statementGroups, sitelinks, 1234));
+				statementGroups, sitelinks, 1234);
 	}
 
 	@Test
@@ -207,7 +202,7 @@ public class ItemDocumentImplTest {
 		assertTrue(doc.getStatementGroups().isEmpty());
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void statementGroupsUseSameSubject() {
 		ItemIdValue iid2 = new ItemIdValueImpl("Q23", "http://example.org/");
 		Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL,
@@ -219,20 +214,20 @@ public class ItemDocumentImplTest {
 		statementGroups2.add(statementGroups.get(0));
 		statementGroups2.add(sg2);
 
-		assertThrows(IllegalArgumentException.class, () -> new ItemDocumentImpl(iid,
+		new ItemDocumentImpl(iid,
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
-				statementGroups2, sitelinks, 1234));
+				statementGroups2, sitelinks, 1234);
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void sitelinksNotNull() {
-		assertThrows(NullPointerException.class, () -> new ItemDocumentImpl(iid,
+		new ItemDocumentImpl(iid,
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
-				statementGroups, null, 1234));
+				statementGroups, null, 1234);
 	}
 
 	@Test

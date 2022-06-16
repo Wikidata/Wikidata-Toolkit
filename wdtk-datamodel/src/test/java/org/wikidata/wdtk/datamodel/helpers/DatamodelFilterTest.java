@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.datamodel.helpers;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,36 +20,13 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.helpers;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
-import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
-import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.interfaces.*;
+
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
 
 public class DatamodelFilterTest {
 

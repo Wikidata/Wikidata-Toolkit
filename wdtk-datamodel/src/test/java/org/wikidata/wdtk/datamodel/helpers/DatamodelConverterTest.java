@@ -20,14 +20,14 @@
 
 package org.wikidata.wdtk.datamodel.helpers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.implementation.GlobeCoordinatesValueImpl;
 import org.wikidata.wdtk.datamodel.implementation.ItemIdValueImpl;

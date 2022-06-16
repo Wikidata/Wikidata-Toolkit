@@ -20,11 +20,10 @@
 
 package org.wikidata.wdtk.datamodel.implementation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
@@ -104,9 +103,9 @@ public class SenseDocumentImplTest {
 		assertEquals(sd1.hashCode(), sd2.hashCode());
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void idNotNull() {
-		assertThrows(NullPointerException.class, () -> new SenseDocumentImpl(null, repList, statementGroups, 1234));
+		new SenseDocumentImpl(null, repList, statementGroups, 1234);
 	}
 
 	@Test
@@ -125,9 +124,9 @@ public class SenseDocumentImplTest {
 		assertTrue(doc.getStatementGroups().isEmpty());
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void statementGroupsUseSameSubject() {
-		SenseIdValue iid2 = new SenseIdValueImpl("L23-S5", "http://example.org/");
+		SenseIdValue iid2 = new SenseIdValueImpl("Q23", "http://example.org/");
 		Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL,
 				new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
 				Collections.emptyList(),  Collections.emptyList(), iid2);
@@ -137,7 +136,7 @@ public class SenseDocumentImplTest {
 		statementGroups2.add(statementGroups.get(0));
 		statementGroups2.add(sg2);
 
-		assertThrows(IllegalArgumentException.class, () -> new SenseDocumentImpl(sid, repList, statementGroups2, 1234));
+		new SenseDocumentImpl(sid, repList, statementGroups2, 1234);
 	}
 
 	@Test

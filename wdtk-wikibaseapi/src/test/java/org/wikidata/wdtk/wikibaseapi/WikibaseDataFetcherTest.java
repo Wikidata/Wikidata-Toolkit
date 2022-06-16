@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.wikibaseapi;
+
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -18,25 +20,11 @@
  * #L%
  */
 
-package org.wikidata.wdtk.wikibaseapi;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
@@ -44,12 +32,14 @@ import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.NoSuchEntityErrorException;
 
+import static org.junit.Assert.*;
+
 public class WikibaseDataFetcherTest {
 
 	MockBasicApiConnection con;
 	WikibaseDataFetcher wdf;
 
-	@BeforeEach
+	@Before
 	public void setUp() {
 		con = new MockBasicApiConnection();
 		wdf = new WikibaseDataFetcher(con, Datamodel.SITE_WIKIDATA);
@@ -102,7 +92,7 @@ public class WikibaseDataFetcherTest {
 		assertNull(result);
 	}
 
-	@Test
+	@Test(expected = NoSuchEntityErrorException.class)
 	public void testWbGetEntitiesError() throws IOException,
 			MediaWikiApiErrorException {
 		Map<String, String> parameters = new HashMap<>();
@@ -111,7 +101,7 @@ public class WikibaseDataFetcherTest {
 		// We use the mock answer as for a multi request; no problem
 		con.setWebResourceFromPath(parameters, getClass(),
 				"/wbgetentities-bogus.json", CompressionType.NONE);
-		assertThrows(NoSuchEntityErrorException.class, () -> wdf.getEntityDocuments("bogus"));
+		wdf.getEntityDocuments("bogus");
 	}
 
 	@Test

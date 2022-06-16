@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.wikibaseapi;
+
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -18,12 +20,6 @@
  * #L%
  */
 
-package org.wikidata.wdtk.wikibaseapi;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
@@ -42,8 +38,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.AliasUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.FormUpdateBuilder;
@@ -76,6 +72,8 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TagsApplyNotAllowedException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
 
+import static org.junit.Assert.*;
+
 public class WikibaseDataEditorTest {
 
 	MockBasicApiConnection con;
@@ -84,7 +82,7 @@ public class WikibaseDataEditorTest {
 	static final String TEST_GUID = "427C0317-BA8C-95B0-16C8-1A1B5FAC1081";
 	MockGuidGenerator guids = new MockGuidGenerator(TEST_GUID);
 
-	@BeforeEach
+	@Before
 	public void setUp() throws IOException {
 		this.con = new MockBasicApiConnection();
 		Map<String, String> params = new HashMap<>();
@@ -225,7 +223,7 @@ public class WikibaseDataEditorTest {
 		assertEquals(-1, wde.getRemainingEdits());
 	}
 
-	@Test
+	@Test(expected = TokenErrorException.class)
 	public void testCreateItemBadToken() throws IOException,
 			MediaWikiApiErrorException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
@@ -246,7 +244,7 @@ public class WikibaseDataEditorTest {
 		this.con.setWebResourceFromPath(params, this.getClass(),
 				"/error-badtoken.json", CompressionType.NONE);
 
-		assertThrows(TokenErrorException.class, () -> wde.createItemDocument(itemDocument, "My summary", null));
+		wde.createItemDocument(itemDocument, "My summary", null);
 	}
 
 	@Test
@@ -317,7 +315,7 @@ public class WikibaseDataEditorTest {
 		assertEquals(expectedResultDocument, result);
 	}
 
-	@Test
+	@Test(expected = IOException.class)
 	public void testCreateItemBadEntityDocumentJson() throws IOException,
 			MediaWikiApiErrorException {
 		// Test what happens if the API returns JSON without an actual entity
@@ -340,10 +338,10 @@ public class WikibaseDataEditorTest {
 		params.put("data", data);
 		con.setWebResource(params, expectedResult);
 
-		assertThrows(IOException.class, () -> wde.createItemDocument(itemDocument, "My summary", null));
+		wde.createItemDocument(itemDocument, "My summary", null);
 	}
 
-	@Test
+	@Test(expected = IOException.class)
 	public void testCreateItemMissingEntityDocumentJson() throws IOException,
 			MediaWikiApiErrorException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
@@ -364,7 +362,7 @@ public class WikibaseDataEditorTest {
 		params.put("data", data);
 		con.setWebResource(params, expectedResult);
 
-		assertThrows(IOException.class, () -> wde.createItemDocument(itemDocument, "My summary", null));
+		wde.createItemDocument(itemDocument, "My summary", null);
 	}
 
 	@Test
@@ -841,9 +839,9 @@ public class WikibaseDataEditorTest {
 		assertEquals(expectedResultDocument, result);
 	}
 	
-	@Test
 	@Deprecated
 	@SuppressWarnings("deprecation")
+	@Test(expected = TagsApplyNotAllowedException.class)
 	public void testApplyInvalidTag() throws MediaWikiApiErrorException, IOException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
@@ -874,10 +872,10 @@ public class WikibaseDataEditorTest {
 				+ "\"servedby\":\"mw1276\"}";
 		con.setWebResource(params, expectedResult);
 
-		assertThrows(TagsApplyNotAllowedException.class, () -> wde.updateTermsStatements(itemDocument, Collections.<MonolingualTextValue>emptyList(),
+		wde.updateTermsStatements(itemDocument, Collections.<MonolingualTextValue>emptyList(),
 				Collections.singletonList(description),	Collections.<MonolingualTextValue>emptyList(),
 				Collections.<MonolingualTextValue>emptyList(), Collections.<Statement>emptyList(),
-				Collections.<Statement>emptyList(), "testing tags", Collections.singletonList("tag_which_does_not_exist")));
+				Collections.<Statement>emptyList(), "testing tags", Collections.singletonList("tag_which_does_not_exist"));
 	}
 
 	private WbEditingAction mockEntityUpdate(EntityUpdate update) throws MediaWikiApiErrorException, IOException {

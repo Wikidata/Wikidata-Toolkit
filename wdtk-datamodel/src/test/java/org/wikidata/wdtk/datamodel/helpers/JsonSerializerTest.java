@@ -20,8 +20,7 @@
 
 package org.wikidata.wdtk.datamodel.helpers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.EntityDocumentImpl;
 import org.wikidata.wdtk.datamodel.implementation.JsonComparator;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;

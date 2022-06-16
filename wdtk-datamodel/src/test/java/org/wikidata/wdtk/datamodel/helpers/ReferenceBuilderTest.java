@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.datamodel.helpers;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,14 +20,12 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.helpers;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;

@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.datamodel.implementation;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,27 +20,13 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.implementation;
+import org.junit.Before;
+import org.junit.Test;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.*;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import static org.junit.Assert.*;
 
 public class TermedStatementDocumentImplTest {
 	
@@ -48,7 +36,7 @@ public class TermedStatementDocumentImplTest {
 	private String statementIdA = "myIdA";
 	private String statementIdB = "myIdB";
 
-	@BeforeEach
+	@Before
 	public void setUp() {
 		ItemIdValue subject = new ItemIdValueImpl("Q42",
 				"http://wikidata.org/entity/");

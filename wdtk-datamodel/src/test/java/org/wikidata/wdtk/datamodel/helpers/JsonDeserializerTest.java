@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.datamodel.helpers;
+
 /*-
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,17 +20,14 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.helpers;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
@@ -50,31 +49,31 @@ public class JsonDeserializerTest {
 	@Test
 	public void testLoadItemDocument() throws IOException {
 		ItemDocument doc = SUT.deserializeItemDocument(loadJson("item.json"));
-		assertEquals(doc.getEntityId(), Datamodel.makeWikidataItemIdValue("Q34987"));
+		Assert.assertEquals(doc.getEntityId(), Datamodel.makeWikidataItemIdValue("Q34987"));
 	}
 	
 	@Test
 	public void testLoadPropertyDocument() throws IOException {
 		PropertyDocument doc = SUT.deserializePropertyDocument(loadJson("property.json"));
-		assertEquals(doc.getEntityId(), Datamodel.makeWikidataPropertyIdValue("P3467"));
+		Assert.assertEquals(doc.getEntityId(), Datamodel.makeWikidataPropertyIdValue("P3467"));
 	}
 	
 	@Test
 	public void testLoadLexemeDocument() throws IOException {
 		LexemeDocument doc = SUT.deserializeLexemeDocument(loadJson("lexeme.json"));
-		assertEquals(doc.getEntityId(), Datamodel.makeWikidataLexemeIdValue("L3872"));
-		assertEquals(doc.getForm(Datamodel.makeWikidataFormIdValue("L3872-F2")).getStatementGroups(), Collections.emptyList());
+		Assert.assertEquals(doc.getEntityId(), Datamodel.makeWikidataLexemeIdValue("L3872"));
+		Assert.assertEquals(doc.getForm(Datamodel.makeWikidataFormIdValue("L3872-F2")).getStatementGroups(), Collections.emptyList());
 	}
 	
 	@Test
 	public void testLoadMediaInfoDocument() throws IOException {
 		MediaInfoDocument doc = SUTcommons.deserializeMediaInfoDocument(loadJson("mediainfo.json"));
-		assertEquals(doc.getEntityId(), Datamodel.makeWikimediaCommonsMediaInfoIdValue("M74698470"));
+		Assert.assertEquals(doc.getEntityId(), Datamodel.makeWikimediaCommonsMediaInfoIdValue("M74698470"));
 	}
 	
 	@Test
 	public void testDeserializeEntityDocument() throws IOException {
 		EntityDocument doc = SUT.deserializeEntityDocument(loadJson("property.json"));
-		assertEquals(doc.getEntityId(), Datamodel.makeWikidataPropertyIdValue("P3467"));
+		Assert.assertEquals(doc.getEntityId(), Datamodel.makeWikidataPropertyIdValue("P3467"));
 	}
 }

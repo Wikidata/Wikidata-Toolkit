@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.datamodel.implementation;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,14 +20,12 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.implementation;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +33,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
@@ -49,6 +48,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.junit.Assert.*;
 
 public class MediaInfoDocumentImplTest {
 
@@ -83,7 +83,7 @@ public class MediaInfoDocumentImplTest {
 	@Test
 	public void findLabels() {
 		assertEquals("label", mi1.findLabel("en"));
-		assertNull(mi1.findLabel("ja"));
+		assertNull( mi1.findLabel("ja"));
 	}
 
 	@Test
@@ -125,9 +125,9 @@ public class MediaInfoDocumentImplTest {
 		assertEquals(mi1.hashCode(), mi2.hashCode());
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void idNotNull() {
-		assertThrows(NullPointerException.class, () -> new MediaInfoDocumentImpl(null, Collections.emptyList(), statementGroups, 1234));
+		new MediaInfoDocumentImpl(null, Collections.emptyList(), statementGroups, 1234);
 	}
 
 	@Test
@@ -142,9 +142,9 @@ public class MediaInfoDocumentImplTest {
 		assertTrue(doc.getStatementGroups().isEmpty());
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void statementGroupsUseSameSubject() {
-		MediaInfoIdValue mid2 = new MediaInfoIdValueImpl("M23", "http://example.org/");
+		MediaInfoIdValue mid2 = new MediaInfoIdValueImpl("Q23", "http://example.org/");
 		Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL,
 				new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
 				Collections.emptyList(),  Collections.emptyList(), mid2);
@@ -154,7 +154,7 @@ public class MediaInfoDocumentImplTest {
 		statementGroups2.add(statementGroups.get(0));
 		statementGroups2.add(sg2);
 
-		assertThrows(IllegalArgumentException.class, () -> new MediaInfoDocumentImpl(mid, Collections.emptyList(), statementGroups2, 1234));
+		new MediaInfoDocumentImpl(mid, Collections.emptyList(), statementGroups2, 1234);
 	}
 
 	@Test

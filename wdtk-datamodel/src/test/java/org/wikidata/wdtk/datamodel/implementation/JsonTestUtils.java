@@ -19,7 +19,7 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.TreeMap;
@@ -69,7 +69,8 @@ class JsonTestUtils {
 			JsonNode tree = mapper.readTree(json);
 			return mapper.writeValueAsString(tree);
 		} catch (IOException ex) {
-			return fail("JSON serialization failed.", ex);
+			fail("JSON serialization failed.");
+			return null;
 		}
 	}
 

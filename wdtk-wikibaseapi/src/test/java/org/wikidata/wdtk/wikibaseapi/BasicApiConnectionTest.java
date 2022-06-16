@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.wikibaseapi;
+
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -18,15 +20,9 @@
  * #L%
  */
 
-package org.wikidata.wdtk.wikibaseapi;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -43,10 +39,15 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Test;
+
+import okhttp3.mockwebserver.Dispatcher;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
 import org.wikidata.wdtk.wikibaseapi.apierrors.AssertUserFailedException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
@@ -55,10 +56,7 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import mockwebserver3.Dispatcher;
-import mockwebserver3.MockResponse;
-import mockwebserver3.MockWebServer;
-import mockwebserver3.RecordedRequest;
+import static org.junit.Assert.*;
 
 public class BasicApiConnectionTest {
 
@@ -88,7 +86,7 @@ public class BasicApiConnectionTest {
 				.setBody(body);
 	}
 
-	@BeforeAll
+	@BeforeClass
 	public static void init() throws Exception {
 		Dispatcher dispatcher = new Dispatcher() {
 
@@ -137,12 +135,12 @@ public class BasicApiConnectionTest {
 		server.start();
 	}
 
-	@AfterAll
+	@AfterClass
 	public static void finish() throws IOException {
 		server.shutdown();
 	}
 
-	@BeforeEach
+	@Before
 	public void setUp() {
 		connection = new BasicApiConnection(server.url("/w/api.php").toString());
 	}
@@ -218,10 +216,10 @@ public class BasicApiConnectionTest {
 		assertFalse(connection.loggedIn);
 	}
 
-	@Test
+	@Test(expected = LoginFailedException.class)
 	public void loginUserErrors() throws LoginFailedException {
 		// This will fail because the user is not known
-		assertThrows(LoginFailedException.class, () -> connection.login("username1", "password1"));
+		connection.login("username1", "password1");
 	}
 
 	@Test
@@ -273,13 +271,13 @@ public class BasicApiConnectionTest {
 		assertEquals(expectedWarnings, warnings);
 	}
 
-	@Test
+	@Test(expected = MediaWikiApiErrorException.class)
 	public void testErrors() throws IOException,
 			MediaWikiApiErrorException {
 		JsonNode root;
 		URL path = this.getClass().getResource("/error.json");
 		root = mapper.readTree(path.openStream());
-		assertThrows(MediaWikiApiErrorException.class, () -> connection.checkErrors(root));
+		connection.checkErrors(root);
 	}
 	
 	@Test
@@ -343,13 +341,13 @@ public class BasicApiConnectionTest {
 		}
 	}
 
-	@Test
+	@Test(expected = AssertUserFailedException.class)
 	public void testCheckCredentials() throws IOException, MediaWikiApiErrorException, LoginFailedException {
 		// we first login successfully
 		connection.login("username", "password");
 		assertTrue(connection.isLoggedIn());
 		// after a while, the credentials expire
-		assertThrows(AssertUserFailedException.class, () -> connection.checkCredentials());
+		connection.checkCredentials();
 	}
 
 	/**
@@ -395,8 +393,8 @@ public class BasicApiConnectionTest {
 		assertEquals("{\"entities\":{\"Q8\":{\"pageid\":134,\"ns\":0,\"title\":\"Q8\",\"lastrevid\":1174289176,\"modified\":\"2020-05-05T12:39:07Z\",\"type\":\"item\",\"id\":\"Q8\"}},\"success\":1}", mapper.writeValueAsString(root));
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testUnsupportedMethod() throws IOException, MediaWikiApiErrorException {
-		assertThrows(IllegalArgumentException.class, () -> connection.sendJsonRequest("PUT", new HashMap<>()));
+		connection.sendJsonRequest("PUT", new HashMap<>());
 	}
 }

@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.wikibaseapi.apierrors;
+
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -18,12 +20,9 @@
  * #L%
  */
 
-package org.wikidata.wdtk.wikibaseapi.apierrors;
+import static org.junit.Assert.assertEquals;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class MediaWikiApiErrorHandlerTest {
 
@@ -43,35 +42,35 @@ public class MediaWikiApiErrorHandlerTest {
 		assertEquals("some message", message);
 	}
 
-	@Test
+	@Test(expected = TokenErrorException.class)
 	public void testNoTokenError() throws MediaWikiApiErrorException {
-		assertThrows(TokenErrorException.class, () -> MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(
-				MediaWikiApiErrorHandler.ERROR_NO_TOKEN, "some message"));
+		MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(
+				MediaWikiApiErrorHandler.ERROR_NO_TOKEN, "some message");
 	}
 
-	@Test
+	@Test(expected = TokenErrorException.class)
 	public void testBadTokenError() throws MediaWikiApiErrorException {
-		assertThrows(TokenErrorException.class, () -> MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(
-				MediaWikiApiErrorHandler.ERROR_INVALID_TOKEN, "some message"));
+		MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(
+				MediaWikiApiErrorHandler.ERROR_INVALID_TOKEN, "some message");
 	}
 
-	@Test
+	@Test(expected = EditConflictErrorException.class)
 	public void testEditConflictError() throws MediaWikiApiErrorException {
-		assertThrows(EditConflictErrorException.class, () -> MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(
-				MediaWikiApiErrorHandler.ERROR_EDIT_CONFLICT, "some message"));
+		MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(
+				MediaWikiApiErrorHandler.ERROR_EDIT_CONFLICT, "some message");
 	}
 
-	@Test
+	@Test(expected = NoSuchEntityErrorException.class)
 	public void testNoSuchEntityError() throws MediaWikiApiErrorException {
-		assertThrows(NoSuchEntityErrorException.class, () -> MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(
-				MediaWikiApiErrorHandler.ERROR_NO_SUCH_ENTITY, "some message"));
+		MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(
+				MediaWikiApiErrorHandler.ERROR_NO_SUCH_ENTITY, "some message");
 	}
 
-	@Test
+	@Test(expected = MaxlagErrorException.class)
 	public void testMaxlagError() throws MediaWikiApiErrorException {
-		assertThrows(MaxlagErrorException.class, () -> MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(
+		MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(
 				MediaWikiApiErrorHandler.ERROR_MAXLAG,
-				"Waiting for 10.64.16.27: 2 seconds lagged"));
+				"Waiting for 10.64.16.27: 2 seconds lagged");
 	}
 
 }

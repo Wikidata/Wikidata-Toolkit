@@ -20,14 +20,11 @@
 
 package org.wikidata.wdtk.datamodel.implementation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -82,29 +79,29 @@ public class MediaInfoIdValueImplTest {
 		assertEquals(mediaInfo1.hashCode(), mediaInfo2.hashCode());
 	}
 
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void idValidatedForFirstLetter() {
-		assertThrows(RuntimeException.class, () -> new MediaInfoIdValueImpl("Q12345", "http://commons.wikimedia.org/entity/"));
+		new MediaInfoIdValueImpl("Q12345", "http://commons.wikimedia.org/entity/");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForNumber() {
-		assertThrows(IllegalArgumentException.class, () -> new MediaInfoIdValueImpl("L34d23", "http://commons.wikimedia.org/entity/"));
+		new MediaInfoIdValueImpl("L34d23", "http://commons.wikimedia.org/entity/");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForLength() {
-		assertThrows(IllegalArgumentException.class, () -> new MediaInfoIdValueImpl("M", "http://commons.wikimedia.org/entity/"));
+		new MediaInfoIdValueImpl("M", "http://commons.wikimedia.org/entity/");
 	}
 
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void idNotNull() {
-		assertThrows(RuntimeException.class, () -> new MediaInfoIdValueImpl((String)null, "http://commons.wikimedia.org/entity/"));
+		new MediaInfoIdValueImpl((String)null, "http://commons.wikimedia.org/entity/");
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void baseIriNotNull() {
-		assertThrows(NullPointerException.class, () -> new MediaInfoIdValueImpl("M42", null));
+		new MediaInfoIdValueImpl("M42", null);
 	}
 
 	@Test

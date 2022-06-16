@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.rdf.values;
+
 /*
  * #%L
  * Wikidata Toolkit RDF
@@ -18,15 +20,15 @@
  * #L%
  */
 
-package org.wikidata.wdtk.rdf.values;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.eclipse.rdf4j.model.BNode;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
@@ -34,8 +36,6 @@ import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFParseException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.implementation.UnsupportedEntityIdValueImpl;
@@ -62,7 +62,7 @@ public class ValueRdfConverterTest {
 
 	DataObjectFactory objectFactory = new DataObjectFactoryImpl();
 
-	@BeforeEach
+	@Before
 	public void setUp() {
 		this.out = new ByteArrayOutputStream();
 		this.rdfWriter = new RdfWriter(RDFFormat.TURTLE, this.out);

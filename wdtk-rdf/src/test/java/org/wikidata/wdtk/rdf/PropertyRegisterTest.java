@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.rdf;
+
 /*
  * #%L
  * Wikidata Toolkit RDF
@@ -18,11 +20,9 @@
  * #L%
  */
 
-package org.wikidata.wdtk.rdf;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.hamcrest.core.IsIterableContaining;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.hamcrest.MockitoHamcrest;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
@@ -59,7 +59,7 @@ public class PropertyRegisterTest {
 	final TestObjectFactory objectFactory = new TestObjectFactory();
 	final DataObjectFactory dataObjectFactory = new DataObjectFactoryImpl();
 
-	@BeforeEach
+	@Before
 	public void setUp() throws MediaWikiApiErrorException, IOException {
 		Map<String, EntityDocument> mockResult = new HashMap<>();
 		List<StatementGroup> mockStatementGroups = new ArrayList<>();
@@ -193,8 +193,8 @@ public class PropertyRegisterTest {
 		// Check twice to test fast failing on retry
 		assertNull(this.propertyRegister.getPropertyType(dataObjectFactory
 				.getPropertyIdValue("P10000", this.siteIri)));
-		assertEquals(smallestBefore, this.propertyRegister.smallestUnfetchedPropertyIdNumber,
-				"no requests should be made if the property is known to be missing");
+		assertEquals("no requests should be made if the property is known to be missing",
+				smallestBefore, this.propertyRegister.smallestUnfetchedPropertyIdNumber);
 	}
 
 	@Test

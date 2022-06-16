@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.datamodel.implementation;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,21 +20,17 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.implementation;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.IOException;
-
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.EntityRedirectDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class EntityRedirectDocumentImplTest {
 
@@ -76,19 +74,19 @@ public class EntityRedirectDocumentImplTest {
 		assertEquals(itemRedirect.hashCode(), itemRedirect2.hashCode());
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void idNotNull() {
-		assertThrows(NullPointerException.class, () -> new EntityRedirectDocumentImpl(null, targetItemId, 0));
+		new EntityRedirectDocumentImpl(null, targetItemId, 0);
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void targetNotNull() {
-		assertThrows(NullPointerException.class, () -> new EntityRedirectDocumentImpl(entityItemId, null, 0));
+		new EntityRedirectDocumentImpl(entityItemId, null, 0);
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void entityTypeEquality() {
-		assertThrows(IllegalArgumentException.class, () -> new EntityRedirectDocumentImpl(entityItemId, new LexemeIdValueImpl("L1", "http://example.com/entity/"), 0));
+		new EntityRedirectDocumentImpl(entityItemId, new LexemeIdValueImpl("L1", "http://example.com/entity/"), 0);
 	}
 
 	@Test

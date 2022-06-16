@@ -1,3 +1,7 @@
+package org.wikidata.wdtk.datamodel.implementation;
+
+import static org.junit.Assert.*;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,21 +22,16 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.implementation;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 
 public class FormIdValueImplTest {
 
@@ -81,34 +80,34 @@ public class FormIdValueImplTest {
 		assertEquals(form1.hashCode(), form2.hashCode());
 	}
 
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void idValidatedForFirstLetter() {
-		assertThrows(RuntimeException.class, () -> new FormIdValueImpl("Q12345", "http://www.wikidata.org/entity/"));
+		new FormIdValueImpl("Q12345", "http://www.wikidata.org/entity/");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForNumber() {
-		assertThrows(IllegalArgumentException.class, () -> new FormIdValueImpl("L34d23", "http://www.wikidata.org/entity/"));
+		new FormIdValueImpl("L34d23", "http://www.wikidata.org/entity/");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForLength() {
-		assertThrows(IllegalArgumentException.class, () -> new FormIdValueImpl("L", "http://www.wikidata.org/entity/"));
+		new FormIdValueImpl("L", "http://www.wikidata.org/entity/");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForParts() {
-		assertThrows(IllegalArgumentException.class, () -> new FormIdValueImpl("L21", "http://www.wikidata.org/entity/"));
+		new FormIdValueImpl("L21", "http://www.wikidata.org/entity/");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void idNotNull() {
-		assertThrows(IllegalArgumentException.class, () -> new FormIdValueImpl((String)null, "http://www.wikidata.org/entity/"));
+		new FormIdValueImpl((String)null, "http://www.wikidata.org/entity/");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void baseIriNotNull() {
-		assertThrows(IllegalArgumentException.class, () -> new FormIdValueImpl("L42", null));
+		new FormIdValueImpl("L42", null);
 	}
 
 	@Test

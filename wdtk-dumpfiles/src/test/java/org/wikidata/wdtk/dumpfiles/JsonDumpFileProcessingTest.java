@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.dumpfiles;
+
 /*
  * #%L
  * Wikidata Toolkit Dump File Handling
@@ -18,19 +20,16 @@
  * #L%
  */
 
-package org.wikidata.wdtk.dumpfiles;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFile;
@@ -114,8 +113,8 @@ public class JsonDumpFileProcessingTest {
 	/**
 	 * TODO: fix on JDK 9 and enable again
 	 */
-	@Test
-	@Disabled
+	@Test(expected = EntityTimerProcessor.TimeoutException.class)
+	@Ignore
 	public void testTimeout() throws IOException {
 		Path dmPath = Paths.get(System.getProperty("user.dir"));
 		MockDirectoryManager dm = new MockDirectoryManager(dmPath, true, true);
@@ -133,7 +132,7 @@ public class JsonDumpFileProcessingTest {
 				true);
 
 		timer.open();
-		assertThrows(EntityTimerProcessor.TimeoutException.class, () -> dpc.processMostRecentJsonDump());
+		dpc.processMostRecentJsonDump();
 		timer.close();
 	}
 

@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.datamodel.implementation;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,13 +20,13 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.implementation;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,24 +34,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
-import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
-import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.junit.Assert.*;
 
 public class LexemeDocumentImplTest {
 
@@ -102,9 +87,9 @@ public class LexemeDocumentImplTest {
 		assertEquals(form, ld1.getForm(form.getEntityId()));
 	}
 
-	@Test
+	@Test(expected=IndexOutOfBoundsException.class)
 	public void formGetterNotFound() {
-		assertThrows(IndexOutOfBoundsException.class, () -> ld1.getForm(new FormIdValueImpl("L42-F2", "http://example.com/entity/")));
+		ld1.getForm(new FormIdValueImpl("L42-F2", "http://example.com/entity/"));
 	}
 
 	@Test
@@ -112,9 +97,9 @@ public class LexemeDocumentImplTest {
 		assertEquals(sense, ld1.getSense(sense.getEntityId()));
 	}
 
-	@Test
+	@Test(expected=IndexOutOfBoundsException.class)
 	public void senseGetterNotFound() {
-		assertThrows(IndexOutOfBoundsException.class, () -> ld1.getSense(new SenseIdValueImpl("L42-S2", "http://example.com/entity/")));
+		ld1.getSense(new SenseIdValueImpl("L42-S2", "http://example.com/entity/"));
 	}
 
 	@Test
@@ -155,19 +140,19 @@ public class LexemeDocumentImplTest {
 		assertEquals(ld1.hashCode(), ld2.hashCode());
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void idNotNull() {
-		assertThrows(NullPointerException.class, () -> new LexemeDocumentImpl(null, lexCat, language, lemmaList, statementGroups, forms, senses,  1234));
+		new LexemeDocumentImpl(null, lexCat, language, lemmaList, statementGroups, forms, senses,  1234);
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void lexicalCategoryNotNull() {
-		assertThrows(NullPointerException.class, () -> new LexemeDocumentImpl(lid, null, language, lemmaList, statementGroups, forms, senses, 1234));
+		new LexemeDocumentImpl(lid, null, language, lemmaList, statementGroups, forms, senses, 1234);
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void languageNotNull() {
-		assertThrows(NullPointerException.class, () -> new LexemeDocumentImpl(lid, lexCat, null, lemmaList, statementGroups, forms, senses,  1234));
+		new LexemeDocumentImpl(lid, lexCat, null, lemmaList, statementGroups, forms, senses,  1234);
 	}
 
 	@Test
@@ -186,9 +171,9 @@ public class LexemeDocumentImplTest {
 		assertTrue(doc.getStatementGroups().isEmpty());
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void statementGroupsUseSameSubject() {
-		LexemeIdValue iid2 = new LexemeIdValueImpl("L23", "http://example.org/");
+		LexemeIdValue iid2 = new LexemeIdValueImpl("Q23", "http://example.org/");
 		Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL,
 				new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
 				Collections.emptyList(),  Collections.emptyList(), iid2);
@@ -198,7 +183,7 @@ public class LexemeDocumentImplTest {
 		statementGroups2.add(statementGroups.get(0));
 		statementGroups2.add(sg2);
 
-		assertThrows(IllegalArgumentException.class, () -> new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups2, forms, senses,  1234));
+		new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups2, forms, senses,  1234);
 	}
 
 	@Test
@@ -285,14 +270,14 @@ public class LexemeDocumentImplTest {
 		assertEquals(ld1.getForms().size() + 1, ld1.withForm(newForm).getForms().size());
 		assertEquals(newForm, ld1.withForm(newForm).getForm(newForm.getEntityId()));
 	}
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testWithWrongFormId() {
-		assertThrows(IllegalArgumentException.class, () -> ld1.withForm(Datamodel.makeFormDocument(
+		ld1.withForm(Datamodel.makeFormDocument(
 				Datamodel.makeFormIdValue("L444-F32","http://example.com/entity/"),
 				Collections.singletonList(new TermImpl("en", "add1")),
 				Collections.emptyList(),
 				Collections.emptyList()
-		)));
+		));
 	}
 
 	@Test
@@ -303,13 +288,13 @@ public class LexemeDocumentImplTest {
 		assertEquals(newSense, ld1.withSense(newSense).getSense(newSense.getEntityId()));
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testWithWrongSenseId() {
-		assertThrows(IllegalArgumentException.class, () -> ld1.withSense(Datamodel.makeSenseDocument(
+		ld1.withSense(Datamodel.makeSenseDocument(
 				Datamodel.makeSenseIdValue("L444-S32","http://example.com/entity/"),
 				Collections.singletonList(new TermImpl("en", "add1")),
 				Collections.emptyList()
-		)));
+		));
 	}
 
 	@Test
