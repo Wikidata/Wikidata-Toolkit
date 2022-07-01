@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.implementation;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -101,6 +101,11 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 	 * {@link DatatypeIdValue#DT_GEO_SHAPE} in JSON.
 	 */
 	public static final String JSON_DT_GEO_SHAPE = "geo-shape";
+	/**
+	 * String used to refer to the property datatype
+	 * {@link DatatypeIdValue#DT_TIME} in JSON.
+	 */
+	public static final String JSON_DT_EDTF = "edtf";
 
 	private static final Pattern JSON_DATATYPE_PATTERN = Pattern.compile("^[a-z\\-]+$");
 	private static final Pattern DATATYPE_ID_PATTERN = Pattern.compile("^http://wikiba\\.se/ontology#([a-zA-Z]+)$");
@@ -121,37 +126,39 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 	 */
 	public static String getDatatypeIriFromJsonDatatype(String jsonDatatype) {
 		switch (jsonDatatype) {
-		case JSON_DT_ITEM:
-			return DT_ITEM;
-		case JSON_DT_PROPERTY:
-			return DT_PROPERTY;
-		case JSON_DT_GLOBE_COORDINATES:
-			return DT_GLOBE_COORDINATES;
-		case JSON_DT_URL:
-			return DT_URL;
-		case JSON_DT_COMMONS_MEDIA:
-			return DT_COMMONS_MEDIA;
-		case JSON_DT_TIME:
-			return DT_TIME;
-		case JSON_DT_QUANTITY:
-			return DT_QUANTITY;
-		case JSON_DT_STRING:
-			return DT_STRING;
-		case JSON_DT_MONOLINGUAL_TEXT:
-			return DT_MONOLINGUAL_TEXT;
-		default:
-			if(!JSON_DATATYPE_PATTERN.matcher(jsonDatatype).matches()) {
-				throw new IllegalArgumentException("Invalid JSON datatype \"" + jsonDatatype + "\"");
-			}
+			case JSON_DT_ITEM:
+				return DT_ITEM;
+			case JSON_DT_PROPERTY:
+				return DT_PROPERTY;
+			case JSON_DT_GLOBE_COORDINATES:
+				return DT_GLOBE_COORDINATES;
+			case JSON_DT_URL:
+				return DT_URL;
+			case JSON_DT_COMMONS_MEDIA:
+				return DT_COMMONS_MEDIA;
+			case JSON_DT_TIME:
+				return DT_TIME;
+			case JSON_DT_QUANTITY:
+				return DT_QUANTITY;
+			case JSON_DT_STRING:
+				return DT_STRING;
+			case JSON_DT_MONOLINGUAL_TEXT:
+				return DT_MONOLINGUAL_TEXT;
+			case JSON_DT_EDTF:
+				return DT_EDTF;
+			default:
+				if(!JSON_DATATYPE_PATTERN.matcher(jsonDatatype).matches()) {
+					throw new IllegalArgumentException("Invalid JSON datatype \"" + jsonDatatype + "\"");
+				}
 
-			String[] parts = jsonDatatype.split("-");
-			for(int i = 0; i < parts.length; i++) {
-				parts[i] = StringUtils.capitalize(parts[i]);
-			}
-			return "http://wikiba.se/ontology#" + StringUtils.join(parts);
+				String[] parts = jsonDatatype.split("-");
+				for(int i = 0; i < parts.length; i++) {
+					parts[i] = StringUtils.capitalize(parts[i]);
+				}
+				return "http://wikiba.se/ontology#" + StringUtils.join(parts);
 		}
 	}
-	
+
 	/**
 	 * Returns the JSON datatype for the property datatype as represented by
 	 * the given WDTK datatype IRI string.
@@ -181,13 +188,15 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 				return DatatypeIdImpl.JSON_DT_MONOLINGUAL_TEXT;
 			case DatatypeIdValue.DT_PROPERTY:
 				return DatatypeIdImpl.JSON_DT_PROPERTY;
+			case DatatypeIdValue.DT_EDTF:
+				return DatatypeIdImpl.JSON_DT_EDTF;
 			default:
 				//We apply the reverse algorithm of JacksonDatatypeId::getDatatypeIriFromJsonDatatype
 				Matcher matcher = DATATYPE_ID_PATTERN.matcher(datatypeIri);
 				if(!matcher.matches()) {
 					throw new IllegalArgumentException("Unknown datatype: " + datatypeIri);
 				}
-		
+
 				StringBuilder jsonDatatypeBuilder = new StringBuilder();
 				for(char ch : StringUtils.uncapitalize(matcher.group(1)).toCharArray()) {
 					if(Character.isUpperCase(ch)) {
@@ -201,7 +210,7 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 				return jsonDatatypeBuilder.toString();
 		}
 	}
-	
+
 	/**
 	 * Copy constructor.
 	 */
@@ -225,7 +234,7 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 		Validate.notNull(iri, "An IRI must be provided to create a DatatypeIdValue");
 		this.iri = iri;
 	}
-	
+
 	/**
 	 * Returns the string used to represent this datatype in JSON.
 	 * @return
