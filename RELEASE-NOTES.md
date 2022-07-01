@@ -1,6 +1,12 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.13.4
+--------------
+
+* updated okhttp to 5.0.0-alpha.10 in the hope that it solves a linkage error
+* registered the EDTF datatype
+
 Version 0.13.3
 --------------
 
