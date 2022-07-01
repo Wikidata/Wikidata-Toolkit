@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.implementation;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -158,7 +158,7 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 			return "http://wikiba.se/ontology#" + StringUtils.join(parts);
 		}
 	}
-
+	
 	/**
 	 * Returns the JSON datatype for the property datatype as represented by
 	 * the given WDTK datatype IRI string.
@@ -196,7 +196,7 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 				if(!matcher.matches()) {
 					throw new IllegalArgumentException("Unknown datatype: " + datatypeIri);
 				}
-
+		
 				StringBuilder jsonDatatypeBuilder = new StringBuilder();
 				for(char ch : StringUtils.uncapitalize(matcher.group(1)).toCharArray()) {
 					if(Character.isUpperCase(ch)) {
@@ -210,7 +210,7 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 				return jsonDatatypeBuilder.toString();
 		}
 	}
-
+	
 	/**
 	 * Copy constructor.
 	 */
@@ -234,7 +234,7 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 		Validate.notNull(iri, "An IRI must be provided to create a DatatypeIdValue");
 		this.iri = iri;
 	}
-
+	
 	/**
 	 * Returns the string used to represent this datatype in JSON.
 	 * @return
