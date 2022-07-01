@@ -1,6 +1,11 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.13.5
+--------------
+
+* downgraded okhttp to 4.2.2 to solve a linkage error (issue #600). We anticipate that this will be reverted once a stable version of okhttp 5 is available and a viable way to avoid such a linkage error is found.
+
 Version 0.13.4
 --------------
 
