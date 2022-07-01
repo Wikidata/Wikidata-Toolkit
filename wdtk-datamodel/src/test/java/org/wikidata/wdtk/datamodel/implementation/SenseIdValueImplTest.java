@@ -20,14 +20,13 @@
 
 package org.wikidata.wdtk.datamodel.implementation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 
@@ -81,34 +80,34 @@ public class SenseIdValueImplTest {
 		assertEquals(sense1.hashCode(), sense2.hashCode());
 	}
 
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void idValidatedForFirstLetter() {
-		assertThrows(RuntimeException.class, () -> new SenseIdValueImpl("Q12345", "http://www.wikidata.org/entity/"));
+		new SenseIdValueImpl("Q12345", "http://www.wikidata.org/entity/");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForNumber() {
-		assertThrows(IllegalArgumentException.class, () -> new SenseIdValueImpl("L34d23", "http://www.wikidata.org/entity/"));
+		new SenseIdValueImpl("L34d23", "http://www.wikidata.org/entity/");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForLength() {
-		assertThrows(IllegalArgumentException.class, () -> new SenseIdValueImpl("L", "http://www.wikidata.org/entity/"));
+		new SenseIdValueImpl("L", "http://www.wikidata.org/entity/");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForParts() {
-		assertThrows(IllegalArgumentException.class, () -> new SenseIdValueImpl("L21", "http://www.wikidata.org/entity/"));
+		new SenseIdValueImpl("L21", "http://www.wikidata.org/entity/");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void idNotNull() {
-		assertThrows(IllegalArgumentException.class, () -> new SenseIdValueImpl((String)null, "http://www.wikidata.org/entity/"));
+		new SenseIdValueImpl((String)null, "http://www.wikidata.org/entity/");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void baseIriNotNull() {
-		assertThrows(IllegalArgumentException.class, () -> new SenseIdValueImpl("L42", null));
+		new SenseIdValueImpl("L42", null);
 	}
 
 	@Test

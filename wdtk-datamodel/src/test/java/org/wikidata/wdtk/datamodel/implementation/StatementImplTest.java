@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.datamodel.implementation;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,30 +20,17 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.implementation;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
-import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class StatementImplTest {
 
@@ -77,10 +66,10 @@ public class StatementImplTest {
 		assertEquals(s1.getSubject(), subjet);
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void mainSnakNotNull() {
-		assertThrows(NullPointerException.class, () -> new StatementImpl("MyId", StatementRank.NORMAL, null,
-				Collections.emptyList(), Collections.emptyList(), value));
+		new StatementImpl("MyId", StatementRank.NORMAL, null,
+				Collections.emptyList(), Collections.emptyList(), value);
 	}
 
 	@Test
@@ -89,10 +78,10 @@ public class StatementImplTest {
 		assertTrue(statement.getReferences().isEmpty());
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void rankNotNull() {
-		assertThrows(NullPointerException.class, () -> new StatementImpl("MyId", null, mainSnak,
-				Collections.emptyList(), Collections.emptyList(), value));
+		new StatementImpl("MyId", null, mainSnak,
+				Collections.emptyList(), Collections.emptyList(), value);
 	}
 
 	@Test

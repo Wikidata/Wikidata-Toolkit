@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.dumpfiles.wmf;
+
 /*
  * #%L
  * Wikidata Toolkit Dump File Handling
@@ -18,11 +20,9 @@
  * #L%
  */
 
-package org.wikidata.wdtk.dumpfiles.wmf;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,8 +30,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.MwDumpFile;
 import org.wikidata.wdtk.dumpfiles.MwDumpFileProcessor;
@@ -70,7 +70,7 @@ public class WmfDumpFileManagerTest {
 
 	}
 
-	@BeforeEach
+	@Before
 	public void setUp() throws IOException {
 		this.wrf = new MockWebResourceFetcher();
 		this.dmPath = Paths.get(System.getProperty("user.dir"));
@@ -134,12 +134,12 @@ public class WmfDumpFileManagerTest {
 			assertEquals(dumpFiles.get(i).getDateStamp(), dumpDates[i]);
 			if (dumpIsLocal[i]) {
 				assertTrue(
-						dumpFiles.get(i) instanceof WmfLocalDumpFile,
-						"Dumpfile " + dumpFiles.get(i) + " should be local.");
+						"Dumpfile " + dumpFiles.get(i) + " should be local.",
+						dumpFiles.get(i) instanceof WmfLocalDumpFile);
 			} else {
-				assertTrue(
-						dumpFiles.get(i) instanceof WmfOnlineDailyDumpFile,
-						"Dumpfile " + dumpFiles.get(i) + " should be online.");
+				assertTrue("Dumpfile " + dumpFiles.get(i)
+						+ " should be online.",
+						dumpFiles.get(i) instanceof WmfOnlineDailyDumpFile);
 			}
 		}
 	}
@@ -174,12 +174,12 @@ public class WmfDumpFileManagerTest {
 			assertEquals(dumpFiles.get(i).getDateStamp(), dumpDates[i]);
 			if (dumpIsLocal[i]) {
 				assertTrue(
-						dumpFiles.get(i) instanceof WmfLocalDumpFile,
-						"Dumpfile " + dumpFiles.get(i) + " should be local.");
+						"Dumpfile " + dumpFiles.get(i) + " should be local.",
+						dumpFiles.get(i) instanceof WmfLocalDumpFile);
 			} else {
-				assertTrue(
-						dumpFiles.get(i) instanceof JsonOnlineDumpFile,
-						"Dumpfile " + dumpFiles.get(i) + " should be online.");
+				assertTrue("Dumpfile " + dumpFiles.get(i)
+						+ " should be online.",
+						dumpFiles.get(i) instanceof JsonOnlineDumpFile);
 			}
 		}
 	}

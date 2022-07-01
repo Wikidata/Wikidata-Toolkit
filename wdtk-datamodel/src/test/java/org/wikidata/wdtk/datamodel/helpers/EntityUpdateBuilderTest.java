@@ -22,14 +22,11 @@ package org.wikidata.wdtk.datamodel.helpers;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.*;
 
 import java.util.Collections;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
@@ -78,7 +75,7 @@ public class EntityUpdateBuilderTest {
 		assertEquals(0, builder.getBaseRevisionId());
 	}
 
-	@Test
+    @Test
 	public void testForBaseRevisionId() {
 		EntityUpdateBuilder builder = EntityUpdateBuilder.forBaseRevisionId(Q1, 123);
 		assertEquals(Q1, builder.getEntityId());

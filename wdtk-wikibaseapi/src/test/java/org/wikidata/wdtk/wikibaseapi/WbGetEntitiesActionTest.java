@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.wikibaseapi;
+
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -18,18 +20,15 @@
  * #L%
  */
 
-package org.wikidata.wdtk.wikibaseapi;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.util.CompressionType;
@@ -40,7 +39,7 @@ public class WbGetEntitiesActionTest {
 	MockBasicApiConnection con;
 	WbGetEntitiesAction action;
 
-	@BeforeEach
+	@Before
 	public void setUp() throws Exception {
 
 		this.con = new MockBasicApiConnection();
@@ -123,31 +122,31 @@ public class WbGetEntitiesActionTest {
 		assertEquals(result1, result2);
 	}
 
-	@Test
+	@Test(expected = IOException.class)
 	public void testWbGetEntitiesIoError() throws MediaWikiApiErrorException, IOException {
 		WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
 		properties.ids = "Q6|Q42|notmocked";
-		assertThrows(IOException.class, () -> action.wbGetEntities(properties));
+		action.wbGetEntities(properties);
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testIdsAndTitles() throws MediaWikiApiErrorException, IOException {
-		assertThrows(IllegalArgumentException.class, () -> action.wbGetEntities("Q42", null, "Tim Berners Lee", null, null, null));
+		action.wbGetEntities("Q42", null, "Tim Berners Lee", null, null, null);
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testIdsAndSites() throws MediaWikiApiErrorException, IOException {
-		assertThrows(IllegalArgumentException.class, () -> action.wbGetEntities("Q42", "enwiki", null, null, null, null));
+		action.wbGetEntities("Q42", "enwiki", null, null, null, null);
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testTitlesNoSites() throws MediaWikiApiErrorException, IOException {
-		assertThrows(IllegalArgumentException.class, () -> action.wbGetEntities(null, null, "Tim Berners Lee", null, null, null));
+		action.wbGetEntities(null, null, "Tim Berners Lee", null, null, null);
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testNoTitlesOrIds() throws MediaWikiApiErrorException, IOException {
-		assertThrows(IllegalArgumentException.class, () -> action.wbGetEntities(null, "enwiki", null, null, null, null));
+		action.wbGetEntities(null, "enwiki", null, null, null, null);
 	}
 	
 	// for https://github.com/Wikidata/Wikidata-Toolkit/issues/643

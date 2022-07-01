@@ -76,20 +76,20 @@
 		<apacheCommonsLangVersion>3.12.0</apacheCommonsLangVersion>
 		<apacheCommonsIOVersion>2.11.0</apacheCommonsIOVersion>
 		<jacksonVersion>2.13.3</jacksonVersion>
-		<junitVersion>5.8.2</junitVersion>
+		<junitVersion>4.13.1</junitVersion>
 		<hamcrestVersion>2.2</hamcrestVersion>
 		<mockitoVersion>4.6.1</mockitoVersion>
 		<rdf4jVersion>3.7.7</rdf4jVersion>
 		<slf4jVersion>1.7.36</slf4jVersion>
 		<threetenVersion>1.7.0</threetenVersion>
 		<okhttpSignpostVersion>1.1.0</okhttpSignpostVersion>
-		<okhttpVersion>5.0.0-alpha.10</okhttpVersion>
+		<okhttpVersion>4.2.2</okhttpVersion>
 	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
 			<version>${junitVersion}</version>
 			<scope>test</scope>
 		</dependency>
@@ -121,11 +121,6 @@
 	<build>
 		<pluginManagement>
 			<plugins>
-				<plugin>
-					<!-- Older surefire versions did not support JUnit 5. -->
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.22.2</version>
-				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>license-maven-plugin</artifactId>

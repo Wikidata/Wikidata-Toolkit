@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.datamodel.implementation;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,19 +20,14 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.implementation;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.IOException;
-
-import org.junit.jupiter.api.Test;
-import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+import static org.junit.Assert.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Test;
+import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+
+import java.io.IOException;
 
 public class StringValueImplTest {
 
@@ -61,9 +58,9 @@ public class StringValueImplTest {
 		assertEquals(s1.hashCode(), s2.hashCode());
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void stringNotNull() {
-		assertThrows(NullPointerException.class, () -> new StringValueImpl(null));
+		new StringValueImpl(null);
 	}
 
 	@Test

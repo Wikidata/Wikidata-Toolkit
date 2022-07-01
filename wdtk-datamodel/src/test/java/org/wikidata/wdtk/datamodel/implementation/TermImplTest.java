@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.datamodel.implementation;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,19 +20,15 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.implementation;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Test;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.Test;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class TermImplTest {
 
@@ -66,14 +64,14 @@ public class TermImplTest {
 		assertEquals(mt1.hashCode(), mt2.hashCode());
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void textNotNull() {
-		assertThrows(NullPointerException.class, () -> new TermImpl("en", null));
+		new TermImpl("en", null);
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void languageCodeNotNull() {
-		assertThrows(NullPointerException.class, () -> new TermImpl(null, "some text"));
+		new TermImpl(null, "some text");
 	}
 
 	@Test

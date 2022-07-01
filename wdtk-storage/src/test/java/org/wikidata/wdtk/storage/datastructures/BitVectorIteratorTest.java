@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.storage.datastructures;
+
 /*
  * #%L
  * Wikidata Toolkit Storage
@@ -18,18 +20,12 @@
  * #L%
  */
 
-package org.wikidata.wdtk.storage.datastructures;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Test class for {@link BitVectorIterator}.
@@ -42,17 +38,17 @@ public class BitVectorIteratorTest {
 	@Test
 	public void testHashCode() {
 		Iterator<Boolean> it = (new BitVectorImpl()).iterator();
-		assertEquals(0, it.hashCode());
+		Assert.assertEquals(0, it.hashCode());
 	}
 
-	@Test
+	@Test(expected = NoSuchElementException.class)
 	public void testNoSuchElementException() {
-		assertThrows(NoSuchElementException.class, () -> new BitVectorImpl().iterator().next());
+		new BitVectorImpl().iterator().next();
 	}
 
-	@Test
+	@Test(expected = UnsupportedOperationException.class)
 	public void testUnsupportedOperationException() {
-		assertThrows(UnsupportedOperationException.class, () -> new BitVectorImpl().iterator().remove());
+		new BitVectorImpl().iterator().remove();
 	}
 
 	@Test
@@ -61,9 +57,9 @@ public class BitVectorIteratorTest {
 		BitVectorImpl bv1 = new BitVectorImpl();
 
 		Iterator<Boolean> it = bv0.iterator();
-		assertEquals(it, it);
-		assertEquals(bv0.iterator(), bv1.iterator());
-		assertNotEquals(bv0.iterator(), Collections.emptyIterator());
+		Assert.assertEquals(it, it);
+		Assert.assertEquals(bv0.iterator(), bv1.iterator());
+		Assert.assertNotEquals(bv0.iterator(), Collections.emptyIterator());
 
 		PseudorandomBooleanGenerator generator0 = new PseudorandomBooleanGenerator(
 				0x1234);
@@ -78,13 +74,13 @@ public class BitVectorIteratorTest {
 		int i = 0;
 		for (boolean value : bv0) {
 			boolean expectedValue = generator1.getPseudorandomBoolean();
-			assertEquals(expectedValue, value);
+			Assert.assertEquals(expectedValue, value);
 			i++;
 		}
 
-		assertEquals(i, 0x1000);
-		assertEquals(bv0.iterator(), bv1.iterator());
-		assertNotEquals(bv0.iterator(), (new BitVectorImpl()).iterator());
+		Assert.assertEquals(i, 0x1000);
+		Assert.assertEquals(bv0.iterator(), bv1.iterator());
+		Assert.assertNotEquals(bv0.iterator(), (new BitVectorImpl()).iterator());
 	}
 
 	@Test
@@ -98,12 +94,12 @@ public class BitVectorIteratorTest {
 
 			{
 				Iterator<Boolean> it = bv.iterator();
-				assertTrue(it.hasNext());
+				Assert.assertTrue(it.hasNext());
 				int i = 0;
 				while (it.hasNext()) {
 					boolean expectedValue = ((i % 3) == 0);
 					boolean value = it.next();
-					assertEquals(expectedValue, value);
+					Assert.assertEquals(expectedValue, value);
 					i++;
 				}
 			}
@@ -120,7 +116,7 @@ public class BitVectorIteratorTest {
 				int i = 0;
 				for (boolean value : bv) {
 					boolean expectedValue = (i % 7) == 0;
-					assertEquals(expectedValue, value);
+					Assert.assertEquals(expectedValue, value);
 					i++;
 				}
 			}

@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.datamodel.implementation;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,12 +20,9 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.implementation;
+import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.Test;
+import static org.junit.Assert.assertEquals;
 
 public class EntityIdValueImplTest {
 
@@ -57,9 +56,9 @@ public class EntityIdValueImplTest {
 		assertEquals(new MediaInfoIdValueImpl("M42", "http://foo/"), EntityIdValueImpl.fromId("M42", "http://foo/"));
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testFromIdFailure() {
-		assertThrows(IllegalArgumentException.class, () -> EntityIdValueImpl.fromId("L42-P1", "http://foo/"));
+		EntityIdValueImpl.fromId("L42-P1", "http://foo/");
 	}
 
 }

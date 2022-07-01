@@ -20,20 +20,16 @@
 
 package org.wikidata.wdtk.datamodel.implementation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.*;
 
-import java.io.IOException;
-
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 
 public class PropertyIdValueImplTest {
 
@@ -77,19 +73,19 @@ public class PropertyIdValueImplTest {
 		assertEquals(prop1.hashCode(), prop2.hashCode());
 	}
 
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void idValidatedForFirstLetter() {
-		assertThrows(RuntimeException.class, () -> new PropertyIdValueImpl("Q12345", "http://www.wikidata.org/entity/"));
+		new PropertyIdValueImpl("Q12345", "http://www.wikidata.org/entity/");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForLength() {
-		assertThrows(IllegalArgumentException.class, () -> new ItemIdValueImpl("P", "http://www.wikidata.org/entity/"));
+		new ItemIdValueImpl("P", "http://www.wikidata.org/entity/");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForNumber() {
-		assertThrows(IllegalArgumentException.class, () -> new PropertyIdValueImpl("P34d23", "http://www.wikidata.org/entity/"));
+		new PropertyIdValueImpl("P34d23", "http://www.wikidata.org/entity/");
 	}
 
 	@Test

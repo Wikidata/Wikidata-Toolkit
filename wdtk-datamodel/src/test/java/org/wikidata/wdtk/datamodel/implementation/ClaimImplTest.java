@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.datamodel.implementation;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,20 +20,14 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.implementation;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -56,19 +52,19 @@ public class ClaimImplTest {
 		assertEquals(c1.getQualifiers(), Collections.emptyList());
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void subjectNotNull() {
-		assertThrows(NullPointerException.class, () -> new ClaimImpl(null, mainSnak, Collections.emptyList()));
+		new ClaimImpl(null, mainSnak, Collections.emptyList());
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void mainSnakNotNull() {
-		assertThrows(NullPointerException.class, () -> new ClaimImpl(subject, null, Collections.emptyList()));
+		new ClaimImpl(subject, null, Collections.emptyList());
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void qualifiersNotNull() {
-		assertThrows(NullPointerException.class, () -> new ClaimImpl(subject, mainSnak, null));
+		new ClaimImpl(subject, mainSnak, null);
 	}
 
 	@Test

@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.wikibaseapi;
+
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -18,33 +20,26 @@
  * #L%
  */
 
-package org.wikidata.wdtk.wikibaseapi;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.util.Collections;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import okhttp3.mockwebserver.Dispatcher;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.Collections;
 
-import mockwebserver3.Dispatcher;
-import mockwebserver3.MockResponse;
-import mockwebserver3.MockWebServer;
-import mockwebserver3.RecordedRequest;
+import static org.junit.Assert.*;
 
 public class OAuthApiConnectionTest {
 
@@ -79,7 +74,7 @@ public class OAuthApiConnectionTest {
             "\"connectTimeout\":-1," +
             "\"readTimeout\":-1}";
 
-    @BeforeAll
+    @BeforeClass
     public static void init() throws IOException {
         Dispatcher dispatcher = new Dispatcher() {
 
@@ -105,12 +100,12 @@ public class OAuthApiConnectionTest {
         server.start();
     }
 
-    @AfterAll
+    @AfterClass
     public static void finish() throws IOException {
         server.shutdown();
     }
 
-    @BeforeEach
+    @Before
     public void setUp() {
         connection = new OAuthApiConnection(server.url("/w/api.php").toString(),
                 CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET);
@@ -160,10 +155,10 @@ public class OAuthApiConnectionTest {
     public void testDeserialize() throws IOException {
         OAuthApiConnection newConnection = mapper.readValue(LOGGED_IN_SERIALIZED, OAuthApiConnection.class);
         assertTrue(newConnection.isLoggedIn());
-        assertEquals(newConnection.getConsumerKey(), CONSUMER_KEY);
-        assertEquals(newConnection.getConsumerSecret(), CONSUMER_SECRET);
-        assertEquals(newConnection.getAccessToken(), ACCESS_TOKEN);
-        assertEquals(newConnection.getAccessSecret(), ACCESS_SECRET);
+        assertEquals(CONSUMER_KEY, newConnection.getConsumerKey());
+        assertEquals(CONSUMER_SECRET, newConnection.getConsumerSecret());
+        assertEquals(ACCESS_TOKEN, newConnection.getAccessToken());
+        assertEquals(ACCESS_SECRET, newConnection.getAccessSecret());
         assertEquals(server.url("/w/api.php").toString(), newConnection.getApiBaseUrl());
         assertEquals("foo", newConnection.getCurrentUser());
         assertEquals(-1, connection.getConnectTimeout());
@@ -175,10 +170,10 @@ public class OAuthApiConnectionTest {
     public void testDeserializeNotLogin() throws IOException {
         OAuthApiConnection connection = mapper.readValue(NOT_LOGGED_IN_SERIALIZED, OAuthApiConnection.class);
         assertFalse(connection.isLoggedIn());
-        assertNull(connection.getConsumerKey(), CONSUMER_KEY);
-        assertNull(connection.getConsumerSecret(), CONSUMER_SECRET);
-        assertNull(connection.getAccessToken(), ACCESS_TOKEN);
-        assertNull(connection.getAccessSecret(), ACCESS_SECRET);
+        assertNull(CONSUMER_KEY, connection.getConsumerKey());
+        assertNull(CONSUMER_SECRET, connection.getConsumerSecret());
+        assertNull(ACCESS_TOKEN, connection.getAccessToken());
+        assertNull(ACCESS_SECRET, connection.getAccessSecret());
         assertEquals(server.url("/w/api.php").toString(), connection.getApiBaseUrl());
         assertEquals(-1, connection.getConnectTimeout());
         assertEquals(-1, connection.getReadTimeout());

@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.testing;
+
 /*
  * #%L
  * Wikidata Toolkit Dump File Handling
@@ -18,14 +20,6 @@
  * #L%
  */
 
-package org.wikidata.wdtk.testing;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -38,17 +32,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.util.DirectoryManager;
+
+import static org.junit.Assert.*;
 
 public class MockDirectoryManagerTest {
 
 	MockDirectoryManager mdm;
 	Path basePath;
 
-	@BeforeEach
+	@Before
 	public void setUp() throws Exception {
 		basePath = Paths.get(System.getProperty("user.dir"));
 		mdm = new MockDirectoryManager(basePath, true, false);
@@ -69,10 +65,10 @@ public class MockDirectoryManagerTest {
 		assertTrue(mdm.hasSubdirectory("newdir"));
 	}
 
-	@Test
+	@Test(expected = IOException.class)
 	public void subdirectoryManagerConflict() throws IOException {
 		DirectoryManager submdm = mdm.getSubdirectoryManager("dir2");
-		assertThrows(IOException.class, () -> submdm.getSubdirectoryManager("test.txt"));
+		submdm.getSubdirectoryManager("test.txt");
 	}
 
 	@Test
@@ -187,52 +183,52 @@ public class MockDirectoryManagerTest {
 		assertTrue(exception);
 	}
 
-	@Test
+	@Test(expected = FileAlreadyExistsException.class)
 	public void createFileConflict() throws IOException {
 		DirectoryManager submdm = mdm.getSubdirectoryManager("dir2");
-		assertThrows(FileAlreadyExistsException.class, () -> submdm.createFile("test.txt", "New contents"));
+		submdm.createFile("test.txt", "New contents");
 	}
 
-	@Test
+	@Test(expected = FileNotFoundException.class)
 	public void fileNotFound() throws IOException {
-		assertThrows(FileNotFoundException.class, () -> mdm.getInputStreamForFile("test.txt", CompressionType.NONE));
+		mdm.getInputStreamForFile("test.txt", CompressionType.NONE);
 	}
 
-	@Test
+	@Test(expected = IOException.class)
 	public void createFileFromStringReadOnly() throws IOException {
 		DirectoryManager mdmReadOnly = new MockDirectoryManager(basePath,
 				false, true);
-		assertThrows(IOException.class, () -> mdmReadOnly.createFile("newfile.txt", "New contents"));
+		mdmReadOnly.createFile("newfile.txt", "New contents");
 	}
 
-	@Test
+	@Test(expected = IOException.class)
 	public void createFileFromInputStreamReadOnly() throws IOException {
 		DirectoryManager mdmReadOnly = new MockDirectoryManager(basePath,
 				false, true);
-		assertThrows(IOException.class, () -> mdmReadOnly.createFile("newfile.txt",
-				MockStringContentFactory.newMockInputStream("content")));
+		mdmReadOnly.createFile("newfile.txt",
+				MockStringContentFactory.newMockInputStream("content"));
 	}
 
-	@Test
+	@Test(expected = IOException.class)
 	public void createFileFromInputStreamAtomicReadOnly() throws IOException {
 		DirectoryManager mdmReadOnly = new MockDirectoryManager(basePath,
 				false, true);
-		assertThrows(IOException.class, () -> mdmReadOnly.createFileAtomic("newfile.txt",
-				MockStringContentFactory.newMockInputStream("content")));
+		mdmReadOnly.createFileAtomic("newfile.txt",
+				MockStringContentFactory.newMockInputStream("content"));
 	}
 
-	@Test
+	@Test(expected = IOException.class)
 	public void getOutputStreamReadOnly() throws IOException {
 		DirectoryManager mdmReadOnly = new MockDirectoryManager(basePath,
 				false, true);
-		assertThrows(IOException.class, () -> mdmReadOnly.getOutputStreamForFile("newfile.txt"));
+		mdmReadOnly.getOutputStreamForFile("newfile.txt");
 	}
 
-	@Test
+	@Test(expected = IOException.class)
 	public void openInNonexistingDirectoryReadOnly() throws IOException {
 		DirectoryManager mdmReadOnly = new MockDirectoryManager(basePath,
 				false, true);
-		assertThrows(IOException.class, () -> mdmReadOnly.getSubdirectoryManager("doesNotExist"));
+		mdmReadOnly.getSubdirectoryManager("doesNotExist");
 	}
 
 }

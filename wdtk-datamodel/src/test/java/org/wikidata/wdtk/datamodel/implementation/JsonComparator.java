@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.datamodel.implementation;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,11 +20,9 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.implementation;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.io.IOException;
+
+import org.junit.Assert;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,7 +45,7 @@ public class JsonComparator {
 		try {
 			JsonNode tree1 = mapper.readTree(expected);
 			JsonNode tree2 = mapper.readTree(actual);
-			assertEquals(tree1, tree2);
+			Assert.assertEquals(tree1, tree2);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

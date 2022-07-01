@@ -20,8 +20,8 @@
 
 package org.wikidata.wdtk.rdf;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -38,9 +38,9 @@ import org.eclipse.rdf4j.model.util.Models;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFParseException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
@@ -73,7 +73,7 @@ public class RdfConverterTest {
 	final TestObjectFactory objectFactory = new TestObjectFactory();
 	final DataObjectFactory dataObjectFactory = new DataObjectFactoryImpl();
 
-	@BeforeEach
+	@Before
 	public void setUp() {
 		this.out = new ByteArrayOutputStream();
 		this.rdfWriter = new RdfWriter(RDFFormat.TURTLE, out);
@@ -306,7 +306,7 @@ public class RdfConverterTest {
 				.getResourceFromFile("InterPropertyLinks.rdf")), model);
 	}
 
-	@AfterEach
+	@After
 	public void clear() throws RDFHandlerException, IOException {
 		this.out.close();
 	}

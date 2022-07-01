@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.datamodel.implementation;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,25 +20,15 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.implementation;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.junit.Before;
+import org.junit.Test;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class SnakGroupTest {
 
@@ -46,7 +38,7 @@ public class SnakGroupTest {
 	private Snak snak2;
 	private PropertyIdValue property;
 
-	@BeforeEach
+	@Before
 	public void setUp() {
 		EntityIdValue subject = new ItemIdValueImpl("Q42",
 				"http://wikidata.org/entity/");
@@ -100,17 +92,17 @@ public class SnakGroupTest {
 		assertEquals(sg1.hashCode(), sg2.hashCode());
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void snakListNotNull() {
-		assertThrows(IllegalArgumentException.class, () -> new SnakGroupImpl(null));
+		new SnakGroupImpl(null);
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void snakListNotEmpty() {
-		assertThrows(IllegalArgumentException.class, () -> new SnakGroupImpl(Collections.emptyList()));
+		new SnakGroupImpl(Collections.emptyList());
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void snakListRequiresSameProperty() {
 		List<Snak> snaks = new ArrayList<>();
 
@@ -120,7 +112,7 @@ public class SnakGroupTest {
 		Snak snak3 = new NoValueSnakImpl(property2);
 		snaks.add(snak3);
 
-		assertThrows(IllegalArgumentException.class, () -> new SnakGroupImpl(snaks));
+		new SnakGroupImpl(snaks);
 	}
 
 }

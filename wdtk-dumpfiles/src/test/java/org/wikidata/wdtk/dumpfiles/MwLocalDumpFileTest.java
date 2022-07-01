@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.dumpfiles;
+
 /*
  * #%L
  * Wikidata Toolkit Dump File Handling
@@ -18,30 +20,24 @@
  * #L%
  */
 
-package org.wikidata.wdtk.dumpfiles;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.util.DirectoryManagerFactory;
+
+import static org.junit.Assert.*;
 
 public class MwLocalDumpFileTest {
 	MockDirectoryManager dm;
 	Path dmPath;
 
-	@BeforeEach
+	@Before
 	public void setUp() throws Exception {
 		DirectoryManagerFactory
 				.setDirectoryManagerClass(MockDirectoryManager.class);
@@ -111,11 +107,11 @@ public class MwLocalDumpFileTest {
 		assertNull(br.readLine());
 	}
 
-	@Test
+	@Test(expected = IOException.class)
 	public void testUnavailableReader() throws IOException {
 		MwLocalDumpFile df = new MwLocalDumpFile(
 				"/testdump-20150512.json.gz");
-		assertThrows(IOException.class, () -> df.getDumpFileReader());
+		df.getDumpFileReader();
 	}
 
 	@Test

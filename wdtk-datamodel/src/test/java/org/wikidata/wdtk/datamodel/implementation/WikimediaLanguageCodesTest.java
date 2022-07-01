@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.datamodel.implementation;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -18,12 +20,9 @@
  * #L%
  */
 
-package org.wikidata.wdtk.datamodel.implementation;
+import static org.junit.Assert.assertEquals;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.WikimediaLanguageCodes;
 
 public class WikimediaLanguageCodesTest {
@@ -34,9 +33,9 @@ public class WikimediaLanguageCodesTest {
 		assertEquals("en", WikimediaLanguageCodes.getLanguageCode("en"));
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void getUnknownLanguageCode() {
-		assertThrows(IllegalArgumentException.class, () -> WikimediaLanguageCodes.getLanguageCode("unknown"));
+		WikimediaLanguageCodes.getLanguageCode("unknown");
 	}
 
 	@Test

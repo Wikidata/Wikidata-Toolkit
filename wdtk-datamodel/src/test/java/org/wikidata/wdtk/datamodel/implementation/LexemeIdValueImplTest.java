@@ -20,14 +20,13 @@
 
 package org.wikidata.wdtk.datamodel.implementation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -82,29 +81,29 @@ public class LexemeIdValueImplTest {
 		assertEquals(lexeme1.hashCode(), lexeme2.hashCode());
 	}
 
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void idValidatedForFirstLetter() {
-		assertThrows(RuntimeException.class, () -> new LexemeIdValueImpl("Q12345", "http://www.wikidata.org/entity/"));
+		new LexemeIdValueImpl("Q12345", "http://www.wikidata.org/entity/");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForNumber() {
-		assertThrows(IllegalArgumentException.class, () -> new LexemeIdValueImpl("L34d23", "http://www.wikidata.org/entity/"));
+		new LexemeIdValueImpl("L34d23", "http://www.wikidata.org/entity/");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForLength() {
-		assertThrows(IllegalArgumentException.class, () -> new LexemeIdValueImpl("L", "http://www.wikidata.org/entity/"));
+		new LexemeIdValueImpl("L", "http://www.wikidata.org/entity/");
 	}
 
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void idNotNull() {
-		assertThrows(RuntimeException.class, () -> new LexemeIdValueImpl((String)null, "http://www.wikidata.org/entity/"));
+		new LexemeIdValueImpl((String)null, "http://www.wikidata.org/entity/");
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void baseIriNotNull() {
-		assertThrows(NullPointerException.class, () -> new LexemeIdValueImpl("L42", null));
+		new LexemeIdValueImpl("L42", null);
 	}
 
 	@Test

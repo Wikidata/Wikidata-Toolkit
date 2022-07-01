@@ -1,3 +1,5 @@
+package org.wikidata.wdtk.dumpfiles;
+
 /*
  * #%L
  * Wikidata Toolkit Dump File Handling
@@ -18,9 +20,7 @@
  * #L%
  */
 
-package org.wikidata.wdtk.dumpfiles;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,8 +28,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
@@ -45,7 +45,7 @@ public class SitesTest {
 	Path dmPath;
 	DumpProcessingController dpc;
 
-	@BeforeEach
+	@Before
 	public void setUp() throws IOException {
 		this.dmPath = Paths.get(System.getProperty("user.dir"));
 		this.dm = new MockDirectoryManager(this.dmPath, true, true);
