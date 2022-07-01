@@ -103,7 +103,7 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 	public static final String JSON_DT_GEO_SHAPE = "geo-shape";
 	/**
 	 * String used to refer to the property datatype
-	 * {@link DatatypeIdValue#DT_TIME} in JSON.
+	 * {@link DatatypeIdValue#DT_EDTF} in JSON.
 	 */
 	public static final String JSON_DT_EDTF = "edtf";
 
@@ -126,36 +126,36 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 	 */
 	public static String getDatatypeIriFromJsonDatatype(String jsonDatatype) {
 		switch (jsonDatatype) {
-			case JSON_DT_ITEM:
-				return DT_ITEM;
-			case JSON_DT_PROPERTY:
-				return DT_PROPERTY;
-			case JSON_DT_GLOBE_COORDINATES:
-				return DT_GLOBE_COORDINATES;
-			case JSON_DT_URL:
-				return DT_URL;
-			case JSON_DT_COMMONS_MEDIA:
-				return DT_COMMONS_MEDIA;
-			case JSON_DT_TIME:
-				return DT_TIME;
-			case JSON_DT_QUANTITY:
-				return DT_QUANTITY;
-			case JSON_DT_STRING:
-				return DT_STRING;
-			case JSON_DT_MONOLINGUAL_TEXT:
-				return DT_MONOLINGUAL_TEXT;
-			case JSON_DT_EDTF:
-				return DT_EDTF;
-			default:
-				if(!JSON_DATATYPE_PATTERN.matcher(jsonDatatype).matches()) {
-					throw new IllegalArgumentException("Invalid JSON datatype \"" + jsonDatatype + "\"");
-				}
+		case JSON_DT_ITEM:
+			return DT_ITEM;
+		case JSON_DT_PROPERTY:
+			return DT_PROPERTY;
+		case JSON_DT_GLOBE_COORDINATES:
+			return DT_GLOBE_COORDINATES;
+		case JSON_DT_URL:
+			return DT_URL;
+		case JSON_DT_COMMONS_MEDIA:
+			return DT_COMMONS_MEDIA;
+		case JSON_DT_TIME:
+			return DT_TIME;
+		case JSON_DT_QUANTITY:
+			return DT_QUANTITY;
+		case JSON_DT_STRING:
+			return DT_STRING;
+		case JSON_DT_MONOLINGUAL_TEXT:
+			return DT_MONOLINGUAL_TEXT;
+		case JSON_DT_EDTF:
+			return DT_EDTF;
+		default:
+			if(!JSON_DATATYPE_PATTERN.matcher(jsonDatatype).matches()) {
+				throw new IllegalArgumentException("Invalid JSON datatype \"" + jsonDatatype + "\"");
+			}
 
-				String[] parts = jsonDatatype.split("-");
-				for(int i = 0; i < parts.length; i++) {
-					parts[i] = StringUtils.capitalize(parts[i]);
-				}
-				return "http://wikiba.se/ontology#" + StringUtils.join(parts);
+			String[] parts = jsonDatatype.split("-");
+			for(int i = 0; i < parts.length; i++) {
+				parts[i] = StringUtils.capitalize(parts[i]);
+			}
+			return "http://wikiba.se/ontology#" + StringUtils.join(parts);
 		}
 	}
 
