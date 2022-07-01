@@ -101,6 +101,11 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 	 * {@link DatatypeIdValue#DT_GEO_SHAPE} in JSON.
 	 */
 	public static final String JSON_DT_GEO_SHAPE = "geo-shape";
+	/**
+	 * String used to refer to the property datatype
+	 * {@link DatatypeIdValue#DT_EDTF} in JSON.
+	 */
+	public static final String JSON_DT_EDTF = "edtf";
 
 	private static final Pattern JSON_DATATYPE_PATTERN = Pattern.compile("^[a-z\\-]+$");
 	private static final Pattern DATATYPE_ID_PATTERN = Pattern.compile("^http://wikiba\\.se/ontology#([a-zA-Z]+)$");
@@ -139,6 +144,8 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 			return DT_STRING;
 		case JSON_DT_MONOLINGUAL_TEXT:
 			return DT_MONOLINGUAL_TEXT;
+		case JSON_DT_EDTF:
+			return DT_EDTF;
 		default:
 			if(!JSON_DATATYPE_PATTERN.matcher(jsonDatatype).matches()) {
 				throw new IllegalArgumentException("Invalid JSON datatype \"" + jsonDatatype + "\"");
@@ -181,6 +188,8 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 				return DatatypeIdImpl.JSON_DT_MONOLINGUAL_TEXT;
 			case DatatypeIdValue.DT_PROPERTY:
 				return DatatypeIdImpl.JSON_DT_PROPERTY;
+			case DatatypeIdValue.DT_EDTF:
+				return DatatypeIdImpl.JSON_DT_EDTF;
 			default:
 				//We apply the reverse algorithm of JacksonDatatypeId::getDatatypeIriFromJsonDatatype
 				Matcher matcher = DATATYPE_ID_PATTERN.matcher(datatypeIri);

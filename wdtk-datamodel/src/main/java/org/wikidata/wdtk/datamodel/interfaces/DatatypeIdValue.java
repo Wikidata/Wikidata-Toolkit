@@ -97,6 +97,10 @@ public interface DatatypeIdValue {
 	 * IRI of the tabular data datatype in Wikibase.
 	 */
 	String DT_TABULAR_DATA = "http://wikiba.se/ontology#TabularData";
+	/**
+	 * IRI of the extended date time format (EDTF) datatype in Wikibase.
+	 */
+	String DT_EDTF = "http://wikiba.se/ontology#Edtf";
 
 	/**
 	 * Get the IRI of this entity.
