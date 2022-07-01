@@ -224,4 +224,11 @@ public class DatatypeIdImplTest {
 				DatatypeIdImpl.getJsonDatatypeFromDatatypeIri(DatatypeIdImpl.DT_MONOLINGUAL_TEXT),
 				DatatypeIdImpl.JSON_DT_MONOLINGUAL_TEXT);
 	}
+
+	@Test
+	public void testIriForEdtf() {
+		assertEquals(
+				DatatypeIdImpl.getDatatypeIriFromJsonDatatype(DatatypeIdImpl.JSON_DT_EDTF),
+				DatatypeIdValue.DT_EDTF);
+	}
 }
