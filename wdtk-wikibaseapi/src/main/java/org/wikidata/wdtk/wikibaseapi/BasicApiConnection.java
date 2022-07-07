@@ -262,12 +262,12 @@ public class BasicApiConnection extends ApiConnection {
 			this.username = username;
 			this.password = password;
 		} else {
-            String messagecode;
-            if ("FAIL".equals(result)) {
-                 messagecode = root.path("clientlogin").path("messagecode").textValue();
-            } else  {
-                messagecode = root.path("error").path("code").textValue();
-            }
+			String messagecode;
+			if ("FAIL".equals(result)) {
+				messagecode = root.path("clientlogin").path("messagecode").textValue();
+			} else {
+				messagecode = root.path("error").path("code").textValue();
+			}
 			String message = LoginValue.of(messagecode).getMessage(messagecode);
 			logger.warn(message);
 			if (LOGIN_WRONG_TOKEN.getClientLoginText().equals(messagecode)) {
