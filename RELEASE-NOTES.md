@@ -1,6 +1,16 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.14.0
+--------------
+
+New feature:
+* login to Wikibase via the recommended API for normal login/password login
+
+Bug fixes:
+* add explicit dependency to okhttp, to avoid linkage issues
+* upgrade to okhttp 4.10.0
+
 Version 0.13.5
 --------------
 
