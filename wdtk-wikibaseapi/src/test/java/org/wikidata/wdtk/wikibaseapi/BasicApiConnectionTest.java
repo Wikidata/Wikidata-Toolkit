@@ -29,7 +29,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.HttpCookie;
 import java.net.URL;
-import java.util.ArrayList;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -122,8 +122,18 @@ public class BasicApiConnectionTest {
 						case "assert=user&format=json&action=query":
 							return makeJsonResponseFrom("/assert-user-failed.json");
 					}
-					
-				}catch (Exception e) {
+					// finally check clientLogin. This uses server.url, so cannot be used in switch statement because it is not constant.
+					String url = server.url("/w/api.php").toString();
+					String encodedUrl = URLEncoder.encode(url, "UTF-8");
+					final String clientLoginRequest = String.format("password=password&format=json&action=clientlogin&logintoken=b5780b6e2f27e20b450921d9461010b4&loginreturnurl=%s&username=Admin" , encodedUrl);
+					final String clientLoginErrorRequest = String.format("password=password1&format=json&action=clientlogin&logintoken=b5780b6e2f27e20b450921d9461010b4&loginreturnurl=%s&username=Admin" , encodedUrl);
+					if (requestBody.equals(clientLoginRequest)) {
+						return makeJsonResponseFrom("/clientLoginSuccess.json");
+					} else if (requestBody.equals(clientLoginErrorRequest)) {
+						return makeJsonResponseFrom("/clientLoginError.json");
+					}
+
+				} catch (Exception e) {
 					return new MockResponse().setResponseCode(404);
 				}
 				return new MockResponse().setResponseCode(404);
@@ -163,10 +173,25 @@ public class BasicApiConnectionTest {
 	}
 
 	@Test
+	public void testConfirmClientLogin() throws LoginFailedException, IOException, MediaWikiApiErrorException {
+		String token = connection.getOrFetchToken("login");
+		connection.confirmClientLogin(token, "Admin", "password");
+	}
+
+	@Test
 	public void testLogin() throws LoginFailedException {
 		assertFalse(connection.loggedIn);
 		connection.login("username", "password");
 		assertEquals("username", connection.getCurrentUser());
+		assertEquals("password", connection.password);
+		assertTrue(connection.isLoggedIn());
+	}
+
+	@Test
+	public void testClientLogin() throws LoginFailedException {
+		assertFalse(connection.loggedIn);
+		connection.clientLogin("Admin", "password");
+		assertEquals("Admin", connection.getCurrentUser());
 		assertEquals("password", connection.password);
 		assertTrue(connection.isLoggedIn());
 	}
@@ -312,33 +337,6 @@ public class BasicApiConnectionTest {
 		ApiConnection connection = BasicApiConnection.getTestWikidataApiConnection();
 		assertEquals("https://test.wikidata.org/w/api.php",
 				connection.apiBaseUrl);
-	}
-
-	@Test
-	public void testErrorMessages() {
-		BasicApiConnection connection = BasicApiConnection.getTestWikidataApiConnection();
-		String[] knownErrors = { BasicApiConnection.LOGIN_WRONG_PASS,
-				BasicApiConnection.LOGIN_WRONG_PLUGIN_PASS,
-				BasicApiConnection.LOGIN_NOT_EXISTS, BasicApiConnection.LOGIN_BLOCKED,
-				BasicApiConnection.LOGIN_EMPTY_PASS, BasicApiConnection.LOGIN_NO_NAME,
-				BasicApiConnection.LOGIN_CREATE_BLOCKED,
-				BasicApiConnection.LOGIN_ILLEGAL, BasicApiConnection.LOGIN_THROTTLED,
-				BasicApiConnection.LOGIN_WRONG_TOKEN, BasicApiConnection.LOGIN_NEEDTOKEN };
-
-		ArrayList<String> messages = new ArrayList<>();
-		for (String error : knownErrors) {
-			messages.add(connection.getLoginErrorMessage(error));
-		}
-
-		String unknownMessage = connection
-				.getLoginErrorMessage("unkonwn error code");
-
-		int i = 0;
-		for (String message : messages) {
-			assertNotEquals(unknownMessage, message);
-			assertTrue(message.contains(knownErrors[i]));
-			i++;
-		}
 	}
 
 	@Test(expected = AssertUserFailedException.class)

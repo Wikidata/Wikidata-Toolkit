@@ -34,6 +34,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import static org.wikidata.wdtk.wikibaseapi.LoginValue.*;
+
 /**
  * A connection to the MediaWiki API established via
  * standard login with username and password.
@@ -42,81 +44,6 @@ import com.fasterxml.jackson.databind.JsonNode;
  *
  */
 public class BasicApiConnection extends ApiConnection {
-
-	/**
-	 * Name of the HTTP parameter to submit a password to the API.
-	 */
-	protected final static String PARAM_LOGIN_USERNAME = "lgname";
-	/**
-	 * Name of the HTTP parameter to submit a password to the API.
-	 */
-	protected final static String PARAM_LOGIN_PASSWORD = "lgpassword";
-	/**
-	 * Name of the HTTP parameter to submit a login token to the API.
-	 */
-	protected final static String PARAM_LOGIN_TOKEN = "lgtoken";
-
-	/**
-	 * String value in the result field of the JSON response if the login was
-	 * successful.
-	 */
-	protected final static String LOGIN_RESULT_SUCCESS = "Success";
-	/**
-	 * String value in the result field of the JSON response if the password was
-	 * wrong.
-	 */
-	protected final static String LOGIN_WRONG_PASS = "WrongPass";
-	/**
-	 * String value in the result field of the JSON response if the password was
-	 * rejected by an authentication plugin.
-	 */
-	protected final static String LOGIN_WRONG_PLUGIN_PASS = "WrongPluginPass";
-	/**
-	 * String value in the result field of the JSON response if no username was
-	 * given.
-	 */
-	protected final static String LOGIN_NO_NAME = "NoName";
-	/**
-	 * String value in the result field of the JSON response if given username
-	 * does not exist.
-	 */
-	protected final static String LOGIN_NOT_EXISTS = "NotExists";
-	/**
-	 * String value in the result field of the JSON response if the user name is
-	 * illegal.
-	 */
-	protected final static String LOGIN_ILLEGAL = "Illegal";
-	/**
-	 * String value in the result field of the JSON response if there were too
-	 * many logins in a short time.
-	 */
-	protected final static String LOGIN_THROTTLED = "Throttled";
-	/**
-	 * String value in the result field of the JSON response if password is
-	 * empty.
-	 */
-	protected final static String LOGIN_EMPTY_PASS = "EmptyPass";
-	/**
-	 * String value in the result field of the JSON response if the wiki tried
-	 * to automatically create a new account for you, but your IP address has
-	 * been blocked from account creation.
-	 */
-	protected final static String LOGIN_CREATE_BLOCKED = "CreateBlocked";
-	/**
-	 * String value in the result field of the JSON response if the user is
-	 * blocked.
-	 */
-	protected final static String LOGIN_BLOCKED = "Blocked";
-	/**
-	 * String value in the result field of the JSON response if token or session
-	 * ID is missing.
-	 */
-	protected final static String LOGIN_NEEDTOKEN = "NeedToken";
-	/**
-	 * String value in the result field of the JSON response if token is wrong.
-	 */
-	protected final static String LOGIN_WRONG_TOKEN = "WrongToken";
-
 	/**
 	 * Password used to log in.
 	 */
@@ -224,14 +151,40 @@ public class BasicApiConnection extends ApiConnection {
 	 */
 	public void login(String username, String password)
 			throws LoginFailedException {
+		login(username, password, this::confirmLogin);
+	}
+	
+	/**
+	 * Logs in using the main user credentials. After successful login, the
+	 * API connection remains in a logged in state, and future actions will be
+	 * run as a logged in user.
+	 *
+	 * @param username the name of the main user to log in
+	 * @param password the password of the main user
+	 * @throws LoginFailedException if the login failed for some reason
+	 */
+	public void clientLogin(String username, String password)
+			throws LoginFailedException {
+		login(username, password, this::confirmClientLogin);
+	}
+
+	/***
+	 * Login function that contains token logic and a function as parameter
+	 * 
+	 * @param username the name of the user to log in
+	 * @param password the password of the user
+	 * @param loginFunction the functional interface to log in with
+	 * @throws LoginFailedException if the login failed for some reason
+	 */
+	protected void login(String username, String password, ILogin loginFunction) throws LoginFailedException {
 		try {
 			String token = getOrFetchToken("login");
 			try {
-				this.confirmLogin(token, username, password);
+				loginFunction.login(token, username, password);
 			} catch (NeedLoginTokenException e) { // try once more
 				clearToken("login");
 				token = getOrFetchToken("login");
-				this.confirmLogin(token, username, password);
+				loginFunction.login(token, username, password);
 			}
 		} catch (IOException | MediaWikiApiErrorException e1) {
 			throw new LoginFailedException(e1.getMessage(), e1);
@@ -256,21 +209,68 @@ public class BasicApiConnection extends ApiConnection {
 			throws IOException, LoginFailedException, MediaWikiApiErrorException {
 		Map<String, String> params = new HashMap<>();
 		params.put(PARAM_ACTION, "login");
-		params.put(PARAM_LOGIN_USERNAME, username);
-		params.put(PARAM_LOGIN_PASSWORD, password);
-		params.put(PARAM_LOGIN_TOKEN, token);
+		params.put(PARAM_LOGIN_USERNAME.getLoginText(), username);
+		params.put(PARAM_LOGIN_PASSWORD.getLoginText(), password);
+		params.put(PARAM_LOGIN_TOKEN.getLoginText(), token);
 
 		JsonNode root = sendJsonRequest("POST", params);
 
 		String result = root.path("login").path("result").textValue();
-		if (LOGIN_RESULT_SUCCESS.equals(result)) {
+		if (LOGIN_RESULT_SUCCESS.getLoginText().equals(result)) {
 			this.loggedIn = true;
 			this.username = username;
 			this.password = password;
 		} else {
-			String message = getLoginErrorMessage(result);
+			String message = LoginValue.of(result).getMessage(result);
 			logger.warn(message);
-			if (LOGIN_WRONG_TOKEN.equals(result)) {
+			if (LOGIN_WRONG_TOKEN.getLoginText().equals(result)) {
+				throw new NeedLoginTokenException(message);
+			} else {
+				throw new LoginFailedException(message);
+			}
+		}
+	}
+
+	/**
+	 * Issues a Web API query to confirm that the previous client login attempt was
+	 * successful, and sets the internal state of the API connection accordingly
+	 * in this case.
+	 *
+	 * @param token
+	 *            the login token string
+	 * @param username
+	 *            the name of the main user that was logged in
+	 * @param password
+	 *            the password used to log in
+	 * @throws IOException
+	 * @throws LoginFailedException
+	 */
+	protected void confirmClientLogin(String token, String username, String password)
+			throws IOException, LoginFailedException, MediaWikiApiErrorException {
+		Map<String, String> params = new HashMap<>();
+		params.put(PARAM_ACTION, "clientlogin");
+		params.put(PARAM_LOGIN_USERNAME.getClientLoginText(), username);
+		params.put(PARAM_LOGIN_PASSWORD.getClientLoginText(), password);
+		params.put(PARAM_LOGIN_TOKEN.getClientLoginText(), token);
+		params.put("loginreturnurl", apiBaseUrl); // isn't really used in this case, but the api requires either this or logincontinue
+
+		JsonNode root = sendJsonRequest("POST", params);
+
+		String result = root.path("clientlogin").path("status").textValue();
+		if ("PASS".equals(result)) {
+			this.loggedIn = true;
+			this.username = username;
+			this.password = password;
+		} else {
+			String messagecode;
+			if ("FAIL".equals(result)) {
+				messagecode = root.path("clientlogin").path("messagecode").textValue();
+			} else {
+				messagecode = root.path("error").path("code").textValue();
+			}
+			String message = LoginValue.of(messagecode).getMessage(messagecode);
+			logger.warn(message);
+			if (LOGIN_WRONG_TOKEN.getClientLoginText().equals(messagecode)) {
 				throw new NeedLoginTokenException(message);
 			} else {
 				throw new LoginFailedException(message);
@@ -294,46 +294,6 @@ public class BasicApiConnection extends ApiConnection {
 	public void clearCookies() throws IOException, MediaWikiApiErrorException {
 		logout();
 		cookieManager.getCookieStore().removeAll();
-	}
-
-	/**
-	 * Returns a user-readable message for a given API response.
-	 *
-	 * @param loginResult
-	 *            a API login request result string other than
-	 *            {@link #LOGIN_RESULT_SUCCESS}
-	 * @return error message
-	 */
-	protected String getLoginErrorMessage(String loginResult) {
-		switch (loginResult) {
-		case LOGIN_WRONG_PASS:
-			return loginResult + ": Wrong Password.";
-		case LOGIN_WRONG_PLUGIN_PASS:
-			return loginResult
-					+ ": Wrong Password. An authentication plugin rejected the password.";
-		case LOGIN_NOT_EXISTS:
-			return loginResult + ": Username does not exist.";
-		case LOGIN_BLOCKED:
-			return loginResult + ": User is blocked.";
-		case LOGIN_EMPTY_PASS:
-			return loginResult + ": Password is empty.";
-		case LOGIN_NO_NAME:
-			return loginResult + ": No user name given.";
-		case LOGIN_CREATE_BLOCKED:
-			return loginResult
-					+ ": The wiki tried to automatically create a new account for you, "
-					+ "but your IP address has been blocked from account creation.";
-		case LOGIN_ILLEGAL:
-			return loginResult + ": Username is illegal.";
-		case LOGIN_THROTTLED:
-			return loginResult + ": Too many login attempts in a short time.";
-		case LOGIN_WRONG_TOKEN:
-			return loginResult + ": Token is wrong.";
-		case LOGIN_NEEDTOKEN:
-			return loginResult + ": Token or session ID is missing.";
-		default:
-			return "Login Error: " + loginResult;
-		}
 	}
 
 	/**
@@ -395,5 +355,12 @@ public class BasicApiConnection extends ApiConnection {
 		public HttpCookie toHttpCookie() {
 			return httpCookie;
 		}
+	}
+
+	/***
+	 * Functional interface for logging in
+	 */
+	private interface ILogin {
+		void login(String token, String username, String password) throws IOException, LoginFailedException, MediaWikiApiErrorException;
 	}
 }
