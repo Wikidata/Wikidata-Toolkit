@@ -49,6 +49,11 @@ public enum LoginValue {
     LOGIN_WRONG_PASS("WrongPass", "wrongpassword", "Wrong Password."),
     /**
      * String value in the result field of the JSON response if the password was
+     * wrong.
+     */
+    FAILED("Failed", "failed", "Something went wrong"),
+    /**
+     * String value in the result field of the JSON response if the password was
      * rejected by an authentication plugin.
      */
     LOGIN_WRONG_PLUGIN_PASS("WrongPluginPass", "wrongpluginpass", "Wrong Password. An authentication plugin rejected the password."), // not sure about this one

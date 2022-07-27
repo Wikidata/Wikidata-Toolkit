@@ -114,7 +114,9 @@ public class BasicApiConnectionTest {
 						case "lgtoken=b5780b6e2f27e20b450921d9461010b4&lgpassword=password&format=json&action=login&lgname=username":
 							return makeJsonResponseFrom("/loginSuccess.json");
 						case "lgtoken=b5780b6e2f27e20b450921d9461010b4&lgpassword=password1&format=json&action=login&lgname=username1":
-							return makeJsonResponseFrom("/loginError.json");
+							return makeJsonResponseFrom("/loginError.json"); 
+						case "lgtoken=b5780b6e2f27e20b450921d9461010b4&lgpassword=password2&format=json&action=login&lgname=username":
+							return makeJsonResponseFrom("/loginFailed.json");
 						case "meta=tokens&assert=user&format=json&action=query&type=csrf":
 							return makeJsonResponseFrom("/query-csrf-token-loggedin-response.json");
 						case "assert=user&format=json&action=logout&token=42307b93c79b0cb558d2dfb4c3c92e0955e06041%2B%5C":
@@ -241,10 +243,20 @@ public class BasicApiConnectionTest {
 		assertFalse(connection.loggedIn);
 	}
 
-	@Test(expected = LoginFailedException.class)
-	public void loginUserErrors() throws LoginFailedException {
+	@Test
+	public void loginUserError() {
 		// This will fail because the user is not known
-		connection.login("username1", "password1");
+		LoginFailedException loginFailedException = assertThrows(LoginFailedException.class, 
+				() -> connection.login("username1", "password1"));	
+		assertEquals("NotExists: Username does not exist.", loginFailedException.getMessage());
+	}
+
+	@Test
+	public void loginFailedUsesReason() {
+		// This will fail because the user is not known
+		LoginFailedException loginFailedException = assertThrows(LoginFailedException.class,
+				() -> connection.login("username", "password2"));
+		assertEquals("Incorrect username or password entered. Please try again.", loginFailedException.getMessage());
 	}
 
 	@Test

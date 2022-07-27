@@ -221,7 +221,13 @@ public class BasicApiConnection extends ApiConnection {
 			this.username = username;
 			this.password = password;
 		} else {
-			String message = LoginValue.of(result).getMessage(result);
+			String message = null;
+			if (FAILED.getLoginText().equals(result)) {
+				message = root.path("login").path("reason").textValue();
+			} 
+			if (message == null) { // Not 'FAILED' or no 'reason' node
+				message = LoginValue.of(result).getMessage(result);
+			}
 			logger.warn(message);
 			if (LOGIN_WRONG_TOKEN.getLoginText().equals(result)) {
 				throw new NeedLoginTokenException(message);
