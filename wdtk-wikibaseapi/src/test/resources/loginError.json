@@ -1,1 +1,5 @@
-{"login":{"result":"NotExists"}}
+{
+  "login": {
+    "result": "NotExists"
+  }
+}
