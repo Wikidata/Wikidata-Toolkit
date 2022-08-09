@@ -108,4 +108,9 @@ public interface DatatypeIdValue {
 	 * @return String with the IRI
 	 */
 	String getIri();
+
+	/**
+	 * The string identifying this datatype in the JSON serialization of a property.
+	 */
+    String getJsonString();
 }

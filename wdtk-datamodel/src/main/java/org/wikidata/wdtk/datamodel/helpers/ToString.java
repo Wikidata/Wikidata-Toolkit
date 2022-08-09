@@ -122,7 +122,7 @@ public class ToString {
 	 * @return a string representation of the object
 	 */
 	public static String toString(DatatypeIdValue o) {
-		return o.getIri();
+		return o.getIri() + " (" + o.getJsonString() + ")";
 	}
 
 	/**

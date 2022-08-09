@@ -61,6 +61,7 @@ public class PropertyDocumentImplTest {
 			statementGroups, datatypeId, 1234);
 
 	private final String JSON_PROPERTY = "{\"type\":\"property\",\"id\":\"P2\",\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"label\"}},\"descriptions\":{\"fr\":{\"language\":\"fr\",\"value\":\"des\"}},\"aliases\":{\"de\":[{\"language\":\"de\",\"value\":\"alias\"}]},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]},\"datatype\":\"wikibase-item\",\"lastrevid\":1234}";
+	private final String JSON_PROPERTY_WITH_UNKNOWN_DATATYPE = "{\"type\":\"property\",\"id\":\"P2\",\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"label\"}},\"descriptions\":{},\"aliases\":{},\"claims\":{},\"datatype\":\"some-unknownDatatype\",\"lastrevid\":1234}";
 
 	@Test
 	public void fieldsAreCorrect() {
@@ -107,7 +108,7 @@ public class PropertyDocumentImplTest {
 				Collections.emptyList(), datatypeId, 1234);
 		PropertyDocument pdDiffDatatype = new PropertyDocumentImpl(pid,
 				labelList, descList, aliasList,
-				statementGroups, new DatatypeIdImpl("string"), 1234);
+				statementGroups, new DatatypeIdImpl(DatatypeIdValue.DT_STRING), 1234);
 		PropertyDocument pdDiffRevisions = new PropertyDocumentImpl(pid,
 				labelList, descList, aliasList,
 				statementGroups, datatypeId, 1235);
@@ -246,6 +247,12 @@ public class PropertyDocumentImplTest {
 	@Test
 	public void testPropertyToJava() throws IOException {
 		assertEquals(pd1, mapper.readValue(JSON_PROPERTY, PropertyDocumentImpl.class));
+	}
+
+	@Test
+	public void testPropertyToJavaWithUnknownDatatype() throws JsonProcessingException {
+		PropertyDocumentImpl pd = mapper.readValue(JSON_PROPERTY_WITH_UNKNOWN_DATATYPE, PropertyDocumentImpl.class);
+		assertEquals("some-unknownDatatype", pd.getJsonDatatype());
 	}
         
         @Test

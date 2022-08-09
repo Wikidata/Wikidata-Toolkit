@@ -82,6 +82,13 @@ public class DataObjectFactoryImplTest {
 	}
 
 	@Test
+	public final void testGetDatatypeIdWithJsonString() {
+		DatatypeIdValue o1 = new DatatypeIdImpl(DatatypeIdValue.DT_STRING, DatatypeIdImpl.JSON_DT_STRING);
+		DatatypeIdValue o2 = factory.getDatatypeIdValue(DatatypeIdValue.DT_STRING, DatatypeIdImpl.JSON_DT_STRING);
+		assertEquals(o1, o2);
+	}
+
+	@Test
 	public final void testGetTimeValue() {
 		TimeValue o1 = new TimeValueImpl(2007, (byte) 5, (byte) 12,
 				(byte) 10, (byte) 45, (byte) 0, TimeValue.PREC_DAY, 0, 1, 60,
