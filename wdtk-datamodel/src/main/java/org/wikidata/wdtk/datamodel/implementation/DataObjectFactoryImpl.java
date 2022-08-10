@@ -113,8 +113,8 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
-	public DatatypeIdValue getDatatypeIdValue(String id, String jsonString) {
-		return new DatatypeIdImpl(id, jsonString);
+	public DatatypeIdValue getDatatypeIdValueFromJsonId(String jsonId) {
+		return new DatatypeIdImpl(null, jsonId);
 	}
 
 	@Override

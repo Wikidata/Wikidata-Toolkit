@@ -249,7 +249,7 @@ public class EditOnlineDataExample {
 					.getEntityDocuments(fetchProperties);
 			for (EntityDocument ed : results.values()) {
 				PropertyDocument pd = (PropertyDocument) ed;
-				if (DatatypeIdValue.DT_STRING.equals(pd.getDatatype().getIri())
+				if (DatatypeIdValue.JSON_DT_STRING.equals(pd.getDatatype().getJsonString())
 						&& pd.getLabels().containsKey("en")) {
 					stringProperties.add(pd.getEntityId());
 					System.out.println("* Found string property "

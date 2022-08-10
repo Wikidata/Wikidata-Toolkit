@@ -170,7 +170,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public DatatypeIdValue copy(DatatypeIdValue object) {
-		return dataObjectFactory.getDatatypeIdValue(object.getIri());
+		return dataObjectFactory.getDatatypeIdValueFromJsonId(object.getJsonString());
 	}
 
 	/**

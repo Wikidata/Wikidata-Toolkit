@@ -348,8 +348,8 @@ public class PropertyRegister {
 				continue;
 			}
 
-			String datatype = ((PropertyDocument) propertyDocument)
-					.getDatatype().getIri();
+			String datatype = AbstractRdfConverter.getDatatypeIri(((PropertyDocument) propertyDocument)
+					.getDatatype());
 			this.datatypes.put(entry.getKey(), datatype);
 			logger.info("Fetched type information for property "
 					+ entry.getKey() + " online: " + datatype);

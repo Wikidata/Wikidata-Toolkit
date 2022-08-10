@@ -24,12 +24,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.implementation.DatatypeIdImpl;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 import org.wikidata.wdtk.rdf.values.AnyValueConverter;
 
@@ -150,14 +152,14 @@ abstract public class AbstractRdfConverter {
 		this.rdfWriter.writeTripleValueObject(
 				this.rdfWriter.getUri(document.getEntityId().getIri()),
 				RdfWriter.WB_PROPERTY_TYPE,
-				this.rdfWriter.getUri(document.getDatatype().getIri()));
+				this.rdfWriter.getUri(getDatatypeIri(document.getDatatype())));
 	}
 
 	public void writePropertyDocument(PropertyDocument document)
 			throws RDFHandlerException {
 
-		propertyRegister.setPropertyType(document.getEntityId(), document
-				.getDatatype().getIri());
+		propertyRegister.setPropertyType(document.getEntityId(), getDatatypeIri(document
+				.getDatatype()));
 
 		final String subjectUri = document.getEntityId().getIri();
 		final Resource subject = this.rdfWriter.getUri(subjectUri);
@@ -416,5 +418,37 @@ abstract public class AbstractRdfConverter {
 					+ "\". Using this code in RDF now, but this might be wrong.");
 		}
 		return rdfWriter.getLiteral(value.getText(), languageCode);
+	}
+
+	public static String getDatatypeIri(DatatypeIdValue datatype) {
+		String jsonDatatype = datatype.getJsonString();
+		switch (jsonDatatype) {
+			case DatatypeIdValue.JSON_DT_ITEM:
+				return Vocabulary.DT_ITEM;
+			case DatatypeIdValue.JSON_DT_PROPERTY:
+				return Vocabulary.DT_PROPERTY;
+			case DatatypeIdValue.JSON_DT_GLOBE_COORDINATES:
+				return Vocabulary.DT_GLOBE_COORDINATES;
+			case DatatypeIdValue.JSON_DT_URL:
+				return Vocabulary.DT_URL;
+			case DatatypeIdValue.JSON_DT_COMMONS_MEDIA:
+				return Vocabulary.DT_COMMONS_MEDIA;
+			case DatatypeIdValue.JSON_DT_TIME:
+				return Vocabulary.DT_TIME;
+			case DatatypeIdValue.JSON_DT_QUANTITY:
+				return Vocabulary.DT_QUANTITY;
+			case DatatypeIdValue.JSON_DT_STRING:
+				return Vocabulary.DT_STRING;
+			case DatatypeIdValue.JSON_DT_MONOLINGUAL_TEXT:
+				return Vocabulary.DT_MONOLINGUAL_TEXT;
+			case DatatypeIdValue.JSON_DT_EDTF:
+				return Vocabulary.DT_EDTF;
+			default:
+				String[] parts = jsonDatatype.split("-");
+				for(int i = 0; i < parts.length; i++) {
+					parts[i] = StringUtils.capitalize(parts[i]);
+				}
+				return "http://wikiba.se/ontology#" + StringUtils.join(parts);
+		}
 	}
 }

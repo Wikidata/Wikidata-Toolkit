@@ -267,9 +267,24 @@ public class Datamodel {
 	 * @param id
 	 *            the IRI string that identifies the datatype
 	 * @return a {@link DatatypeIdValue} corresponding to the input
+	 * @deprecated use {@link #makeDatatypeIdValueFromJsonString(String)}
 	 */
 	public static DatatypeIdValue makeDatatypeIdValue(String id) {
 		return factory.getDatatypeIdValue(id);
+	}
+
+	/**
+	 * Creates a {@link DatatypeIdValue}. The string is an identifier used in
+	 * the JSON serialization of properties to identify the datatype, and is one
+	 * of the constants defined in {@link DatatypeIdValue}, but this is not enforced,
+	 * since there are extensions that provide additional types.
+	 *
+	 * @param jsonString
+	 *            the string that identifies the datatype
+	 * @return a {@link DatatypeIdValue} corresponding to the input
+	 */
+	public static DatatypeIdValue makeDatatypeIdValueFromJsonString(String jsonString) {
+		return factory.getDatatypeIdValueFromJsonId(jsonString);
 	}
 
 	/**

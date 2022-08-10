@@ -138,6 +138,7 @@ public interface DataObjectFactory {
 	 * @param id
 	 *            the IRI string that identifies the datatype
 	 * @return a {@link DatatypeIdValue} corresponding to the input
+	 * @deprecated use {@link #getDatatypeIdValueFromJsonId(String)}
 	 */
 	DatatypeIdValue getDatatypeIdValue(String id);
 
@@ -147,13 +148,11 @@ public interface DataObjectFactory {
 	 * since there might be extensions that provide additional types. The JSON
 	 * string is its representation in the JSON serialization of properties.
 	 *
-	 * @param id
-	 *            the IRI string that identifies the datatype
-	 * @param jsonString
-	 * 			  the JSON representation of this datatype
+	 * @param jsonId
+	 * 			  the JSON representation of this datatype, which cannot be null
 	 * @return a {@link DatatypeIdValue} corresponding to the input
 	 */
-	DatatypeIdValue getDatatypeIdValue(String id, String jsonString);
+	DatatypeIdValue getDatatypeIdValueFromJsonId(String jsonId);
 
 	/**
 	 * Creates a {@link TimeValue}.
