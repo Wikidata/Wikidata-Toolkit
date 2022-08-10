@@ -107,13 +107,21 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 	 */
 	public static final String JSON_DT_EDTF = "edtf";
 
-	private static final Pattern JSON_DATATYPE_PATTERN = Pattern.compile("^[a-z\\-]+$");
+	private static final Pattern JSON_DATATYPE_PATTERN = Pattern.compile("^[a-zA-Z\\-]+$");
 	private static final Pattern DATATYPE_ID_PATTERN = Pattern.compile("^http://wikiba\\.se/ontology#([a-zA-Z]+)$");
 
 	/**
 	 * Datatype IRI as used in Wikidata Toolkit.
 	 */
 	private final String iri;
+
+	/**
+	 * JSON representation of the datatype. We store this as well
+	 * because the conversion mechanism between JSON datatypes and
+	 * datatype URIs is sadly not perfect: see
+	 * <a href="https://github.com/Wikidata/Wikidata-Toolkit/issues/716">issue #716</a>.
+	 */
+	private final String jsonString;
 
 	/**
 	 * Returns the WDTK datatype IRI for the property datatype as represented by
@@ -216,12 +224,14 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 	 */
 	public DatatypeIdImpl(DatatypeIdValue other) {
 		this.iri = other.getIri();
+		this.jsonString = other.getJsonString();
 	}
 
 	/**
-	 * Constructs an object representing the datatype id from a string denoting
-	 * the datatype. It also sets the correct IRI for the datatype. This constructor
-	 * is meant to be used for JSON deserialization.
+	 * Constructs an object representing the datatype id from a IRI denoting
+	 * the datatype. It also tries to determine the JSON datatype based on this
+	 * IRI, based on a buggy heuristic. If you also happen to have the JSON datatype
+	 * at hand, better use {@link DatatypeIdImpl(String, String)}.
 	 *
 	 * @param iri
 	 *             the WDTK IRI for the datatype
@@ -233,14 +243,36 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 			throws IllegalArgumentException {
 		Validate.notNull(iri, "An IRI must be provided to create a DatatypeIdValue");
 		this.iri = iri;
+		// the JSON datatype is not supplied, so we fall back on our buggy heuristic
+		// to guess how it should be represented in JSON.
+		this.jsonString = getJsonDatatypeFromDatatypeIri(this.iri);
+	}
+
+	/**
+	 * Constructs an object representing the datatype id from an IRI denoting the datatype,
+	 * as well as a string corresponding to its JSON serialization. This constructor
+	 * is meant to be used for JSON deserialization.
+	 *
+	 * @param iri
+	 *             the WDTK IRI for the datatype
+	 * @throws IllegalArgumentException
+	 *             if the given datatype string could not be matched to a known
+	 *             datatype or was null
+	 */
+	public DatatypeIdImpl(String iri, String jsonString)
+			throws IllegalArgumentException {
+		Validate.notNull(iri, "An IRI must be provided to create a DatatypeIdValue");
+		this.iri = iri;
+		Validate.notNull(jsonString, "A JSON representation of the datatype must be provided to create a DatatypeIdValue");
+		this.jsonString = jsonString;
 	}
 	
 	/**
 	 * Returns the string used to represent this datatype in JSON.
-	 * @return
 	 */
+	@Override
 	public String getJsonString() {
-		return getJsonDatatypeFromDatatypeIri(this.iri);
+		return this.jsonString;
 	}
 
 	@Override

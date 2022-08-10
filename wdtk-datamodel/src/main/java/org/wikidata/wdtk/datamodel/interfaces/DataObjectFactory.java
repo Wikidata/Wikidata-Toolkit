@@ -142,6 +142,20 @@ public interface DataObjectFactory {
 	DatatypeIdValue getDatatypeIdValue(String id);
 
 	/**
+	 * Creates a {@link DatatypeIdValue}. The datatype IRI is usually one of the
+	 * constants defined in {@link DatatypeIdValue}, but this is not enforced,
+	 * since there might be extensions that provide additional types. The JSON
+	 * string is its representation in the JSON serialization of properties.
+	 *
+	 * @param id
+	 *            the IRI string that identifies the datatype
+	 * @param jsonString
+	 * 			  the JSON representation of this datatype
+	 * @return a {@link DatatypeIdValue} corresponding to the input
+	 */
+	DatatypeIdValue getDatatypeIdValue(String id, String jsonString);
+
+	/**
 	 * Creates a {@link TimeValue}.
 	 *
 	 * @param year

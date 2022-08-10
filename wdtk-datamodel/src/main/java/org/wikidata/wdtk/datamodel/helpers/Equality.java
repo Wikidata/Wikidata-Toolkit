@@ -86,7 +86,8 @@ public class Equality {
 			return true;
 		}
 		return o2 instanceof DatatypeIdValue
-			&& o1.getIri().equals(((DatatypeIdValue) o2).getIri());
+			&& o1.getIri().equals(((DatatypeIdValue) o2).getIri())
+			&& o1.getJsonString().equals(((DatatypeIdValue) o2).getJsonString());
 	}
 
 	/**

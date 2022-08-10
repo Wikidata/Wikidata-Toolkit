@@ -113,6 +113,11 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
+	public DatatypeIdValue getDatatypeIdValue(String id, String jsonString) {
+		return new DatatypeIdImpl(id, jsonString);
+	}
+
+	@Override
 	public TimeValue getTimeValue(long year, byte month, byte day, byte hour,
 			byte minute, byte second, byte precision, int beforeTolerance,
 			int afterTolerance, int timezoneOffset, String calendarModel) {

@@ -30,6 +30,7 @@ public class DatatypeIdImplTest {
 	private final DatatypeIdImpl d1 = new DatatypeIdImpl(DatatypeIdValue.DT_ITEM);
 	private final DatatypeIdImpl d2 = new DatatypeIdImpl("http://wikiba.se/ontology#WikibaseItem");
 	private final DatatypeIdImpl d3 = new DatatypeIdImpl(DatatypeIdValue.DT_TIME);
+	private final DatatypeIdImpl d4 = new DatatypeIdImpl("http://wikiba.se/ontology#SomeUnknownDatatype", "some-unknownDatatype");
 
 	@Test(expected = NullPointerException.class)
 	public void datatypeIdNotNull() {
@@ -48,6 +49,19 @@ public class DatatypeIdImplTest {
 	@Test
 	public void hashBasedOnContent() {
 		assertEquals(d1.hashCode(), d2.hashCode());
+	}
+
+	@Test
+	public void doNotChokeOnUnknownDatatypes() {
+		// for issue https://github.com/Wikidata/Wikidata-Toolkit/issues/716
+		assertEquals("some-unknownDatatype", d4.getJsonString());
+		assertEquals("http://wikiba.se/ontology#SomeUnknownDatatype", d4.getIri());
+	}
+
+	@Test
+	public void testDeserializeUnknownJsonDatatype() {
+		// for issue https://github.com/Wikidata/Wikidata-Toolkit/issues/716
+		assertEquals("http://wikiba.se/ontology#LocalMedia", DatatypeIdImpl.getDatatypeIriFromJsonDatatype("localMedia"));
 	}
 
 	@Test
