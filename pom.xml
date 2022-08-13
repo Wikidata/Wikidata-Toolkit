@@ -5,7 +5,7 @@
 
 	<groupId>org.wikidata.wdtk</groupId>
 	<artifactId>wdtk-parent</artifactId>
-	<version>0.14.1</version>
+	<version>0.14.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Wikidata Toolkit</name>
