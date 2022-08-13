@@ -111,14 +111,14 @@ public class PropertyRegisterTest {
 						Collections.emptyList(), Collections.emptyList(),
 						Collections.emptyList(),
 						mockStatementGroups, dataObjectFactory
-								.getDatatypeIdValue(DatatypeIdValue.DT_STRING),
+								.getDatatypeIdValueFromJsonId(DatatypeIdValue.JSON_DT_STRING),
 						0));
 		mockResult.put("P23", dataObjectFactory.getPropertyDocument(pid23,
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
-				dataObjectFactory.getDatatypeIdValue(DatatypeIdValue.DT_ITEM),
+				dataObjectFactory.getDatatypeIdValueFromJsonId(DatatypeIdValue.JSON_DT_ITEM),
 				0));
 		mockResult.put("P508", dataObjectFactory.getPropertyDocument(pid508,
 				Collections.emptyList(),
@@ -127,7 +127,7 @@ public class PropertyRegisterTest {
 				Collections.singletonList(dataObjectFactory.getStatementGroup(
 						Collections.singletonList(p1921StatementExternalID)
 				)),
-				dataObjectFactory.getDatatypeIdValue(DatatypeIdValue.DT_EXTERNAL_ID),
+				dataObjectFactory.getDatatypeIdValueFromJsonId(DatatypeIdValue.JSON_DT_EXTERNAL_ID),
 				0));
 
 		this.propertyRegister = new PropertyRegister("P1921",

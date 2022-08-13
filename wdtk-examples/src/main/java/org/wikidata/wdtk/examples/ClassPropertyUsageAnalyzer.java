@@ -752,31 +752,31 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			return "Unknown";
 		}
 
-		switch (datatype.getIri()) {
-		case DatatypeIdValue.DT_COMMONS_MEDIA:
+		switch (datatype.getJsonString()) {
+		case DatatypeIdValue.JSON_DT_COMMONS_MEDIA:
 			return "Commons media";
-		case DatatypeIdValue.DT_GLOBE_COORDINATES:
+		case DatatypeIdValue.JSON_DT_GLOBE_COORDINATES:
 			return "Globe coordinates";
-		case DatatypeIdValue.DT_ITEM:
+		case DatatypeIdValue.JSON_DT_ITEM:
 			return "Item";
-		case DatatypeIdValue.DT_QUANTITY:
+		case DatatypeIdValue.JSON_DT_QUANTITY:
 			return "Quantity";
-		case DatatypeIdValue.DT_STRING:
+		case DatatypeIdValue.JSON_DT_STRING:
 			return "String";
-		case DatatypeIdValue.DT_TIME:
+		case DatatypeIdValue.JSON_DT_TIME:
 			return "Time";
-		case DatatypeIdValue.DT_URL:
+		case DatatypeIdValue.JSON_DT_URL:
 			return "URL";
-		case DatatypeIdValue.DT_PROPERTY:
+		case DatatypeIdValue.JSON_DT_PROPERTY:
 			return "Property";
-		case DatatypeIdValue.DT_EXTERNAL_ID:
+		case DatatypeIdValue.JSON_DT_EXTERNAL_ID:
 			return "External identifier";
-		case DatatypeIdValue.DT_MATH:
+		case DatatypeIdValue.JSON_DT_MATH:
 			return "Math";
-		case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
+		case DatatypeIdValue.JSON_DT_MONOLINGUAL_TEXT:
 			return "Monolingual Text";
 		default:
-			throw new RuntimeException("Unknown datatype " + datatype.getIri());
+			throw new RuntimeException("Unknown datatype " + datatype.getJsonString());
 		}
 	}
 

@@ -155,9 +155,9 @@ public class DatamodelTest {
 	@Test
 	public final void testGetDatatypeId() {
 		DatatypeIdValue o1 = Datamodel
-				.makeDatatypeIdValue(DatatypeIdValue.DT_TIME);
+				.makeDatatypeIdValueFromJsonString(DatatypeIdValue.JSON_DT_TIME);
 		DatatypeIdValue o2 = factory
-				.getDatatypeIdValue(DatatypeIdValue.DT_TIME);
+				.getDatatypeIdValueFromJsonId(DatatypeIdValue.JSON_DT_TIME);
 		assertEquals(o1, o2);
 	}
 
@@ -383,14 +383,14 @@ public class DatamodelTest {
 	public final void testGetPropertyDocument() {
 		PropertyDocument o1 = Datamodel.makePropertyDocument(
 				factory.getPropertyIdValue("P42", "foo"),
-				factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME));
+				factory.getDatatypeIdValueFromJsonId(DatatypeIdValue.JSON_DT_TIME));
 		PropertyDocument o2 = factory.getPropertyDocument(
 				factory.getPropertyIdValue("P42", "foo"),
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
-				factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME),
+				factory.getDatatypeIdValueFromJsonId(DatatypeIdValue.JSON_DT_TIME),
 				0);
 		assertEquals(o1, o2);
 	}

@@ -99,11 +99,28 @@ public class PropertyDocumentBuilder extends
 	 *            the datatype id of the newly constructed property document,
 	 *            e.g., {@link DatatypeIdValue#DT_ITEM}.
 	 * @return builder object to continue construction
+	 * @deprecated use {@link #forPropertyIdAndJsonDatatype(PropertyIdValue, String)}
 	 */
 	public static PropertyDocumentBuilder forPropertyIdAndDatatype(
 			PropertyIdValue propertyIdValue, String datatypeId) {
 		return forPropertyIdAndDatatype(propertyIdValue,
 				factory.getDatatypeIdValue(datatypeId));
+	}
+
+	/**
+	 * Starts the construction of an {@link PropertyDocument} with the given id.
+	 *
+	 * @param propertyIdValue
+	 *            id of the newly constructed property document
+	 * @param datatypeId
+	 *            the datatype id of the newly constructed property document,
+	 *            e.g., {@link DatatypeIdValue#DT_ITEM}.
+	 * @return builder object to continue construction
+	 */
+	public static PropertyDocumentBuilder forPropertyIdAndJsonDatatype(
+			PropertyIdValue propertyIdValue, String datatypeId) {
+		return forPropertyIdAndDatatype(propertyIdValue,
+				factory.getDatatypeIdValueFromJsonId(datatypeId));
 	}
 	
 	/**

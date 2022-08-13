@@ -112,6 +112,28 @@ public class Vocabulary {
 	public static final String XSD_STRING = PREFIX_XSD + "string";
 	public static final String OGC_LOCATION = PREFIX_GEO + "wktLiteral";
 
+	/*
+	 * IRIs of property datatypes
+	 */
+	public static final String DT_ITEM = PREFIX_WBONTO + "WikibaseItem";
+	public static final String DT_PROPERTY = PREFIX_WBONTO + "WikibaseProperty";
+	public static final String DT_LEXEME = PREFIX_WBONTO + "WikibaseLexeme";
+	public static final String DT_FORM = PREFIX_WBONTO + "WikibaseForm";
+	public static final String DT_SENSE = PREFIX_WBONTO + "WikibaseSense";
+	public static final String DT_MEDIA_INFO = PREFIX_WBONTO + "WikibaseMediaInfo";
+	public static final String DT_STRING = PREFIX_WBONTO + "String";
+	public static final String DT_URL = PREFIX_WBONTO + "Url";
+	public static final String DT_COMMONS_MEDIA = PREFIX_WBONTO + "CommonsMedia";
+	public static final String DT_TIME = PREFIX_WBONTO + "Time";
+	public static final String DT_GLOBE_COORDINATES = PREFIX_WBONTO + "GlobeCoordinate";
+	public static final String DT_QUANTITY = PREFIX_WBONTO + "Quantity";
+	public static final String DT_MONOLINGUAL_TEXT = PREFIX_WBONTO + "Monolingualtext";
+	public static final String DT_EXTERNAL_ID = PREFIX_WBONTO + "ExternalId";
+	public static final String DT_MATH = PREFIX_WBONTO + "Math";
+	public static final String DT_GEO_SHAPE = PREFIX_WBONTO + "GeoShape";
+	public static final String DT_TABULAR_DATA = PREFIX_WBONTO + "TabularData";
+	public static final String DT_EDTF = PREFIX_WBONTO + "Edtf";
+
 	/**
 	 * Hash map defining the OWL declaration types of the standard vocabulary.
 	 * Declaring this explicitly is useful to obtain a self-contained RDF file,

@@ -155,9 +155,6 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 		case JSON_DT_EDTF:
 			return DT_EDTF;
 		default:
-			if(!JSON_DATATYPE_PATTERN.matcher(jsonDatatype).matches()) {
-				throw new IllegalArgumentException("Invalid JSON datatype \"" + jsonDatatype + "\"");
-			}
 
 			String[] parts = jsonDatatype.split("-");
 			for(int i = 0; i < parts.length; i++) {
@@ -175,6 +172,7 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 	 *            the WDTK datatype IRI string; case-sensitive
 	 * @throws IllegalArgumentException
 	 *             if the given datatype string is not known
+	 * @deprecated this method is unreliable and will be removed in a future release.
 	 */
 	public static String getJsonDatatypeFromDatatypeIri(String datatypeIri) {
 		switch (datatypeIri) {
@@ -238,6 +236,7 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 	 * @throws IllegalArgumentException
 	 *             if the given datatype string could not be matched to a known
 	 *             datatype or was null
+	 * @deprecated use {@link #DatatypeIdImpl(String, String)}
 	 */
 	public DatatypeIdImpl(String iri)
 			throws IllegalArgumentException {
@@ -254,17 +253,21 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 	 * is meant to be used for JSON deserialization.
 	 *
 	 * @param iri
-	 *             the WDTK IRI for the datatype
+	 *             the WDTK IRI for the datatype. This can be null.
+	 * @param jsonString
+	 *             the JSON representation of the datatype. This cannot be null.
 	 * @throws IllegalArgumentException
 	 *             if the given datatype string could not be matched to a known
 	 *             datatype or was null
 	 */
 	public DatatypeIdImpl(String iri, String jsonString)
 			throws IllegalArgumentException {
-		Validate.notNull(iri, "An IRI must be provided to create a DatatypeIdValue");
-		this.iri = iri;
 		Validate.notNull(jsonString, "A JSON representation of the datatype must be provided to create a DatatypeIdValue");
+		if(!JSON_DATATYPE_PATTERN.matcher(jsonString).matches()) {
+			throw new IllegalArgumentException("Invalid JSON datatype \"" + jsonString + "\"");
+		}
 		this.jsonString = jsonString;
+		this.iri = iri != null ? iri : getDatatypeIriFromJsonDatatype(jsonString);
 	}
 	
 	/**
