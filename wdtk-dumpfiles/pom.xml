@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.wikidata.wdtk</groupId>
 		<artifactId>wdtk-parent</artifactId>
-		<version>0.14.1-SNAPSHOT</version>
+		<version>0.14.1</version>
 	</parent>
 
 	<artifactId>wdtk-dumpfiles</artifactId>

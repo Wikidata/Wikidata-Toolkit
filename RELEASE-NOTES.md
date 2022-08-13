@@ -1,6 +1,19 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.14.1
+--------------
+
+Bug fixes:
+* fix error handling in newly supported clientLogin method
+* fix error in deserialization of properties with unknown datatypes
+
+Deprecations:
+* the IRI representation of datatypes in `wdtk-datamodel` is deprecated.
+  If you rely on it, then use it in `wdtk-rdf`, since this is specific to the RDF
+  serialization of the datamodel. Use the strings found in the JSON serialization
+  of properties to identify datatypes instead.
+
 Version 0.14.0
 --------------
 
