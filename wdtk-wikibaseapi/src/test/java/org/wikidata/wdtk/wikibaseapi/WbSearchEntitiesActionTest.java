@@ -63,7 +63,7 @@ public class WbSearchEntitiesActionTest {
     @Test
     public void testWbSearchEntities() throws MediaWikiApiErrorException, IOException {
         List<WbSearchEntitiesResult> results = action.wbSearchEntities("abc",
-                "en", null, null, null, null);
+                "en", null, null, null, null, null);
 
         assertEquals(7, results.size());
 
@@ -89,18 +89,18 @@ public class WbSearchEntitiesActionTest {
     public void testWbSearchEntitiesEmpty() throws MediaWikiApiErrorException, IOException {
         List<WbSearchEntitiesResult> results = action.wbSearchEntities(
                 "some search string with no results", "en", null, null, null,
-                null);
+                null, null);
 
         assertTrue(results.isEmpty());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testIdsAndTitles() throws MediaWikiApiErrorException, IOException {
-        action.wbSearchEntities(null, "en", null, null, null, null);
+        action.wbSearchEntities(null, "en", null, null, null, null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testIdsAndSites() throws MediaWikiApiErrorException, IOException {
-        action.wbSearchEntities("abc", null, null, null, null, null);
+        action.wbSearchEntities("abc", null, null, null, null, null, null);
     }
 }
