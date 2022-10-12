@@ -77,8 +77,8 @@ public class WbSearchEntitiesAction {
 	 * {@link WbSearchEntitiesAction#wbSearchEntities(String, String, Boolean, String, Long, Long, String)}
 	 */
 	public List<WbSearchEntitiesResult> wbSearchEntities(String search, String language,
-														 Boolean strictLanguage, String type, Long limit, Long offset)
-			throws MediaWikiApiErrorException, IOException {
+			Boolean strictLanguage, String type, Long limit, Long offset)
+					throws MediaWikiApiErrorException, IOException {
 		return wbSearchEntities(search, language, strictLanguage, type, limit, offset, null);
 	}
 
@@ -123,9 +123,9 @@ public class WbSearchEntitiesAction {
 	 * @throws MalformedResponseException
 	 *             if response JSON cannot be parsed
 	 */
-	public List<WbSearchEntitiesResult> wbSearchEntities(String search, String language,
-														 Boolean strictLanguage, String type, Long limit, Long offset, String uselang)
-			throws MediaWikiApiErrorException, IOException {
+	public List<WbSearchEntitiesResult> wbSearchEntities(String search, String language, 
+			Boolean strictLanguage, String type, Long limit, Long offset, String uselang)
+					throws MediaWikiApiErrorException, IOException {
 
 		Map<String, String> parameters = new HashMap<>();
 		parameters.put(ApiConnection.PARAM_ACTION, "wbsearchentities");
