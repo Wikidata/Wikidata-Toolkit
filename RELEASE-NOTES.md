@@ -1,6 +1,12 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.14.2
+--------------
+
+Bug fixes:
+* add `uselang` as optional parameter for wbsearchentities action (#239)
+
 Version 0.14.1
 --------------
 
