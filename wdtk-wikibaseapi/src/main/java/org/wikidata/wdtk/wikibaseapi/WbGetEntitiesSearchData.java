@@ -32,21 +32,21 @@ public class WbGetEntitiesSearchData {
 
 	/**
 	 * search for this text. See
-	 * {@link WbSearchEntitiesAction#wbSearchEntities(String, String, Boolean, String, Long, Long)}
+	 * {@link WbSearchEntitiesAction#wbSearchEntities(String, String, Boolean, String, Long, Long, String)}
 	 * for details.
 	 */
 	public String search = null;
 
 	/**
 	 * search in this language. See
-	 * {@link WbSearchEntitiesAction#wbSearchEntities(String, String, Boolean, String, Long, Long)}
+	 * {@link WbSearchEntitiesAction#wbSearchEntities(String, String, Boolean, String, Long, Long, String)}
 	 * for details.
 	 */
 	public String language = null;
 
 	/**
 	 * whether to disable language fallback. See
-	 * {@link WbSearchEntitiesAction#wbSearchEntities(String, String, Boolean, String, Long, Long)}
+	 * {@link WbSearchEntitiesAction#wbSearchEntities(String, String, Boolean, String, Long, Long, String)}
 	 * for details.
 	 */
 	public Boolean strictlanguage = null;
@@ -54,7 +54,7 @@ public class WbGetEntitiesSearchData {
 	/**
 	 * search for this type of entity
 	 * One of the following values: item, property. See
-	 * {@link WbSearchEntitiesAction#wbSearchEntities(String, String, Boolean, String, Long, Long)}
+	 * {@link WbSearchEntitiesAction#wbSearchEntities(String, String, Boolean, String, Long, Long, String)}
 	 * for details.
 	 */
 	public String type = null;
@@ -62,7 +62,7 @@ public class WbGetEntitiesSearchData {
 	/**
 	 * maximal number of results
 	 * no more than 50 (500 for bots) allowed. See
-	 * {@link WbSearchEntitiesAction#wbSearchEntities(String, String, Boolean, String, Long, Long)}
+	 * {@link WbSearchEntitiesAction#wbSearchEntities(String, String, Boolean, String, Long, Long, String)}
 	 * for details.
 	 */
 	public Long limit = null;
@@ -70,8 +70,15 @@ public class WbGetEntitiesSearchData {
 	/**
 	 * offset where to continue a search
 	 * this parameter is called "continue" in the API (which is a Java keyword). See
-	 * {@link WbSearchEntitiesAction#wbSearchEntities(String, String, Boolean, String, Long, Long)}
+	 * {@link WbSearchEntitiesAction#wbSearchEntities(String, String, Boolean, String, Long, Long, String)}
 	 * for details.
 	 */
 	public Long offset = null;
+
+	/**
+	 * get response in this language. See
+	 * {@link WbSearchEntitiesAction#wbSearchEntities(String, String, Boolean, String, Long, Long, String)}
+	 * for details.
+	 */
+	public String uselang = null;
 }

@@ -69,7 +69,17 @@ public class WbSearchEntitiesAction {
 	public List<WbSearchEntitiesResult> wbSearchEntities(WbGetEntitiesSearchData properties)
 			throws MediaWikiApiErrorException, IOException {
 		return wbSearchEntities(properties.search, properties.language,
-				properties.strictlanguage, properties.type, properties.limit, properties.offset);
+				properties.strictlanguage, properties.type, properties.limit, properties.offset, properties.uselang);
+	}
+
+	/**
+	 * Keeping this for backwards compatibility, the real action happens in 
+	 * {@link WbSearchEntitiesAction#wbSearchEntities(String, String, Boolean, String, Long, Long, String)}
+	 */
+	public List<WbSearchEntitiesResult> wbSearchEntities(String search, String language,
+			Boolean strictLanguage, String type, Long limit, Long offset)
+					throws MediaWikiApiErrorException, IOException {
+		return wbSearchEntities(search, language, strictLanguage, type, limit, offset, null);
 	}
 
 	/**
@@ -103,7 +113,8 @@ public class WbSearchEntitiesAction {
 	 *            (optional) offset where to continue a search
 	 *            Default: 0
 	 *            this parameter is called "continue" in the API (which is a Java keyword)
-	 *
+	 * @param uselang        
+	 *            (optional) the response should have this language, default en
 	 * @return list of matching entities retrieved via the API URL
 	 * @throws MediaWikiApiErrorException
 	 *             if the API returns an error
@@ -112,8 +123,8 @@ public class WbSearchEntitiesAction {
 	 * @throws MalformedResponseException
 	 *             if response JSON cannot be parsed
 	 */
-	public List<WbSearchEntitiesResult> wbSearchEntities(String search, String language,
-			Boolean strictLanguage, String type, Long limit, Long offset)
+	public List<WbSearchEntitiesResult> wbSearchEntities(String search, String language, 
+			Boolean strictLanguage, String type, Long limit, Long offset, String uselang)
 					throws MediaWikiApiErrorException, IOException {
 
 		Map<String, String> parameters = new HashMap<>();
@@ -146,6 +157,10 @@ public class WbSearchEntitiesAction {
 
 		if (offset != null) {
 			parameters.put("continue", Long.toString(offset));
+		}
+
+		if (uselang != null) {
+			parameters.put("uselang", uselang);
 		}
 
 		List<WbSearchEntitiesResult> results = new ArrayList<>();
