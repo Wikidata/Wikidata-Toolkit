@@ -268,6 +268,21 @@ public class WikibaseDataFetcherTest {
 	}
 
 	@Test
+	public void testGetMediaInfoIdNotFoundTwice() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("action", "query");
+		parameters.put("format", "json");
+		parameters.put("titles", "File:Not Found|File:Not Found Either");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/query-Not Found twice.json", CompressionType.NONE);
+
+		Map<String, MediaInfoIdValue> result = wdf.getMediaInfoIdsByFileName("Not Found", "Not Found Either");
+		assertEquals(result.size(), 2);
+		assertNull(result.get("Not Found"));
+		assertNull(result.get("Not Found Either"));
+	}
+
+	@Test
 	public void testWbGetVirtualMediaInfoEntityFromTitle() throws IOException, MediaWikiApiErrorException {
 		Map<String, String> parameters = new HashMap<>();
 		this.setStandardParameters(parameters);

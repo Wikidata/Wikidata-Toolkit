@@ -1,0 +1,17 @@
+{
+  "batchcomplete": "",
+  "query": {
+    "pages": {
+      "-1": {
+        "ns": 6,
+        "title": "File:Not Found",
+        "missing": ""
+      },
+      "-2": {
+        "ns": 6,
+        "title": "File:Not Found Either",
+        "missing": ""
+      }
+    }
+  }
+}
