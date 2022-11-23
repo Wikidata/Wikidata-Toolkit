@@ -1,6 +1,12 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.14.3
+--------------
+
+Bug fixes:
+* fix fetching of Mids from filenames in the case where multiple filenames do not exist (#745)
+
 Version 0.14.2
 --------------
 
