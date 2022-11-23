@@ -100,7 +100,7 @@ public class MediaInfoIdQueryAction {
 			Map.Entry<String, JsonNode> page = iterator.next();
 			String pageId = page.getKey();
 			String title = page.getValue().get("title").textValue();
-			if (!"-1".equals(pageId)) { // "-1" means not found
+			if (!pageId.startsWith("-")) { // negative keys such as "-1", "-2", ... mean not found
 				midMap.put(title, Datamodel.makeMediaInfoIdValue("M" + pageId, siteIri));
 			}
 		}
