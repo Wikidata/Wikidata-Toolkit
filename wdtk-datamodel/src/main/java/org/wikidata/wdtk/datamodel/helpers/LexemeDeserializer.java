@@ -52,9 +52,12 @@ public class LexemeDeserializer extends StdDeserializer<LexemeDocumentImpl> {
         Map<String, TermImpl> preLemmas = deserializationContext.readTreeAsValue(
                 lemmas1,
                 typeFactory.constructMapType(Map.class, String.class, TermImpl.class));
-        Map<String, MonolingualTextValue> lemmas = preLemmas.entrySet()
-                .stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, v -> v.getValue()));
+        Map<String, MonolingualTextValue> lemmas = null;
+        if (preLemmas != null) {
+            lemmas = preLemmas.entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, v -> v.getValue()));
+        }
 
         Map<String, List<StatementImpl.PreStatement>> claims = deserializationContext.readTreeAsValue(
                 object.get("claims"),
@@ -75,7 +78,10 @@ public class LexemeDeserializer extends StdDeserializer<LexemeDocumentImpl> {
                     typeFactory.constructCollectionType(List.class, SenseDocumentImpl.class));
         }
 
-        long lastrevid = object.get("lastrevid").asLong();
+        long lastrevid = 0;
+        if (object.has("lastrevid")) {
+            lastrevid = object.get("lastrevid").asLong();
+        }
         String siteIri = (String) deserializationContext.findInjectableValue("siteIri", null , null);
         return new LexemeDocumentImpl(
                 jsonId,
