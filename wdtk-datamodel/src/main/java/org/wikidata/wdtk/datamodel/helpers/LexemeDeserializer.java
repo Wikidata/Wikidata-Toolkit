@@ -1,5 +1,25 @@
 package org.wikidata.wdtk.datamodel.helpers;
 
+/*-
+ * #%L
+ * Wikidata Toolkit Data Model
+ * %%
+ * Copyright (C) 2014 - 2022 Wikidata Toolkit Developers
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -64,9 +84,14 @@ public class LexemeDeserializer extends StdDeserializer<LexemeDocumentImpl> {
                 typeFactory.constructMapType(Map.class, typeFactory.constructType(String.class),
                         typeFactory.constructCollectionType(List.class, StatementImpl.PreStatement.class)));
 
-        List<FormDocument> forms = deserializationContext.readTreeAsValue(
-                object.get("forms"),
-                typeFactory.constructCollectionType(List.class, FormDocumentImpl.class));
+        List<FormDocument> forms;
+        if (object.get("forms") instanceof ObjectNode && ((ObjectNode)object.get("forms")).isEmpty()) {
+            forms = Collections.emptyList();
+        } else {
+            forms = deserializationContext.readTreeAsValue(
+                    object.get("forms"),
+                    typeFactory.constructCollectionType(List.class, FormDocumentImpl.class));
+        }
 
         List<SenseDocument> senses;
         if (object.get("senses") instanceof ObjectNode && ((ObjectNode)object.get("senses")).isEmpty()) {
