@@ -1,6 +1,12 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.14.4
+--------------
+
+Bug fixes:
+* fix deserialization of lexemes, workaround for https://phabricator.wikimedia.org/T305660
+
 Version 0.14.3
 --------------
 
