@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.LexemeDeserializer;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
@@ -38,6 +39,7 @@ import java.util.regex.Pattern;
  * @author Thomas Pellissier Tanon
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(using = LexemeDeserializer.class)
 public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeDocument {
 
 	private final ItemIdValue lexicalCategory;
@@ -104,14 +106,14 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
 	@JsonCreator
-	LexemeDocumentImpl(
+	public LexemeDocumentImpl(
 			@JsonProperty("id") String jsonId,
 			@JsonProperty("lexicalCategory") String lexicalCategory,
 			@JsonProperty("language") String language,
-			@JsonProperty("lemmas") @JsonDeserialize(contentAs=TermImpl.class) Map<String, MonolingualTextValue> lemmas,
+			@JsonProperty("lemmas") @JsonDeserialize(contentAs = TermImpl.class) Map<String, MonolingualTextValue> lemmas,
 			@JsonProperty("claims") Map<String, List<StatementImpl.PreStatement>> claims,
-			@JsonProperty("forms") @JsonDeserialize(contentAs=FormDocumentImpl.class) List<FormDocument> forms,
-			@JsonProperty("senses") @JsonDeserialize(contentAs=SenseDocumentImpl.class) List<SenseDocument> senses,
+			@JsonProperty("forms") @JsonDeserialize(contentAs = FormDocumentImpl.class) List<FormDocument> forms,
+			@JsonProperty("senses") @JsonDeserialize(contentAs = SenseDocumentImpl.class) List<SenseDocument> senses,
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {
 		super(jsonId, claims, revisionId, siteIri);
