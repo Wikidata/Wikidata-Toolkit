@@ -78,7 +78,7 @@
 		<jacksonVersion>2.14.1</jacksonVersion>
 		<junitVersion>4.13.2</junitVersion>
 		<hamcrestVersion>2.2</hamcrestVersion>
-		<mockitoVersion>4.11.0</mockitoVersion>
+		<mockitoVersion>5.1.0</mockitoVersion>
 		<rdf4jVersion>3.7.7</rdf4jVersion>
 		<slf4jVersion>2.0.6</slf4jVersion>
 		<threetenVersion>1.7.2</threetenVersion>
