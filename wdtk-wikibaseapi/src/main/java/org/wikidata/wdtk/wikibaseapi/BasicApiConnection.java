@@ -33,6 +33,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
 
 import static org.wikidata.wdtk.wikibaseapi.LoginValue.*;
 
@@ -181,7 +182,7 @@ public class BasicApiConnection extends ApiConnection {
 			String token = getOrFetchToken("login");
 			try {
 				loginFunction.login(token, username, password);
-			} catch (NeedLoginTokenException e) { // try once more
+			} catch (NeedLoginTokenException | TokenErrorException e) { // try once more
 				clearToken("login");
 				token = getOrFetchToken("login");
 				loginFunction.login(token, username, password);
