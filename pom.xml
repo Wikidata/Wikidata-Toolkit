@@ -83,7 +83,7 @@
 		<slf4jVersion>2.0.6</slf4jVersion>
 		<threetenVersion>1.7.2</threetenVersion>
 		<okhttpSignpostVersion>1.1.0</okhttpSignpostVersion>
-		<okhttpVersion>4.10.0</okhttpVersion>
+		<okhttpVersion>4.11.0</okhttpVersion>
 	</properties>
 
 	<dependencies>
