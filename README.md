@@ -31,10 +31,13 @@ During development, the version number in the `pom.xml` files should be the next
 
 1. Pick the version number for the new release you want to publish, following SemVer. If this is going to be a patch release, it should be the version currently in `pom.xml` without the `-SNAPSHOT` suffix. In the following steps, we will assume this new version is `1.2.4`.
 2. Write the new version number in the `pom.xml` files with `mvn versions:set -DnewVersion=1.2.4`
-3. Commit the changes: `git commit -am "Set version to 1.2.4"`
-4. Add a tag for the version: `git tag -a v1.2.4 -m "Version 1.2.4"`
-5. Write the next version number in the `pom.xml` file, by incrementing the patch release number: `mvn versions:set -DnewVersion=1.2.5-SNAPSHOT`
-6. Commit the changes: `git commit -am "Set version to 1.2.5-SNAPSHOT"`
-7. Push commits and tags: `git push --tags master`
-8. In GitHub's UI, create a release by going to https://github.com/Wikidata/Wikidata-Toolkit/releases/new. Pick the tag you just created, give a title to the release and quickly describe the changes since the previous release (see existing releases for examples).
-9. Update the version number mentioned in https://www.mediawiki.org/wiki/Wikidata_Toolkit
+3. Add some release notes in the `RELEASE-NOTES.md` file at the root of the repository
+4. Commit the changes: `git commit -am "Set version to 1.2.4"`
+5. Add a tag for the version: `git tag -a v1.2.4 -m "Version 1.2.4"`
+6. Write the next version number in the `pom.xml` file, by incrementing the patch release number: `mvn versions:set -DnewVersion=1.2.5-SNAPSHOT`
+7. Commit the changes: `git commit -am "Set version to 1.2.5-SNAPSHOT"`
+8. Push commits and tags: `git push --tags master`
+9. In GitHub's UI, create a release by going to https://github.com/Wikidata/Wikidata-Toolkit/releases/new. Pick the tag you just created, give a title to the release and quickly describe the changes since the previous release (see existing releases for examples).
+10. Update the version number mentioned in https://www.mediawiki.org/wiki/Wikidata_Toolkit
+
+The library is automatically packaged and uploaded to Maven Central by the continuous deployment (with GitHub Actions). So is the HTML version of the javadoc (to GitHub Pages).
