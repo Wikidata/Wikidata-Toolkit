@@ -36,7 +36,7 @@ During development, the version number in the `pom.xml` files should be the next
 5. Add a tag for the version: `git tag -a v1.2.4 -m "Version 1.2.4"`
 6. Write the next version number in the `pom.xml` file, by incrementing the patch release number: `mvn versions:set -DnewVersion=1.2.5-SNAPSHOT`
 7. Commit the changes: `git commit -am "Set version to 1.2.5-SNAPSHOT"`
-8. Push commits and tags: `git push --tags master`
+8. Push commits and tags: `git push --tags && git push`
 9. In GitHub's UI, create a release by going to https://github.com/Wikidata/Wikidata-Toolkit/releases/new. Pick the tag you just created, give a title to the release and quickly describe the changes since the previous release (see existing releases for examples).
 10. Update the version number mentioned in https://www.mediawiki.org/wiki/Wikidata_Toolkit
 
