@@ -1,0 +1,39 @@
+{
+    "entities": {
+        "M89": {
+            "pageid": 125658679,
+            "ns": 6,
+            "title": "File:Foo-1.png",
+            "lastrevid": 734839557,
+            "modified": "2023-02-22T14:19:55Z",
+            "type": "mediainfo",
+            "id": "M89",
+            "labels": {
+                "en": {
+                    "language": "en",
+                    "value": "an amazing foo in its natural habitat"
+                }
+            },
+            "descriptions": {},
+            "statements": {}
+        },
+        "M37": {
+            "pageid": 1256586,
+            "ns": 6,
+            "title": "File:Bar.svg",
+            "lastrevid": 7348395,
+            "modified": "2023-02-22T14:19:55Z",
+            "type": "mediainfo",
+            "id": "M37",
+            "labels": {
+                "en": {
+                    "language": "en",
+                    "value": "the coats of arms of Bar"
+                }
+            },
+            "descriptions": {},
+            "statements": {}
+        }
+    },
+    "success": 1
+}

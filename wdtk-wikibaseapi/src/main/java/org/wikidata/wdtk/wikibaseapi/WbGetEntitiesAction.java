@@ -166,7 +166,7 @@ public class WbGetEntitiesAction {
 
 		Map<String, String> parameters = new HashMap<>();
 		parameters.put(ApiConnection.PARAM_ACTION, "wbgetentities");
-		List<String> titlesList = titles == null ? Collections.emptyList() : Arrays.asList(titles.split("-"));
+		List<String> titlesList = titles == null ? Collections.emptyList() : Arrays.asList(titles.split("\\|"));
 
 		if (ids != null) {
 			parameters.put("ids", ids);

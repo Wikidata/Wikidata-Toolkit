@@ -67,6 +67,14 @@ public class WbGetEntitiesActionTest {
 		params.put("ids", "M91629437");
 		this.con.setWebResourceFromPath(params, getClass(),
 				"/wbgetentities-missing-mid.json", CompressionType.NONE);
+		
+        params.clear();
+        params.put("action", "wbgetentities");
+        params.put("format", "json");
+        params.put("titles", "File:Foo-1.png|File:Bar.svg");
+        params.put("sites", "commonswiki");
+        this.con.setWebResourceFromPath(params, getClass(),
+                "/wbgetentities-titles.json", CompressionType.NONE);
 
 		this.action = new WbGetEntitiesAction(this.con, Datamodel.SITE_WIKIDATA);
 
@@ -121,6 +129,21 @@ public class WbGetEntitiesActionTest {
 		assertTrue(result1.containsKey("Q42"));
 		assertEquals(result1, result2);
 	}
+	
+    @Test
+    public void testWbGetEntitiesTitles()
+            throws MediaWikiApiErrorException, IOException {
+        WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
+        properties.titles = "File:Foo-1.png|File:Bar.svg";
+        properties.sites = "commonswiki";
+        Map<String, EntityDocument> result1 = action.wbGetEntities(properties);
+        Map<String, EntityDocument> result2 = action.wbGetEntities(
+                null, properties.sites, properties.titles, properties.props, null, null);
+
+        assertTrue(result1.containsKey("File:Foo-1.png"));
+        assertTrue(result1.containsKey("File:Bar.svg"));
+        assertEquals(result1, result2);
+    }
 
 	@Test(expected = IOException.class)
 	public void testWbGetEntitiesIoError() throws MediaWikiApiErrorException, IOException {
