@@ -1,6 +1,13 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.14.5
+--------------
+
+Bug fixes:
+* fetching of MediaInfo entities by title, when they contain a dash (#777)
+* clear the CSRF editing token if it is no longer valid (#442)
+
 Version 0.14.4
 --------------
 
