@@ -21,6 +21,7 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Holds information about a successful edit made via {@link WikibaseDataEditor}.
@@ -41,11 +42,11 @@ public class EditingResult {
     }
 
     /**
-     * The identifier of the revision of the last edit made by the editing action.
-     * If no edit was made, 0L is returned.
+     * The identifier of the revision of the last edit made by the editing action,
+     * if any edit was made.
      */
-    public long getLastRevisionId() {
-        return revisionId;
+    public Optional<Long> getLastRevisionId() {
+        return revisionId == 0 ? Optional.empty() : Optional.of(revisionId);
     }
 
     @Override
