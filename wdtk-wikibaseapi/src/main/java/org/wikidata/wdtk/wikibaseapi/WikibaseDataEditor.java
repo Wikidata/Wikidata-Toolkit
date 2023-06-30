@@ -56,6 +56,9 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+
 /**
  * Class that provides high-level editing functionality for Wikibase data.
  *
@@ -530,13 +533,13 @@ public class WikibaseDataEditor {
 	 * @throws MediaWikiApiErrorException
 	 *             if MediaWiki API returned an error response
 	 */
-	public void editEntityDocument(
+	public EditingResult editEntityDocument(
 			EntityUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
 		long revisionId = update.getBaseRevisionId();
 		if (!clear) {
 			if (update.isEmpty())
-				return;
+				return new EditingResult(0L);
 			if (update instanceof StatementDocumentUpdate) {
 				StatementDocumentUpdate typed = (StatementDocumentUpdate) update;
 				if (typed.getStatements().getAdded().size() == 1) {
@@ -547,9 +550,9 @@ public class WikibaseDataEditor {
 					if (builder.build().equals(update)) {
 						String statementId = guidGenerator.freshStatementId(typed.getEntityId().getId());
 						Statement prepared = statement.withStatementId(statementId);
-						wbEditingAction.wbSetClaim(JsonSerializer.getJsonString(prepared),
+						JsonNode response = wbEditingAction.wbSetClaim(JsonSerializer.getJsonString(prepared),
 								editAsBot, revisionId, summary, tags);
-						return;
+						return new EditingResult(getRevisionIdFromResponse(response));
 					}
 				}
 				if (typed.getStatements().getReplaced().size() == 1) {
@@ -558,9 +561,9 @@ public class WikibaseDataEditor {
 					Statement statement = typed.getStatements().getReplaced().values().stream().findFirst().get();
 					builder.updateStatements(StatementUpdateBuilder.create().replace(statement).build());
 					if (builder.build().equals(update)) {
-						wbEditingAction.wbSetClaim(JsonSerializer.getJsonString(statement),
+						JsonNode response = wbEditingAction.wbSetClaim(JsonSerializer.getJsonString(statement),
 								editAsBot, revisionId, summary, tags);
-						return;
+						return new EditingResult(getRevisionIdFromResponse(response));
 					}
 				}
 				if (!typed.getStatements().getRemoved().isEmpty()
@@ -574,8 +577,8 @@ public class WikibaseDataEditor {
 					}
 					builder.updateStatements(statementBuilder.build());
 					if (builder.build().equals(update)) {
-						wbEditingAction.wbRemoveClaims(statementIds, editAsBot, revisionId, summary, tags);
-						return;
+					    JsonNode response = wbEditingAction.wbRemoveClaims(statementIds, editAsBot, revisionId, summary, tags);
+						return new EditingResult(getRevisionIdFromResponse(response));
 					}
 				}
 			}
@@ -587,9 +590,9 @@ public class WikibaseDataEditor {
 					MonolingualTextValue label = typed.getLabels().getModified().values().stream().findFirst().get();
 					builder.updateLabels(TermUpdateBuilder.create().put(label).build());
 					if (builder.build().equals(update)) {
-						wbEditingAction.wbSetLabel(update.getEntityId().getId(), null, null, null,
+						JsonNode response = wbEditingAction.wbSetLabel(update.getEntityId().getId(), null, null, null,
 								label.getLanguageCode(), label.getText(), editAsBot, revisionId, summary, tags);
-						return;
+						return new EditingResult(getRevisionIdFromResponse(response));
 					}
 				}
 				if (typed.getLabels().getRemoved().size() == 1) {
@@ -598,9 +601,9 @@ public class WikibaseDataEditor {
 					String language = typed.getLabels().getRemoved().stream().findFirst().get();
 					builder.updateLabels(TermUpdateBuilder.create().remove(language).build());
 					if (builder.build().equals(update)) {
-						wbEditingAction.wbSetLabel(update.getEntityId().getId(), null, null, null,
+						JsonNode response = wbEditingAction.wbSetLabel(update.getEntityId().getId(), null, null, null,
 								language, null, editAsBot, revisionId, summary, tags);
-						return;
+						return new EditingResult(getRevisionIdFromResponse(response));
 					}
 				}
 			}
@@ -613,10 +616,10 @@ public class WikibaseDataEditor {
 							.values().stream().findFirst().get();
 					builder.updateDescriptions(TermUpdateBuilder.create().put(description).build());
 					if (builder.build().equals(update)) {
-						wbEditingAction.wbSetDescription(update.getEntityId().getId(), null, null, null,
+						JsonNode response = wbEditingAction.wbSetDescription(update.getEntityId().getId(), null, null, null,
 								description.getLanguageCode(), description.getText(),
 								editAsBot, revisionId, summary, tags);
-						return;
+						return new EditingResult(getRevisionIdFromResponse(response));
 					}
 				}
 				if (typed.getDescriptions().getRemoved().size() == 1) {
@@ -625,9 +628,9 @@ public class WikibaseDataEditor {
 					String language = typed.getDescriptions().getRemoved().stream().findFirst().get();
 					builder.updateDescriptions(TermUpdateBuilder.create().remove(language).build());
 					if (builder.build().equals(update)) {
-						wbEditingAction.wbSetDescription(update.getEntityId().getId(), null, null, null,
+						JsonNode response = wbEditingAction.wbSetDescription(update.getEntityId().getId(), null, null, null,
 								language, null, editAsBot, revisionId, summary, tags);
-						return;
+						return new EditingResult(getRevisionIdFromResponse(response));
 					}
 				}
 				if (typed.getAliases().size() == 1) {
@@ -646,9 +649,9 @@ public class WikibaseDataEditor {
 						List<String> recreated = aliases.getRecreated()
 								.map(l -> l.stream().map(a -> a.getText()).collect(toList()))
 								.orElse(null);
-						wbEditingAction.wbSetAliases(update.getEntityId().getId(), null, null, null,
+						JsonNode response = wbEditingAction.wbSetAliases(update.getEntityId().getId(), null, null, null,
 								language, added, removed, recreated, editAsBot, revisionId, summary, tags);
-						return;
+						return new EditingResult(getRevisionIdFromResponse(response));
 					}
 				}
 			}
@@ -660,8 +663,7 @@ public class WikibaseDataEditor {
 					SenseUpdate sense = typed.getUpdatedSenses().values().stream().findFirst().get();
 					builder.updateSense(sense);
 					if (builder.build().equals(update)) {
-						editEntityDocument(sense, false, summary, tags);
-						return;
+						return editEntityDocument(sense, false, summary, tags);
 					}
 				}
 				if (typed.getUpdatedForms().size() == 1) {
@@ -670,15 +672,15 @@ public class WikibaseDataEditor {
 					FormUpdate form = typed.getUpdatedForms().values().stream().findFirst().get();
 					builder.updateForm(form);
 					if (builder.build().equals(update)) {
-						editEntityDocument(form, false, summary, tags);
-						return;
+						return editEntityDocument(form, false, summary, tags);
 					}
 				}
 			}
 		}
 		String data = JsonSerializer.getJsonString(update);
-		wbEditingAction.wbEditEntity(
+		EntityDocument document = wbEditingAction.wbEditEntity(
 				update.getEntityId().getId(), null, null, null, data, clear, editAsBot, revisionId, summary, tags);
+		return new EditingResult(document.getRevisionId());
 	}
 
 	/**
@@ -1131,4 +1133,29 @@ public class WikibaseDataEditor {
 				JsonSerializer.getJsonString(update), false, editAsBot, currentDocument.getRevisionId(), null, null);
 	}
 
+    /**
+     * Extracts the last revision id from the JSON response returned
+     * by the API after an edit
+     * 
+     * @param response
+     *      the response as returned by Mediawiki
+     * @return
+     *      the new revision id of the edited entity
+     * @throws JsonProcessingException 
+     */
+    protected long getRevisionIdFromResponse(JsonNode response) throws JsonProcessingException {
+        if(response == null) {
+            throw new MalformedResponseException("API response is null");
+        }
+        JsonNode entity = null;
+        if(response.has("entity")) {
+            entity = response.path("entity");
+        } else if(response.has("pageinfo")) {
+            entity = response.path("pageinfo");
+        } 
+        if(entity != null && entity.has("lastrevid")) {
+            return entity.path("lastrevid").asLong();
+        }
+        throw new MalformedResponseException("The last revision id could not be found in API response");
+    }
 }
