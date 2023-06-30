@@ -22,7 +22,7 @@ package org.wikidata.wdtk.wikibaseapi;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Optional;
+import java.util.OptionalLong;
 
 import org.junit.Test;
 
@@ -32,13 +32,13 @@ public class EditingResultTest {
     public void testGetRevisionId() {
         EditingResult SUT = new EditingResult(1234L);
         
-        assertEquals(SUT.getLastRevisionId(), Optional.of(1234L));
+        assertEquals(SUT.getLastRevisionId(), OptionalLong.of(1234L));
     }
     
     @Test
     public void testNoRevisionId() {
         EditingResult SUT = new EditingResult(0L);
         
-        assertEquals(SUT.getLastRevisionId(), Optional.empty());
+        assertEquals(SUT.getLastRevisionId(), OptionalLong.empty());
     }
 }
