@@ -1,0 +1,17 @@
+{
+  "entity" : {
+    "aliases" : {
+      "en" : [ {
+        "language" : "en",
+        "value" : "old alias"
+      }, {
+        "language" : "en",
+        "value" : "hello"
+      } ]
+    },
+    "id" : "Q1",
+    "type" : "item",
+    "lastrevid" : 1234
+  },
+  "success" : 1
+}

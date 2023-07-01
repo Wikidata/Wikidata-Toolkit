@@ -1,0 +1,24 @@
+{
+  "pageinfo" : {
+    "lastrevid" : 1234
+  },
+  "success" : 1,
+  "claim" : {
+    "mainsnak" : {
+      "snaktype" : "value",
+      "property" : "P1",
+      "hash" : "a3438cfe0cbb10e069ce2dbae1d7baf9e81ac111",
+      "datavalue" : {
+        "value" : {
+          "amount" : "+456",
+          "unit" : "1"
+        },
+        "type" : "quantity"
+      },
+      "datatype" : "quantity"
+    },
+    "type" : "statement",
+    "id" : "Q1$427C0317-BA8C-95B0-16C8-1A1B5FAC1081",
+    "rank" : "normal"
+  }
+}
