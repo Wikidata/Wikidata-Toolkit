@@ -1,6 +1,12 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.14.6
+--------------
+
+Small improvement:
+* The new Wikibase editing API returns the id of the revision of the last edit made (#795)
+
 Version 0.14.5
 --------------
 
