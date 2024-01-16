@@ -184,6 +184,8 @@ public class BasicApiConnection extends ApiConnection {
 				loginFunction.login(token, username, password);
 			} catch (NeedLoginTokenException | TokenErrorException e) { // try once more
 				clearToken("login");
+				clearToken("csrf");
+				clearCookies();
 				token = getOrFetchToken("login");
 				loginFunction.login(token, username, password);
 			}
