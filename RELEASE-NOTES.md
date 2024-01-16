@@ -1,6 +1,12 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.14.7
+--------------
+
+Bug fix:
+* Reset CSRF & login tokens when a login error happens (#442)
+
 Version 0.14.6
 --------------
 
