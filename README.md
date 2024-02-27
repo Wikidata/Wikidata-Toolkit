@@ -39,5 +39,6 @@ During development, the version number in the `pom.xml` files should be the next
 8. Push commits and tags: `git push --tags && git push`
 9. In GitHub's UI, create a release by going to https://github.com/Wikidata/Wikidata-Toolkit/releases/new. Pick the tag you just created, give a title to the release and quickly describe the changes since the previous release (see existing releases for examples).
 10. Update the version number mentioned in https://www.mediawiki.org/wiki/Wikidata_Toolkit
+11. Update the examples in https://github.com/Wikidata/Wikidata-Toolkit-Examples (generally just bumping WDTK's version in the `pom.xml` file works. Make sure it still compiles afterwards.)
 
 The library is automatically packaged and uploaded to Maven Central by the continuous deployment (with GitHub Actions). So is the HTML version of the javadoc (to GitHub Pages).
