@@ -72,7 +72,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<apacheCommonsCompressVersion>1.26.0</apacheCommonsCompressVersion>
+		<apacheCommonsCompressVersion>1.26.1</apacheCommonsCompressVersion>
 		<apacheCommonsLangVersion>3.14.0</apacheCommonsLangVersion>
 		<apacheCommonsIOVersion>2.15.1</apacheCommonsIOVersion>
 		<jacksonVersion>2.17.0</jacksonVersion>
