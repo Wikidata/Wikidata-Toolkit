@@ -612,10 +612,10 @@ public class WbEditingAction {
 				"statement ids to delete must be non-empty when deleting statements");
 		Validate.isTrue(statementIds.size() <= 50,
 				"At most 50 statements can be deleted at once");
-		
+
 		Map<String, String> parameters = new HashMap<>();
 		parameters.put("claim", String.join("|", statementIds));
-		
+
 		return performAPIAction("wbremoveclaims", null, null, null, null, parameters, summary, tags, baserevid, bot);
 	}
 	
@@ -684,46 +684,37 @@ public class WbEditingAction {
 			throws IOException, MediaWikiApiErrorException {
 		
 		parameters.put(ApiConnection.PARAM_ACTION, action);
-		
-		if (newEntity != null) {
-			parameters.put("new", newEntity);
-			if (title != null || site != null || id != null) {
-				throw new IllegalArgumentException(
-						"Cannot use parameters \"id\", \"site\", or \"title\" when creating a new entity.");
-			}
-		} else if (id != null) {
-			parameters.put("id", id);
-			if (title != null || site != null) {
-				throw new IllegalArgumentException(
-						"Cannot use parameters \"site\" or \"title\" when using id to edit entity data");
-			}
-		} else if (title != null) {
-			if (site == null) {
-				throw new IllegalArgumentException(
-						"Site parameter is required when using title parameter to edit entity data.");
-			}
-			parameters.put("site", site);
-			parameters.put("title", title);
-		} else if (!"wbsetclaim".equals(action) && !"wbremoveclaims".equals(action)) {
-			throw new IllegalArgumentException(
-					"This action must create a new item, or specify an id, or specify a site and title.");
-		}
-		
-		if (bot) {
-			parameters.put("bot", "");
-		}
-		
-		if (baserevid != 0) {
-			parameters.put("baserevid", Long.toString(baserevid));
-		}
-		
-		if (summary != null) {
-			parameters.put("summary", summary);
-		}
-		
-		if (tags != null && !tags.isEmpty()) {
-			parameters.put("tags", String.join("|", tags));
-		}
+
+    if (newEntity != null) {
+      parameters.put("new", newEntity);
+      validateIfnewEntity(title, site, id);
+    } else if (id != null) {
+      parameters.put("id", id);
+      validateEditEntityDataUsingId(title, site);
+    } else if (title != null) {
+      validateEditEntityData(site);
+      parameters.put("site", site);
+      parameters.put("title", title);
+    } else if (!"wbsetclaim".equals(action) && !"wbremoveclaims".equals(action)) {
+      throw new IllegalArgumentException(
+          "This action must create a new item, or specify an id, or specify a site and title.");
+    }
+
+    if (bot) {
+      parameters.put("bot", "");
+    }
+
+    if (baserevid != 0) {
+      parameters.put("baserevid", Long.toString(baserevid));
+    }
+
+    if (summary != null) {
+      parameters.put("summary", summary);
+    }
+
+    if (tags != null && !tags.isEmpty()) {
+      parameters.put("tags", String.join("|", tags));
+    }
 
 		parameters.put("maxlag", Integer.toString(this.maxLag));
 		parameters.put("token", connection.getOrFetchToken("csrf"));
@@ -771,8 +762,26 @@ public class WbEditingAction {
 
 		return result;
 	}
-	
-	/**
+
+  private void validateEditEntityData(String site) {
+    if (site == null) {
+      throw new IllegalArgumentException("Site parameter is required when using title parameter to edit entity data.");
+      }
+  }
+
+  private void validateEditEntityDataUsingId(String title, String site) {
+    if (title != null || site != null) {
+      throw new IllegalArgumentException("Cannot use parameters \"site\" or \"title\" when using id to edit entity data");
+    }
+  }
+
+  private void validateIfnewEntity(String title, String site, String id) {
+    if (title != null || site != null || id != null) {
+      throw new IllegalArgumentException("Cannot use parameters \"id\", \"site\", or \"title\" when creating a new entity.");
+    }
+  }
+
+  /**
 	 * TODO: TO BE REFACTORED
 	 * @param root
 	 * @return

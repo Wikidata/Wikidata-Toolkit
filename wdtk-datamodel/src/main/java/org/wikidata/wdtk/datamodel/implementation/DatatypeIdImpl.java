@@ -198,23 +198,29 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 				return DatatypeIdImpl.JSON_DT_EDTF;
 			default:
 				//We apply the reverse algorithm of JacksonDatatypeId::getDatatypeIriFromJsonDatatype
-				Matcher matcher = DATATYPE_ID_PATTERN.matcher(datatypeIri);
-				if(!matcher.matches()) {
-					throw new IllegalArgumentException("Unknown datatype: " + datatypeIri);
-				}
-		
-				StringBuilder jsonDatatypeBuilder = new StringBuilder();
-				for(char ch : StringUtils.uncapitalize(matcher.group(1)).toCharArray()) {
-					if(Character.isUpperCase(ch)) {
-						jsonDatatypeBuilder
-								.append('-')
-								.append(Character.toLowerCase(ch));
-					} else {
-						jsonDatatypeBuilder.append(ch);
-					}
-				}
+				StringBuilder jsonDatatypeBuilder = defaultJsonDatatypeFromDatatypeIri(datatypeIri);
 				return jsonDatatypeBuilder.toString();
 		}
+	}
+
+	public static StringBuilder defaultJsonDatatypeFromDatatypeIri(String datatypeIri)
+	{
+		Matcher matcher = DATATYPE_ID_PATTERN.matcher(datatypeIri);
+		if(!matcher.matches()) {
+			throw new IllegalArgumentException("Unknown datatype: " + datatypeIri);
+		}
+
+		StringBuilder jsonDatatypeBuilder = new StringBuilder();
+		for(char ch : StringUtils.uncapitalize(matcher.group(1)).toCharArray()) {
+			if(Character.isUpperCase(ch)) {
+				jsonDatatypeBuilder
+						.append('-')
+						.append(Character.toLowerCase(ch));
+			} else {
+				jsonDatatypeBuilder.append(ch);
+			}
+		}
+		return jsonDatatypeBuilder;
 	}
 	
 	/**

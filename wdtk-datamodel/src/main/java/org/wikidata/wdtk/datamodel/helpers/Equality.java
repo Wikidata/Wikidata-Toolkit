@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.helpers;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -90,41 +90,42 @@ public class Equality {
 			&& o1.getJsonString().equals(((DatatypeIdValue) o2).getJsonString());
 	}
 
-	/**
-	 * Returns {@code true} if the parameters are two {@link TimeValue} objects with
-	 * exactly the same data. It does not matter if they are different
-	 * implementations of the interface as long as their content is the same.
-	 *
-	 * @param o1
-	 *            the first object to compare
-	 * @param o2
-	 *            the second object to compare
-	 * @return {@code true} if both objects are equal
-	 */
-	public static boolean equalsTimeValue(TimeValue o1, Object o2) {
-		if (o2 == null) {
-			return false;
-		}
-		if (o2 == o1) {
-			return true;
-		}
-		if (!(o2 instanceof TimeValue)) {
-			return false;
-		}
-		TimeValue other = (TimeValue) o2;
-		return o1.getYear() == other.getYear()
-				&& o1.getMonth() == other.getMonth()
-				&& o1.getDay() == other.getDay()
-				&& o1.getHour() == other.getHour()
-				&& o1.getMinute() == other.getMinute()
-				&& o1.getSecond() == other.getSecond()
-				&& o1.getPrecision() == other.getPrecision()
-				&& o1.getBeforeTolerance() == other.getBeforeTolerance()
-				&& o1.getAfterTolerance() == other.getAfterTolerance()
-				&& o1.getTimezoneOffset() == other.getTimezoneOffset()
-				&& o1.getPreferredCalendarModel().equals(
-						other.getPreferredCalendarModel());
-	}
+  /**
+   * Returns {@code true} if the parameters are two {@link TimeValue} objects with
+   * exactly the same data. It does not matter if they are different
+   * implementations of the interface as long as their content is the same.
+   *
+   * @param o1
+   *            the first object to compare
+   * @param o2
+   *            the second object to compare
+   * @return {@code true} if both objects are equal
+   */
+  public static boolean equalsTimeValue(TimeValue o1, Object o2) {
+    if (o2 == null) {
+      return false;
+    }
+    if (o2 == o1) {
+      return true;
+    }
+    if (!(o2 instanceof TimeValue)) {
+      return false;
+    }
+    TimeValue other = (TimeValue) o2;
+
+    boolean equalTimeStamp =
+        (o1.getYear() == other.getYear() && o1.getMonth() == other.getMonth() && o1.getDay() == other.getDay()
+            && o1.getHour() == other.getHour() && o1.getMinute() == other.getMinute()
+            && o1.getSecond() == other.getSecond() && o1.getTimezoneOffset() == other.getTimezoneOffset());
+
+    boolean equalTolerance =
+        (o1.getBeforeTolerance() == other.getBeforeTolerance() && o1.getAfterTolerance() == other.getAfterTolerance());
+
+		return equalTimeStamp && equalTolerance
+				 && o1.getPrecision() == other.getPrecision()
+				 && o1.getPreferredCalendarModel()
+        .equals(other.getPreferredCalendarModel());
+  }
 
 	/**
 	 * Returns {@code true} if the parameters are two {@link GlobeCoordinatesValue}
