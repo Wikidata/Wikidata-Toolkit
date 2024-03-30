@@ -92,24 +92,6 @@ public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDoc
 		this.glosses = glosses;
 	}
 
-	private static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {
-		Map<String, MonolingualTextValue> map = new HashMap<>();
-		for(MonolingualTextValue term : terms) {
-			String language = term.getLanguageCode();
-			if(map.containsKey(language)) {
-				throw new IllegalArgumentException("Multiple terms provided for the same language.");
-			}
-			// We need to make sure the terms are of the right type, otherwise they will not
-			// be serialized correctly.
-			map.put(language, toTerm(term));
-		}
-		return map;
-	}
-
-	private static MonolingualTextValue toTerm(MonolingualTextValue term) {
-		return (term instanceof TermImpl) ? term : new TermImpl(term.getLanguageCode(), term.getText());
-	}
-
 	@JsonIgnore
 	@Override
 	public SenseIdValue getEntityId() {

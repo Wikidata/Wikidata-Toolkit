@@ -103,29 +103,10 @@ abstract class LabeledStatementDocumentImpl extends StatementDocumentImpl implem
 		return Collections.unmodifiableMap(this.labels);
 	}
 
-	protected static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {
-		Map<String, MonolingualTextValue> map = new HashMap<>();
-		for(MonolingualTextValue term : terms) {
-			String language = term.getLanguageCode();
-			if(map.containsKey(language)) {
-				throw new IllegalArgumentException("Multiple terms provided for the same language.");
-			}
-			map.put(language, toTerm(term));
-		}
-		return map;
-	}
-
 	protected static Map<String, MonolingualTextValue> withTerm(
 			Map<String, MonolingualTextValue> values, MonolingualTextValue value) {
 		Map<String, MonolingualTextValue> newValues = new HashMap<>(values);
 		newValues.put(value.getLanguageCode(), toTerm(value));
 		return newValues;
-	}
-
-	/**
-	 * We need to make sure the terms are of the right type, otherwise they will not be serialized correctly.
-	 */
-	private static MonolingualTextValue toTerm(MonolingualTextValue term) {
-		return term instanceof TermImpl ? term : new TermImpl(term.getLanguageCode(), term.getText());
 	}
 }

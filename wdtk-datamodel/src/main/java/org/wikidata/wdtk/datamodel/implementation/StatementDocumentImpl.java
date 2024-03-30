@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
@@ -222,5 +223,22 @@ abstract class StatementDocumentImpl extends EntityDocumentImpl implements State
 			}
 		}
 		return newClaims;
+	}
+	protected static MonolingualTextValue toTerm(MonolingualTextValue term) {
+		return (term instanceof TermImpl) ? term : new TermImpl(term.getLanguageCode(), term.getText());
+	}
+
+	protected static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {
+		Map<String, MonolingualTextValue> map = new HashMap<>();
+		for(MonolingualTextValue term : terms) {
+			String language = term.getLanguageCode();
+			if(map.containsKey(language)) {
+				throw new IllegalArgumentException("Multiple terms provided for the same language.");
+			}
+			// We need to make sure the terms are of the right type, otherwise they will not
+			// be serialized correctly.
+			map.put(language, toTerm(term));
+		}
+		return map;
 	}
 }

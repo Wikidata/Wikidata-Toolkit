@@ -203,13 +203,6 @@ public abstract class TermedStatementDocumentImpl extends LabeledStatementDocume
 	}
 
 	/**
-	 * We need to make sure the terms are of the right type, otherwise they will not be serialized correctly.
-	 */
-	private static MonolingualTextValue toTerm(MonolingualTextValue term) {
-		return term instanceof TermImpl ? term : new TermImpl(term.getLanguageCode(), term.getText());
-	}
-
-	/**
 	 * A deserializer implementation for the aliases in an
 	 * {@link TermedStatementDocumentImpl}.
 	 * <p>
