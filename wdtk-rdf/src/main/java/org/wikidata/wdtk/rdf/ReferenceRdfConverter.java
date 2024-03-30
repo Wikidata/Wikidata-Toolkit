@@ -46,7 +46,7 @@ public class ReferenceRdfConverter {
 	final List<Resource> referenceSubjectQueue = new ArrayList<>();
 	final Set<Resource> declaredReferences = new HashSet<>();
 	final String siteUri;
-
+	public static final String PREFIX_WIKIDATA_REFERENCE = "http://www.wikidata.org/reference/";
 	/**
 	 * Constructor.
 	 *
@@ -73,12 +73,28 @@ public class ReferenceRdfConverter {
 	 * @return RDF resource that represents this reference
 	 */
 	public Resource addReference(Reference reference) {
-		Resource resource = this.rdfWriter.getUri(Vocabulary.getReferenceUri(reference));
+		Resource resource = this.rdfWriter.getUri(getReferenceUri(reference));
 
 		this.referenceQueue.add(reference);
 		this.referenceSubjectQueue.add(resource);
 
 		return resource;
+	}
+
+	public static String getReferenceUri(Reference reference) {
+		final String hash = reference.getHash();
+		if (hash != null) {
+			return PREFIX_WIKIDATA_REFERENCE + hash;
+		}
+
+		Vocabulary.md.reset();
+		reference.getSnakGroups().stream()
+				.flatMap(g -> g.getSnaks().stream())
+				.map(Objects::hashCode)
+				.sorted()
+				.forEach(i -> Vocabulary.updateMessageDigestWithInt(Vocabulary.md, i));
+
+		return PREFIX_WIKIDATA_REFERENCE + Vocabulary.bytesToHex(Vocabulary.md.digest());
 	}
 
 	/**

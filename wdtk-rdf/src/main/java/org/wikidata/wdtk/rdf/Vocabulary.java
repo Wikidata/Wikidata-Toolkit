@@ -65,8 +65,6 @@ public class Vocabulary {
 
 	public static final String PREFIX_GEO = "http://www.opengis.net/ont/geosparql#";
 
-	public static final String PREFIX_WIKIDATA_REFERENCE = "http://www.wikidata.org/reference/";
-
 	public static final String PREFIX_WIKIDATA_NO_VALUE = "http://www.wikidata.org/prop/novalue/";
 
 	public static final String PREFIX_WIKIDATA_NO_QUALIFIER_VALUE = PREFIX_WIKIDATA_NO_VALUE;
@@ -557,22 +555,6 @@ public class Vocabulary {
 		default:
 			return null;
 		}
-	}
-
-	public static String getReferenceUri(Reference reference) {
-		final String hash = reference.getHash();
-		if (hash != null) {
-			return PREFIX_WIKIDATA_REFERENCE + hash;
-		}
-
-		md.reset();
-		reference.getSnakGroups().stream()
-				.flatMap(g -> g.getSnaks().stream())
-				.map(Objects::hashCode)
-				.sorted()
-				.forEach(i -> updateMessageDigestWithInt(md, i));
-
-		return PREFIX_WIKIDATA_REFERENCE + bytesToHex(md.digest());
 	}
 
 	public static String getTimeValueUri(TimeValue value) {
