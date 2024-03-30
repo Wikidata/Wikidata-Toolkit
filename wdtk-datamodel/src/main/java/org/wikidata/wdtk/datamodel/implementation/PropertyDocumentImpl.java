@@ -108,7 +108,8 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {
         super(jsonId, labels, descriptions, aliases, claims, revisionId, siteIri);
-        this.datatype = new DatatypeIdImpl(DatatypeIdImpl.getDatatypeIriFromJsonDatatype(datatype), datatype);
+    DatatypeJsonUtils datatypeJsonUtils = new DatatypeJsonUtils();
+    this.datatype = new DatatypeIdImpl(datatypeJsonUtils.getDatatypeIriFromJsonDatatype(datatype), datatype);
     }
 
     /**

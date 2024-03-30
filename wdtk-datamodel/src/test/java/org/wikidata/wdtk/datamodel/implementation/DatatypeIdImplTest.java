@@ -27,6 +27,7 @@ import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 
 public class DatatypeIdImplTest {
 
+	private final DatatypeJsonUtils datatypeJsonUtils = new DatatypeJsonUtils();
 	private final DatatypeIdImpl d1 = new DatatypeIdImpl(DatatypeIdValue.DT_ITEM);
 	private final DatatypeIdImpl d2 = new DatatypeIdImpl("http://wikiba.se/ontology#WikibaseItem");
 	private final DatatypeIdImpl d3 = new DatatypeIdImpl(DatatypeIdValue.DT_TIME);
@@ -61,7 +62,7 @@ public class DatatypeIdImplTest {
 	@Test
 	public void testDeserializeUnknownJsonDatatype() {
 		// for issue https://github.com/Wikidata/Wikidata-Toolkit/issues/716
-		assertEquals("http://wikiba.se/ontology#LocalMedia", DatatypeIdImpl.getDatatypeIriFromJsonDatatype("localMedia"));
+		assertEquals("http://wikiba.se/ontology#LocalMedia", datatypeJsonUtils.getDatatypeIriFromJsonDatatype("localMedia"));
 	}
 
 }
