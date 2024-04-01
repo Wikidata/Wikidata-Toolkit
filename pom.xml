@@ -74,7 +74,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<apacheCommonsCompressVersion>1.26.1</apacheCommonsCompressVersion>
 		<apacheCommonsLangVersion>3.14.0</apacheCommonsLangVersion>
-		<apacheCommonsIOVersion>2.15.1</apacheCommonsIOVersion>
+		<apacheCommonsIOVersion>2.16.0</apacheCommonsIOVersion>
 		<jacksonVersion>2.17.0</jacksonVersion>
 		<junitVersion>4.13.2</junitVersion>
 		<hamcrestVersion>2.2</hamcrestVersion>
