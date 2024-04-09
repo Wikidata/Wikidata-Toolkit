@@ -18,7 +18,6 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>
-			<version>${apacheCommonsCompressVersion}</version>
 		</dependency>
 	</dependencies>
 
