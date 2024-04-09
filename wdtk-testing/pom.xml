@@ -18,12 +18,12 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>wdtk-util</artifactId>
-			<version>${project.version}</version>
+                        <version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>  
-			<version>${mockitoVersion}</version> 
+                        <scope>compile</scope>
 		</dependency>
 	</dependencies>
 </project>

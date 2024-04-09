@@ -48,12 +48,10 @@
 		<dependency> 
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4jVersion}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>
-			<version>${apacheCommonsCompressVersion}</version>
 		</dependency>
 	</dependencies>
 
