@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.dumpfiles.wmf;
 
+import java.io.BufferedReader;
+
 /*
  * #%L
  * Wikidata Toolkit Dump File Handling
@@ -22,6 +24,9 @@ package org.wikidata.wdtk.dumpfiles.wmf;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,9 +120,30 @@ public class JsonOnlineDumpFile extends WmfDumpFile {
 
 	@Override
 	protected boolean fetchIsDone() {
-		// WMF provides no easy way to check this for these files;
-		// so just assume it is done
-		return true;
+		boolean result = false;
+		String fileName = WmfDumpFile.getDumpFileName(DumpContentType.JSON,
+				this.projectName, this.dateStamp);
+		try (InputStream in = this.webResourceFetcher
+				.getInputStreamForUrl(getBaseUrl())) {
+			BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(in, StandardCharsets.UTF_8));
+			String inputLine;
+			while ((inputLine = bufferedReader.readLine()) != null) {
+				System.out.println(inputLine);
+				if (inputLine.startsWith("<a href=")) {
+					System.out.println(inputLine);
+					inputLine = inputLine.replaceAll(".*href=\"(.*?)\".*", "$1");
+					System.out.println(inputLine);
+					if (inputLine.equals(fileName)) {
+						return true;
+					}
+				}
+			}
+			bufferedReader.close();
+		} catch (IOException e) { // file not found or not readable
+			result = false;
+		}
+		return result;
 	}
 
 	/**
@@ -127,7 +153,7 @@ public class JsonOnlineDumpFile extends WmfDumpFile {
 	 */
 	String getBaseUrl() {
 		return WmfDumpFile.getDumpFileWebDirectory(DumpContentType.JSON,
-				this.projectName);
+				this.projectName) + this.dateStamp + "/";
 	}
 
 }

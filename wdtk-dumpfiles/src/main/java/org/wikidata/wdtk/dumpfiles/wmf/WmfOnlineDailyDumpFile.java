@@ -137,7 +137,7 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 					new InputStreamReader(in, StandardCharsets.UTF_8));
 			String inputLine = bufferedReader.readLine();
 			bufferedReader.close();
-			result = "done".equals(inputLine);
+			result = inputLine.startsWith("done");
 		} catch (IOException e) { // file not found or not readable
 			result = false;
 		}
