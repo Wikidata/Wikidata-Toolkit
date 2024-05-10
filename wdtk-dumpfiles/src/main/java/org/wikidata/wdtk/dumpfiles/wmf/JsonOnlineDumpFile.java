@@ -1,7 +1,5 @@
 package org.wikidata.wdtk.dumpfiles.wmf;
 
-import java.io.BufferedReader;
-
 /*
  * #%L
  * Wikidata Toolkit Dump File Handling
@@ -24,8 +22,8 @@ import java.io.BufferedReader;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 
 import org.slf4j.Logger;
@@ -33,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.WebResourceFetcher;
+import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 
 public class JsonOnlineDumpFile extends WmfDumpFile {
 
@@ -123,23 +122,15 @@ public class JsonOnlineDumpFile extends WmfDumpFile {
 		boolean result = false;
 		String fileName = WmfDumpFile.getDumpFileName(DumpContentType.JSON,
 				this.projectName, this.dateStamp);
-		try (InputStream in = this.webResourceFetcher
-				.getInputStreamForUrl(getBaseUrl())) {
-			BufferedReader bufferedReader = new BufferedReader(
-					new InputStreamReader(in, StandardCharsets.UTF_8));
-			String inputLine;
-			while ((inputLine = bufferedReader.readLine()) != null) {
-				System.out.println(inputLine);
-				if (inputLine.startsWith("<a href=")) {
-					System.out.println(inputLine);
-					inputLine = inputLine.replaceAll(".*href=\"(.*?)\".*", "$1");
-					System.out.println(inputLine);
-					if (inputLine.equals(fileName)) {
-						return true;
-					}
-				}
+		String urlString = getBaseUrl() + fileName;
+		// make a head request to check if resource exists
+		try {
+			HttpURLConnection connection = (HttpURLConnection) WebResourceFetcherImpl.getUrlConnection(new URL(urlString));
+			connection.setRequestMethod("HEAD");
+			int responseCode = connection.getResponseCode();
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				result = true;
 			}
-			bufferedReader.close();
 		} catch (IOException e) { // file not found or not readable
 			result = false;
 		}
