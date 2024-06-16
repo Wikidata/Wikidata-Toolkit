@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.wikidata.wdtk</groupId>
 		<artifactId>wdtk-parent</artifactId>
-		<version>0.15.2-SNAPSHOT</version>
+		<version>0.15.2</version>
 	</parent>
 
 	<artifactId>wdtk-examples</artifactId>
