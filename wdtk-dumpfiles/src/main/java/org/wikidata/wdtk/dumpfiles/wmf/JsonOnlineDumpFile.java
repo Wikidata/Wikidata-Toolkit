@@ -22,12 +22,16 @@ package org.wikidata.wdtk.dumpfiles.wmf;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.WebResourceFetcher;
+import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 
 public class JsonOnlineDumpFile extends WmfDumpFile {
 
@@ -115,9 +119,22 @@ public class JsonOnlineDumpFile extends WmfDumpFile {
 
 	@Override
 	protected boolean fetchIsDone() {
-		// WMF provides no easy way to check this for these files;
-		// so just assume it is done
-		return true;
+		boolean result = false;
+		String fileName = WmfDumpFile.getDumpFileName(DumpContentType.JSON,
+				this.projectName, this.dateStamp);
+		String urlString = getBaseUrl() + fileName;
+		// make a head request to check if resource exists
+		try {
+			HttpURLConnection connection = (HttpURLConnection) WebResourceFetcherImpl.getUrlConnection(new URL(urlString));
+			connection.setRequestMethod("HEAD");
+			int responseCode = connection.getResponseCode();
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				result = true;
+			}
+		} catch (IOException e) { // file not found or not readable
+			result = false;
+		}
+		return result;
 	}
 
 	/**
@@ -127,7 +144,7 @@ public class JsonOnlineDumpFile extends WmfDumpFile {
 	 */
 	String getBaseUrl() {
 		return WmfDumpFile.getDumpFileWebDirectory(DumpContentType.JSON,
-				this.projectName);
+				this.projectName) + this.dateStamp + "/";
 	}
 
 }

@@ -53,7 +53,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.CURRENT, "");
 		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.FULL, "");
 		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.SITES, "");
-		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.JSON, "other/");
+		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.JSON, "");
 	}
 
 	/**
@@ -68,7 +68,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 		WmfDumpFile.POSTFIXES.put(DumpContentType.FULL,
 				"-pages-meta-history.xml.bz2");
 		WmfDumpFile.POSTFIXES.put(DumpContentType.SITES, "-sites.sql.gz");
-		WmfDumpFile.POSTFIXES.put(DumpContentType.JSON, ".json.gz");
+		WmfDumpFile.POSTFIXES.put(DumpContentType.JSON, "-all.json.gz");
 	}
 
 	/**
@@ -172,7 +172,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 			if ("wikidatawiki".equals(projectName)) {
 				return WmfDumpFile.DUMP_SITE_BASE_URL
 						+ WmfDumpFile.WEB_DIRECTORY.get(dumpContentType)
-						+ "wikidata" + "/";
+						+ projectName + "/entities/";
 			} else {
 				throw new RuntimeException(
 						"Wikimedia Foundation uses non-systematic directory names for this type of dump file."
@@ -253,7 +253,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	public static String getDumpFileName(DumpContentType dumpContentType,
 			String projectName, String dateStamp) {
 		if (dumpContentType == DumpContentType.JSON) {
-			return dateStamp + WmfDumpFile.getDumpFilePostfix(dumpContentType);
+			return "wikidata-" + dateStamp + WmfDumpFile.getDumpFilePostfix(dumpContentType);
 		} else {
 			return projectName + "-" + dateStamp
 					+ WmfDumpFile.getDumpFilePostfix(dumpContentType);

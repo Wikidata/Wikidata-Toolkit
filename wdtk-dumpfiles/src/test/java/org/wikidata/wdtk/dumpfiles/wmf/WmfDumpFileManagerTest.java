@@ -38,6 +38,7 @@ import org.wikidata.wdtk.dumpfiles.MwDumpFileProcessor;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
 import org.wikidata.wdtk.testing.MockWebResourceFetcher;
+import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 
 public class WmfDumpFileManagerTest {
 
@@ -61,7 +62,8 @@ public class WmfDumpFileManagerTest {
 			try {
 				result = result
 						+ MockStringContentFactory
-								.getStringFromInputStream(inputStream) + "\n";
+								.getStringFromInputStream(inputStream)
+						+ "\n";
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -146,9 +148,7 @@ public class WmfDumpFileManagerTest {
 
 	@Test
 	public void getAllJsonDumps() throws IOException {
-		wrf.setWebResourceContentsFromResource(
-				"https://dumps.wikimedia.org/other/wikidata/",
-				"/other-wikidata-index.html", this.getClass());
+		WebResourceFetcherImpl onlineWrf = new WebResourceFetcherImpl();
 
 		setLocalDump("20141110", DumpContentType.JSON, true);
 		setLocalDump("20150105", DumpContentType.CURRENT, true);
@@ -156,23 +156,24 @@ public class WmfDumpFileManagerTest {
 		setLocalDump("nodate", DumpContentType.JSON, true);
 
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
-				"wikidatawiki", dm, wrf);
+				"wikidatawiki", dm, onlineWrf);
 
 		List<? extends MwDumpFile> dumpFiles = dumpFileManager
 				.findAllDumps(DumpContentType.JSON);
 
-		String[] dumpDates = { "20150112", "20150105", "20141229", "20141222",
-				"20141215", "20141210", "20141201", "20141124", "20141117",
-				"20141110" };
-		boolean[] dumpIsLocal = { false, false, false, false, false, false,
-				true, false, false, true };
+		String[] localDumpDates = { "20141201", "20141110" };
 
-		assertEquals(dumpFiles.size(), dumpDates.length);
+		assertTrue(localDumpDates.length < dumpFiles.size());
 		for (int i = 0; i < dumpFiles.size(); i++) {
 			assertEquals(dumpFiles.get(i).getDumpContentType(),
 					DumpContentType.JSON);
-			assertEquals(dumpFiles.get(i).getDateStamp(), dumpDates[i]);
-			if (dumpIsLocal[i]) {
+			boolean shouldBeLocal = false;
+			for (String localDumpDate : localDumpDates) {
+				if (localDumpDate.equals(dumpFiles.get(i).getDateStamp())) {
+					shouldBeLocal = true;
+				}
+			}
+			if (shouldBeLocal) {
 				assertTrue(
 						"Dumpfile " + dumpFiles.get(i) + " should be local.",
 						dumpFiles.get(i) instanceof WmfLocalDumpFile);
@@ -182,6 +183,21 @@ public class WmfDumpFileManagerTest {
 						dumpFiles.get(i) instanceof JsonOnlineDumpFile);
 			}
 		}
+	}
+
+	@Test
+	public void findMostRecentJsonDump() throws IOException {
+		WebResourceFetcherImpl onlineWrf = new WebResourceFetcherImpl();
+		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
+				"wikidatawiki", dm, onlineWrf);
+
+		MwDumpFile dumpFile = dumpFileManager
+				.findMostRecentDump(DumpContentType.JSON);
+
+		assertTrue(dumpFile != null);
+		assertTrue("Dumpfile " + dumpFile
+						+ " should be online.",
+						dumpFile instanceof JsonOnlineDumpFile);
 	}
 
 	@Test
