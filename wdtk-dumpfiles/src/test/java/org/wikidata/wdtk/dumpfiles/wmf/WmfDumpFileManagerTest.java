@@ -186,6 +186,21 @@ public class WmfDumpFileManagerTest {
 	}
 
 	@Test
+	public void findMostRecentJsonDump() throws IOException {
+		WebResourceFetcherImpl onlineWrf = new WebResourceFetcherImpl();
+		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
+				"wikidatawiki", dm, onlineWrf);
+
+		MwDumpFile dumpFile = dumpFileManager
+				.findMostRecentDump(DumpContentType.JSON);
+
+		assertTrue(dumpFile != null);
+		assertTrue("Dumpfile " + dumpFile
+						+ " should be online.",
+						dumpFile instanceof JsonOnlineDumpFile);
+	}
+
+	@Test
 	public void getAllCurrentDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
 				"https://dumps.wikimedia.org/wikidatawiki/",
