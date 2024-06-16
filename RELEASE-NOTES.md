@@ -1,7 +1,7 @@
 Wikidata Toolkit Release Notes
 ==============================
 
-Version 0.15.1
+Version 0.15.3
 --------------
 
 Bug fix:
@@ -10,7 +10,7 @@ Bug fix:
 Incompatible change:
 * Minimum Java version changed from 8 to 11 (#839)
 
-Version 0.15.0 skipped because of publishing issues.
+Versions 0.15.0 to 0.15.2 are skipped because of publishing issues.
 
 Version 0.14.7
 --------------
