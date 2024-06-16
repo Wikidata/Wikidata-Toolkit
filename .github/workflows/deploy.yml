@@ -13,16 +13,11 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: zulu
-          java-version: 8
+          java-version: 17
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
-      - name: Import GPG Key
-        run: |
-          mkdir -p ~/.gnupg/
-          echo "$MAVEN_SIGNING_KEY" | gpg --import -
-        env:
-          MAVEN_SIGNING_KEY: ${{ secrets.MAVEN_SIGNING_KEY }}
+          gpg-private-key: ${{ secrets.MAVEN_SIGNING_KEY }}
       - name: Maven Deploy
         run: mvn -B -V deploy -Ddeploy
         env:
