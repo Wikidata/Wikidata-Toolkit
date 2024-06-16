@@ -44,7 +44,7 @@ public class FetchOnlineDataExample {
 				Datamodel.SITE_WIKIDATA);
 
 		System.out.println("*** Fetching data for one entity:");
-		EntityDocument q42 = wbdf.getEntityDocument("Q42");
+		EntityDocument q42 = wbdf.getEntityDocument("L1259271");
 		System.out.println(q42);
 
 		if (q42 instanceof ItemDocument) {

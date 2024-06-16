@@ -76,6 +76,8 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 		logger.info("Processing JSON dump file " + dumpFile.toString());
 
 		try {
+		    processDumpFileContentsRecovery(inputStream);
+		    /*
 			try {
 				MappingIterator<EntityDocument> documentIterator = documentReader.readValues(inputStream);
 				documentIterator.getParser().disable(Feature.AUTO_CLOSE_SOURCE);
@@ -88,7 +90,7 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 			} catch (JsonProcessingException e) {
 				logJsonProcessingException(e);
 				processDumpFileContentsRecovery(inputStream);
-			}
+			}*/
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot read JSON input: "
 					+ e.getMessage(), e);

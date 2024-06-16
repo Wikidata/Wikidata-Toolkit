@@ -1,6 +1,15 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.15.0
+--------------
+
+Bug fix:
+* Download of online dumps was fixed (#872)
+
+Incompatible change:
+* Minimum Java version changed from 8 to 11 (#839)
+
 Version 0.14.7
 --------------
 

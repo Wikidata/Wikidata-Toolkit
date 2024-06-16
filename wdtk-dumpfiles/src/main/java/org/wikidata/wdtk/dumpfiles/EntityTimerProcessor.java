@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentDumpProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.util.Timer;
 
@@ -95,6 +96,13 @@ public class EntityTimerProcessor implements EntityDocumentDumpProcessor {
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
 		countEntity();
 	}
+	/*
+	@Override
+	public void processLexemeDocument(LexemeDocument lexemeDocument) {
+	    System.out.println("Lexeme: "+lexemeDocument.getEntityId().getId());
+	    countEntity();
+	}
+	*/
 
 	@Override
 	public void open() {
