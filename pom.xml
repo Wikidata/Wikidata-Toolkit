@@ -171,7 +171,7 @@
 			<dependency>
 				<groupId>org.eclipse.rdf4j</groupId>
 				<artifactId>rdf4j-rio-turtle</artifactId>
-				<version>4.3.12</version>
+				<version>5.0.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.rdf4j</groupId>
