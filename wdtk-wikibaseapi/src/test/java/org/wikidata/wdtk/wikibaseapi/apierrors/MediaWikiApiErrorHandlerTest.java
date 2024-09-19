@@ -22,6 +22,8 @@ package org.wikidata.wdtk.wikibaseapi.apierrors;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Collections;
+
 import org.junit.Test;
 
 public class MediaWikiApiErrorHandlerTest {
@@ -32,7 +34,7 @@ public class MediaWikiApiErrorHandlerTest {
 		String message = "";
 		try {
 			MediaWikiApiErrorHandler.throwMediaWikiApiErrorException("unknown",
-					"some message");
+					"some message", Collections.emptyList());
 		} catch (MediaWikiApiErrorException e) {
 			code = e.getErrorCode();
 			message = e.getErrorMessage();
@@ -45,32 +47,32 @@ public class MediaWikiApiErrorHandlerTest {
 	@Test(expected = TokenErrorException.class)
 	public void testNoTokenError() throws MediaWikiApiErrorException {
 		MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(
-				MediaWikiApiErrorHandler.ERROR_NO_TOKEN, "some message");
+				MediaWikiApiErrorHandler.ERROR_NO_TOKEN, "some message", Collections.emptyList());
 	}
 
 	@Test(expected = TokenErrorException.class)
 	public void testBadTokenError() throws MediaWikiApiErrorException {
 		MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(
-				MediaWikiApiErrorHandler.ERROR_INVALID_TOKEN, "some message");
+				MediaWikiApiErrorHandler.ERROR_INVALID_TOKEN, "some message", Collections.emptyList());
 	}
 
 	@Test(expected = EditConflictErrorException.class)
 	public void testEditConflictError() throws MediaWikiApiErrorException {
 		MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(
-				MediaWikiApiErrorHandler.ERROR_EDIT_CONFLICT, "some message");
+				MediaWikiApiErrorHandler.ERROR_EDIT_CONFLICT, "some message", Collections.emptyList());
 	}
 
 	@Test(expected = NoSuchEntityErrorException.class)
 	public void testNoSuchEntityError() throws MediaWikiApiErrorException {
 		MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(
-				MediaWikiApiErrorHandler.ERROR_NO_SUCH_ENTITY, "some message");
+				MediaWikiApiErrorHandler.ERROR_NO_SUCH_ENTITY, "some message", Collections.emptyList());
 	}
 
 	@Test(expected = MaxlagErrorException.class)
 	public void testMaxlagError() throws MediaWikiApiErrorException {
 		MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(
 				MediaWikiApiErrorHandler.ERROR_MAXLAG,
-				"Waiting for 10.64.16.27: 2 seconds lagged");
+				"Waiting for 10.64.16.27: 2 seconds lagged", Collections.emptyList());
 	}
 
 }

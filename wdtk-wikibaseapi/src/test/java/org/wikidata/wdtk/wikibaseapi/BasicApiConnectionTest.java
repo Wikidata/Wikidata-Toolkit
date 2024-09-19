@@ -52,6 +52,7 @@ import org.wikidata.wdtk.testing.MockStringContentFactory;
 import org.wikidata.wdtk.wikibaseapi.apierrors.AssertUserFailedException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiErrorMessage;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -328,6 +329,22 @@ public class BasicApiConnectionTest {
 			assertEquals(3.45, e.getLag(), 0.001);
 		}
 	}
+	   
+    @Test
+    public void testAbuseFilterError() throws IOException, MediaWikiApiErrorException {
+        JsonNode root;
+        URL path = this.getClass().getResource("/error-spam-filter.json");
+        root = mapper.readTree(path.openStream());
+        try {
+            connection.checkErrors(root);
+        } catch(MediaWikiApiErrorException e) {
+            List<MediaWikiErrorMessage> expectedMessages = Arrays.asList(
+                    new MediaWikiErrorMessage("wikibase-api-failed-save", "The save has failed."),
+                    new MediaWikiErrorMessage("spam-blacklisted-link", "The text you wanted to publish was blocked by the spam filter.")
+            );
+            assertEquals(expectedMessages, e.getDetailedMessages());
+        }
+    }
 
 	@Test
 	public void testClearCookies() throws LoginFailedException, IOException, MediaWikiApiErrorException {

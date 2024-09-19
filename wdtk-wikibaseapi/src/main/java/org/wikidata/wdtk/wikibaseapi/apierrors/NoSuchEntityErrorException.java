@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.wikibaseapi.apierrors;
 
+import java.util.List;
+
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -38,8 +40,22 @@ public class NoSuchEntityErrorException extends MediaWikiApiErrorException {
 	 *            the error message reported by MediaWiki, or any other
 	 *            meaningful message for the user
 	 */
+	@Deprecated(since = "0.16.0")
 	public NoSuchEntityErrorException(String errorMessage) {
 		super(MediaWikiApiErrorHandler.ERROR_NO_SUCH_ENTITY, errorMessage);
 	}
+	
+	/**
+     * Creates a new exception.
+     *
+     * @param errorMessage
+     *            the error message reported by MediaWiki, or any other
+     *            meaningful message for the user
+     * @param detailedMessages
+     *            the more detailed messages returned by MediaWiki
+     */
+    public NoSuchEntityErrorException(String errorMessage, List<MediaWikiErrorMessage> detailedMessages) {
+        super(MediaWikiApiErrorHandler.ERROR_NO_SUCH_ENTITY, errorMessage, detailedMessages);
+    }
 
 }
