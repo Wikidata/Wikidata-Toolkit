@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.wikibaseapi.apierrors;
 
+import java.util.List;
+
 /*-
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -36,7 +38,21 @@ public class TagsApplyNotAllowedException extends MediaWikiApiErrorException {
 	 *            the error message reported by MediaWiki, or any other
 	 *            meaningful message for the user
 	 */
+	@Deprecated(since = "0.16.0")
 	public TagsApplyNotAllowedException(String errorMessage) {
 		super(MediaWikiApiErrorHandler.ERROR_TAGS_APPLY_NOT_ALLOWED, errorMessage);
 	}
+	
+	/**
+     * Creates a new exception.
+     *
+     * @param errorMessage
+     *            the error message reported by MediaWiki, or any other
+     *            meaningful message for the user
+     * @param detailedMessages
+     *            the more detailed messages returned by MediaWiki
+     */
+    public TagsApplyNotAllowedException(String errorMessage, List<MediaWikiErrorMessage> detailedMessages) {
+        super(MediaWikiApiErrorHandler.ERROR_TAGS_APPLY_NOT_ALLOWED, errorMessage, detailedMessages);
+    }
 }

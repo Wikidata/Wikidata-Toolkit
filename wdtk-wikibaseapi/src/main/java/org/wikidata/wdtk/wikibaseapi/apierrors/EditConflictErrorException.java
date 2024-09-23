@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.wikibaseapi.apierrors;
 
+import java.util.List;
+
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -37,8 +39,22 @@ public class EditConflictErrorException extends MediaWikiApiErrorException {
 	 *            the error message reported by MediaWiki, or any other
 	 *            meaningful message for the user
 	 */
+	@Deprecated(since = "0.16.0")
 	public EditConflictErrorException(String errorMessage) {
 		super(MediaWikiApiErrorHandler.ERROR_EDIT_CONFLICT, errorMessage);
 	}
+	
+	/**
+     * Creates a new exception.
+     *
+     * @param errorMessage
+     *            the root error message
+     * @param detailedMessages
+     *            additional details provided by the MediaWiki API
+     */
+    public EditConflictErrorException(String errorMessage, List<MediaWikiErrorMessage> detailedMessages) {
+        super(MediaWikiApiErrorHandler.ERROR_EDIT_CONFLICT, errorMessage, detailedMessages);
+    }
+
 
 }

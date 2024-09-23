@@ -42,9 +42,12 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.AssertUserFailedException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorHandler;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiErrorMessage;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -482,13 +485,23 @@ public abstract class ApiConnection {
 			JsonNode errorNode = root.path("error");
 			String code = errorNode.path("code").asText("UNKNOWN");
 			String info = errorNode.path("info").asText("No details provided");
+			
+			List<MediaWikiErrorMessage> messages = Collections.emptyList();
+			if (errorNode.has("messages")) {
+			    try {
+                    messages = this.mapper.treeToValue(errorNode.get("messages"), new TypeReference<List<MediaWikiErrorMessage>>() {});
+                } catch (JsonProcessingException | IllegalArgumentException e) {
+                    logger.warn("Could not parse 'messages' field of API error response");
+                }
+			}
+			
 			// Special case for the maxlag error since we also want to return
 			// the lag value in the exception thrown
 			if (errorNode.has("lag") && MediaWikiApiErrorHandler.ERROR_MAXLAG.equals(code)) {
 				double lag = errorNode.path("lag").asDouble();
 				throw new MaxlagErrorException(info, lag);
 			} else {
-				MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(code, info);
+				MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(code, info, messages);
 			}
 		}
 	}

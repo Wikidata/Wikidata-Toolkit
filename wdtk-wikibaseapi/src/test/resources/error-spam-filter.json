@@ -1,0 +1,31 @@
+{
+  "error": {
+    "code": "failed-save",
+    "info": "The save has failed.",
+    "messages": [
+      {
+        "name": "wikibase-api-failed-save",
+        "parameters": [],
+        "html": {
+          "*": "The save has failed."
+        }
+      },
+      {
+        "name": "spam-blacklisted-link",
+        "parameters": [
+          {
+            "list": [
+              "tinyurl.com/auniresc"
+            ],
+            "type": "text"
+          }
+        ],
+        "html": {
+          "*": "The text you wanted to publish was blocked by the spam filter."
+        }
+      }
+    ],
+    "*": "See https://www.wikidata.org/w/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/&gt; for notice of API deprecations and breaking changes."
+  },
+  "servedby": "mw-api-ext.eqiad.main-79f56d66b6-6hwm5"
+}

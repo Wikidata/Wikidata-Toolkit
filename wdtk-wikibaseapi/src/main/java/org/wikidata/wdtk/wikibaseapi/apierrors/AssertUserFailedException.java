@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.wikibaseapi.apierrors;
 
+import java.util.List;
+
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -32,8 +34,13 @@ public class AssertUserFailedException extends MediaWikiApiErrorException {
 
 	private static final long serialVersionUID = -619052434831693831L;
 
+	@Deprecated(since = "0.16.0")
 	public AssertUserFailedException(String errorMessage) {
 		super(MediaWikiApiErrorHandler.ERROR_ASSERT_USER_FAILED, errorMessage);
 	}
+	
+    public AssertUserFailedException(String errorMessage, List<MediaWikiErrorMessage> detailedMessages) {
+        super(MediaWikiApiErrorHandler.ERROR_ASSERT_USER_FAILED, errorMessage, detailedMessages);
+    }
 
 }

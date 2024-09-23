@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.wikibaseapi.apierrors;
 
+import java.util.List;
+
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -37,6 +39,40 @@ public class MediaWikiApiErrorHandler {
 	public final static String ERROR_TAGS_APPLY_NOT_ALLOWED = "tags-apply-not-allowed-one";
 
 	/**
+     * Creates and throws a suitable {@link MediaWikiApiErrorException} for the
+     * given error code and message.
+     *
+     * @param errorCode
+     *            the error code reported by MediaWiki
+     * @param errorMessage
+     *            the error message reported by MediaWiki, or any other
+     *            meaningful message for the user
+     * @throws MediaWikiApiErrorException
+     *             in all cases, but may throw a subclass for some errors
+     */
+    public static void throwMediaWikiApiErrorException(String errorCode,
+            String errorMessage, List<MediaWikiErrorMessage> detailedMessages) throws MediaWikiApiErrorException {
+        switch (errorCode) {
+        case ERROR_NO_TOKEN:
+        case ERROR_INVALID_TOKEN:
+            throw new TokenErrorException(errorCode, errorMessage, detailedMessages);
+        case ERROR_EDIT_CONFLICT:
+            throw new EditConflictErrorException(errorMessage, detailedMessages);
+        case ERROR_NO_SUCH_ENTITY:
+            throw new NoSuchEntityErrorException(errorMessage, detailedMessages);
+        case ERROR_MAXLAG:
+            throw new MaxlagErrorException(errorMessage);
+        case ERROR_ASSERT_USER_FAILED:
+            throw new AssertUserFailedException(errorMessage, detailedMessages);
+        case ERROR_TAGS_APPLY_NOT_ALLOWED:
+            throw new TagsApplyNotAllowedException(errorMessage, detailedMessages);
+        default:
+            throw new MediaWikiApiErrorException(errorCode, errorMessage, detailedMessages);
+        }
+    }
+        
+            
+	/**
 	 * Creates and throws a suitable {@link MediaWikiApiErrorException} for the
 	 * given error code and message.
 	 *
@@ -48,6 +84,7 @@ public class MediaWikiApiErrorHandler {
 	 * @throws MediaWikiApiErrorException
 	 *             in all cases, but may throw a subclass for some errors
 	 */
+    @Deprecated(since = "0.16.0")
 	public static void throwMediaWikiApiErrorException(String errorCode,
 			String errorMessage) throws MediaWikiApiErrorException {
 		switch (errorCode) {

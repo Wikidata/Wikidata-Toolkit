@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.wikibaseapi.apierrors;
 
+import java.util.List;
+
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -40,8 +42,24 @@ public class TokenErrorException extends MediaWikiApiErrorException {
 	 *            the error message reported by MediaWiki, or any other
 	 *            meaningful message for the user
 	 */
+	@Deprecated(since = "0.16.0")
 	public TokenErrorException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
+	
+	/**
+     * Creates a new exception.
+     *
+     * @param errorCode
+     *            the error code reported by MediaWiki
+     * @param errorMessage
+     *            the error message reported by MediaWiki, or any other
+     *            meaningful message for the user
+     * @param detailedMessages
+     *            the more detailed error messages returned by MediaWiki
+     */
+    public TokenErrorException(String errorCode, String errorMessage, List<MediaWikiErrorMessage> detailedMessages) {
+        super(errorCode, errorMessage, detailedMessages);
+    }
 
 }

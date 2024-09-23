@@ -1,5 +1,8 @@
 package org.wikidata.wdtk.wikibaseapi.apierrors;
 
+import java.util.Collections;
+import java.util.List;
+
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -30,11 +33,13 @@ public class MediaWikiApiErrorException extends Exception {
 
 	final String errorCode;
 	final String errorMessage;
+	final List<MediaWikiErrorMessage> detailedMessages;
 
 	private static final long serialVersionUID = 7834254856687745000L;
 
 	/**
-	 * Creates a new exception for the given error code and message.
+	 * Creates a new exception for the given error code and message, without
+	 * any detailed messages.
 	 *
 	 * @param errorCode
 	 *            MediaWiki reported error code
@@ -46,7 +51,27 @@ public class MediaWikiApiErrorException extends Exception {
 		super("[" + errorCode + "] " + errorMessage);
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
+		this.detailedMessages = Collections.emptyList();
 	}
+	
+	/**
+     * Creates a new exception for the given error code and message, together
+     * with detailed messages giving more insights on the error.
+     *
+     * @param errorCode
+     *            MediaWiki reported error code
+     * @param errorMessage
+     *            MediaWiki reported error message, or any other human-readable
+     *            message string generated locally
+     * @param detailedMessages
+     *            list of error messages also returned by MediaWiki (possibly empty)
+     */
+    public MediaWikiApiErrorException(String errorCode, String errorMessage, List<MediaWikiErrorMessage> detailedMessages) {
+        super("[" + errorCode + "] " + errorMessage);
+        this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
+        this.detailedMessages = detailedMessages;
+    }
 
 	/**
 	 * Returns the MediaWiki code of the error that has causes this exception.
@@ -66,6 +91,13 @@ public class MediaWikiApiErrorException extends Exception {
 	 */
 	public String getErrorMessage() {
 		return this.errorMessage;
+	}
+	
+	/**
+	 * Returns the list of additional error messages returned by MediaWiki.
+	 */
+	public List<MediaWikiErrorMessage> getDetailedMessages() {
+	    return this.detailedMessages;
 	}
 
 }
