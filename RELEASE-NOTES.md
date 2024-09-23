@@ -1,6 +1,12 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.16.0
+--------------
+
+New feature:
+* Expose detailed error messages in MediaWiki API errors (#911)
+
 Version 0.15.3
 --------------
 
