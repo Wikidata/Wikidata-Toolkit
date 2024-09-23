@@ -1,0 +1,7 @@
+{
+  "release-type": "maven",
+  "packages": {
+    ".": {}
+  },
+  "changelogPath": "RELEASE-NOTES.md"
+}
