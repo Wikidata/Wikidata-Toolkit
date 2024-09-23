@@ -19,4 +19,5 @@ jobs:
           # (PAT) and configured it as a GitHub action secret named
           # `MY_RELEASE_PLEASE_TOKEN` (this secret name is not important).
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-          config-file: release-please-config.json
+          config-file: .github/release-please-config.json
+          manifest-file: .github/release-please-manifest.json
