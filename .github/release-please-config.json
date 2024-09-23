@@ -4,5 +4,6 @@
     ".": {
       "changelog-path": "/RELEASE-NOTES.md"
     }
-  }
+  },
+  "changelog-path": "/RELEASE-NOTES.md"
 }
