@@ -176,7 +176,7 @@
 			<dependency>
 				<groupId>org.eclipse.rdf4j</groupId>
 				<artifactId>rdf4j-rio-ntriples</artifactId>
-				<version>5.0.2</version>
+				<version>5.0.3</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
