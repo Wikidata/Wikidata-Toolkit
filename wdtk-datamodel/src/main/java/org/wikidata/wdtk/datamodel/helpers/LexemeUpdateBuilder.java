@@ -410,13 +410,19 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 */
 	public LexemeUpdateBuilder append(LexemeUpdate update) {
 		super.append(update);
-		if (update.getLanguage().isPresent()) {
-			setLanguage(update.getLanguage().get());
-		}
-		if (update.getLexicalCategory().isPresent()) {
-			setLexicalCategory(update.getLexicalCategory().get());
-		}
+		updateLanguageAndCategory(update);
 		updateLemmas(update.getLemmas());
+		updateSenses(update);
+		updateForms(update);
+		return this;
+	}
+	
+	private void updateLanguageAndCategory(LexemeUpdate update) {
+		update.getLanguage().ifPresent(this::setLanguage);
+		update.getLexicalCategory().ifPresent(this::setLexicalCategory);
+	}
+	
+	private void updateSenses(LexemeUpdate update) {
 		for (SenseDocument sense : update.getAddedSenses()) {
 			addSense(sense);
 		}
@@ -426,6 +432,9 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 		for (SenseIdValue senseId : update.getRemovedSenses()) {
 			removeSense(senseId);
 		}
+	}
+	
+	private void updateForms(LexemeUpdate update) {
 		for (FormDocument form : update.getAddedForms()) {
 			addForm(form);
 		}
@@ -435,7 +444,6 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 		for (FormIdValue formId : update.getRemovedForms()) {
 			removeForm(formId);
 		}
-		return this;
 	}
 
 	@Override
