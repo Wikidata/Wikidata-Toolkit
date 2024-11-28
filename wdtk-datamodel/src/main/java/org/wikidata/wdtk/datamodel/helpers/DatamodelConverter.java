@@ -678,9 +678,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return
 	 */
     private List<ItemIdValue> copyItemIds(List<ItemIdValue> ids) {
-        return ids.stream()
-                .map(id -> copy(id))
-                .collect(Collectors.toList());
+        return CopyUtils.copyItemIds(ids, this);
     }
     
     /**
