@@ -1,5 +1,8 @@
 package org.wikidata.wdtk.datamodel.helpers;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 /*-
  * #%L
  * Wikidata Toolkit Data Model
@@ -21,9 +24,13 @@ package org.wikidata.wdtk.datamodel.helpers;
  */
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 /**
  * Utility class for copying various data model elements.
@@ -40,5 +47,24 @@ public class CopyUtils {
         return ids.stream()
                 .map(converter::copy)
                 .collect(Collectors.toList());
+    }
+
+    public static List<MonolingualTextValue> copyMonoLingualTextValues(
+        Collection<MonolingualTextValue> monoLingualTextValues, 
+        DatamodelConverter converter
+    ) 
+    {
+        return monoLingualTextValues.stream()
+            .map(converter::copy)
+            .collect(Collectors.toList());
+    }
+
+    public static List<StatementGroup> copyStatementGroups(
+        List<StatementGroup> statementGroups, 
+        DatamodelConverter converter
+    ) {
+        return statementGroups.stream()
+            .map(converter::copy)
+            .collect(Collectors.toList());
     }
 }

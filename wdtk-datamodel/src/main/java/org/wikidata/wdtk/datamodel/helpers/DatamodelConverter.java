@@ -463,7 +463,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
         return dataObjectFactory.getFormDocument(
                 copy(object.getEntityId()),
                 copyMonoLingualTextValues(object.getRepresentations().values()),
-                copyItemIds(object.getGrammaticalFeatures()),
+                CopyUtils.copyItemIds(object.getGrammaticalFeatures(), this),
                 copyStatementGroups(object.getStatementGroups()),
                 object.getRevisionId());
     }
@@ -634,11 +634,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return the copied object
 	 */
 	private List<StatementGroup> copyStatementGroups(List<StatementGroup> statementGroups) {
-		List<StatementGroup> result = new ArrayList<>(statementGroups.size());
-		for (StatementGroup statementGroup : statementGroups) {
-			result.add(copy(statementGroup));
-		}
-		return result;
+		return CopyUtils.copyStatementGroups(statementGroups, this);
 	}
 
 	/**
@@ -649,11 +645,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return the copied object
 	 */
 	private List<MonolingualTextValue> copyMonoLingualTextValues(Collection<MonolingualTextValue> monoLingualTextValues) {
-		List<MonolingualTextValue> result = new ArrayList<>(monoLingualTextValues.size());
-		for (MonolingualTextValue mtv : monoLingualTextValues) {
-			result.add(copy(mtv));
-		}
-		return result;
+		return CopyUtils.copyMonoLingualTextValues(monoLingualTextValues, this);
 	}
 
 	/**
