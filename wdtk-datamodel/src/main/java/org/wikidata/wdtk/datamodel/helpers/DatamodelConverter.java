@@ -463,7 +463,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
         return dataObjectFactory.getFormDocument(
                 copy(object.getEntityId()),
                 copyMonoLingualTextValues(object.getRepresentations().values()),
-                CopyUtils.copyItemIds(object.getGrammaticalFeatures(), this),
+                copyItemIds(object.getGrammaticalFeatures()),
                 copyStatementGroups(object.getStatementGroups()),
                 object.getRevisionId());
     }
