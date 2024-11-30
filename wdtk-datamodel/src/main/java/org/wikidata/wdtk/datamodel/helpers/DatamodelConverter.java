@@ -78,8 +78,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 public class DatamodelConverter implements SnakVisitor<Snak>,
 		ValueVisitor<Value> {
 
-	static final Logger logger = LoggerFactory
-			.getLogger(DatamodelConverter.class);
+	private  final Logger logger;
 
 	/**
 	 * The factory to use for copying.
@@ -94,6 +93,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 */
 	public DatamodelConverter(DataObjectFactory dataObjectFactory) {
 		this.dataObjectFactory = dataObjectFactory;
+		this.logger = LoggerFactory.getLogger(getClass());
 	}
 
 	/**
