@@ -40,7 +40,7 @@ public class PropertyIdValueImplTest {
 	private final PropertyIdValueImpl prop3 = new PropertyIdValueImpl("P57",	 "http://www.wikidata.org/entity/");
 	private final PropertyIdValueImpl prop4 = new PropertyIdValueImpl("P42", "http://www.example.org/entity/");
 	private final String JSON_PROPERTY_ID_VALUE = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"property\",\"numeric-id\":42,\"id\":\"P42\"}}";
-	private final String JSON_PROPERTY_ID_VALUE_WITHOUT_NUMERICAL_ID = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"P42\"}}";
+	private final String JSON_PROPERTY_ID_NO_NUMERIC = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"P42\"}}";
 
 	@Test
 	public void entityTypeIsProperty() {
@@ -101,7 +101,7 @@ public class PropertyIdValueImplTest {
 
 	@Test
 	public void testToJavaWithoutNumericalID() throws IOException {
-		assertEquals(prop1, mapper.readValue(JSON_PROPERTY_ID_VALUE_WITHOUT_NUMERICAL_ID, ValueImpl.class));
+		assertEquals(prop1, mapper.readValue(JSON_PROPERTY_ID_NO_NUMERIC, ValueImpl.class));
 	}
 
 	@Test

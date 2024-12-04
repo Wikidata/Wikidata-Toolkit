@@ -45,7 +45,7 @@ public class ItemIdValueImplTest {
 	private final ItemIdValueImpl item4 = new ItemIdValueImpl("Q42", "http://www.example.org/entity/");
 	private final String JSON_ITEM_ID_VALUE = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"item\",\"numeric-id\":42,\"id\":\"Q42\"}}";
 	private final String JSON_ITEM_ID_VALUE_WITHOUT_ID = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"item\",\"numeric-id\":\"42\"}}";
-	private final String JSON_ITEM_ID_VALUE_WITHOUT_NUMERICAL_ID = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"Q42\"}}";
+	private final String JSON_ITEM_ID_NO_NUMERIC = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"Q42\"}}";
 	private final String JSON_ITEM_ID_VALUE_WRONG_ID = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"W42\"}}";
 	private final String JSON_ITEM_ID_VALUE_UNSUPPORTED_TYPE = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"foo\",\"numeric-id\":42,\"id\":\"F42\"}}";
 	private final String JSON_ITEM_ID_VALUE_UNSUPPORTED_NO_ID = "{\"type\":\"wikibase-entityid\",\"value\":{}}";
@@ -128,7 +128,7 @@ public class ItemIdValueImplTest {
 
 	@Test
 	public void testToJavaWithoutNumericalId() throws IOException {
-		assertEquals(item1, mapper.readValue(JSON_ITEM_ID_VALUE_WITHOUT_NUMERICAL_ID, ValueImpl.class));
+		assertEquals(item1, mapper.readValue(JSON_ITEM_ID_NO_NUMERIC, ValueImpl.class));
 	}
 	
 	@Test

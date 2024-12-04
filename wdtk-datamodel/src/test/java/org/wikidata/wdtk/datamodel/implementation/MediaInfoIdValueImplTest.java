@@ -41,7 +41,7 @@ public class MediaInfoIdValueImplTest {
 	private final MediaInfoIdValueImpl mediaInfo3 = new MediaInfoIdValueImpl("M57", "http://commons.wikimedia.org/entity/");
 	private final MediaInfoIdValueImpl mediaInfo4 = new MediaInfoIdValueImpl("M42", "http://www.example.org/entity/");
 	private final String JSON_MEDIA_INFO_ID_VALUE = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"mediainfo\",\"numeric-id\":42,\"id\":\"M42\"}}";
-	private final String JSON_MEDIA_INFO_ID_VALUE_WITHOUT_NUMERICAL_ID = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"M42\"}}";
+	private final String MEDIA_INFO_ID_NO_NUMERIC = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"M42\"}}";
 
 	@Test
 	public void entityTypeIsMediaInfo() {
@@ -116,7 +116,7 @@ public class MediaInfoIdValueImplTest {
 
 	@Test
 	public void testToJavaWithoutNumericalID() throws IOException {
-		assertEquals(mediaInfo1, mapper.readValue(JSON_MEDIA_INFO_ID_VALUE_WITHOUT_NUMERICAL_ID, ValueImpl.class));
+		assertEquals(mediaInfo1, mapper.readValue(MEDIA_INFO_ID_NO_NUMERIC, ValueImpl.class));
 	}
 
 	@Test

@@ -332,8 +332,7 @@ public class Hash {
 	 * @return the hash code of the object
 	 */
 	public static int hashCode(PropertyDocument o) {
-		int result;
-		result = hashCodeForTermedDocument(o);
+		int result = o.hashCodeForTermedDocument();
 		result = PRIME * result + o.getStatementGroups().hashCode();
 		result = PRIME * result + o.getDatatype().hashCode();
 		return result;
@@ -348,8 +347,7 @@ public class Hash {
 	 * @return the hash code of the object
 	 */
 	public static int hashCode(ItemDocument o) {
-		int result;
-		result = hashCodeForTermedDocument(o);
+		int result = o.hashCodeForTermedDocument();
 		result = PRIME * result + o.getStatementGroups().hashCode();
 		result = PRIME * result + o.getSiteLinks().hashCode();
 		return result;
@@ -418,23 +416,6 @@ public class Hash {
 		int result;
 		result = o.getLabels().hashCode();
 		result = PRIME * result + o.getStatementGroups().hashCode();
-		return result;
-	}
-
-	/**
-	 * Returns a hash code for the given object.
-	 *
-	 * @see java.lang.Object#hashCode()
-	 * @param o
-	 *            the object to create a hash for
-	 * @return the hash code of the object
-	 */
-	private static int hashCodeForTermedDocument(TermedDocument o) {
-		int result;
-		result = o.getAliases().hashCode();
-		result = PRIME * result + o.getDescriptions().hashCode();
-		result = PRIME * result + o.getLabels().hashCode();
-		result = PRIME * result + Long.hashCode(o.getRevisionId());
 		return result;
 	}
 

@@ -212,33 +212,50 @@ public class TimeValueImpl extends ValueImpl implements TimeValue {
 
 	@Override
 	public TimeValue toGregorian() {
-		// already in Gregorian calendar
-		if (this.getPreferredCalendarModel().equals(TimeValue.CM_GREGORIAN_PRO)) {
+		if (isAlreadyGregorian()) {
 			return this;
 		}
 
-		// convert Julian
-		if (this.getPreferredCalendarModel().equals(TimeValue.CM_JULIAN_PRO)
-				&& this.getPrecision() >= TimeValue.PREC_DAY
-				&& this.value.year > Integer.MIN_VALUE && this.value.year < Integer.MAX_VALUE
-		) {
-			try {
-				final JulianDate julian = JulianDate.of((int) this.value.year, this.value.month, this.value.day);
-				final LocalDate date = LocalDate.from(julian);
-				return new TimeValueImpl(
-						date.getYear(), (byte) date.getMonth().getValue(), (byte) date.getDayOfMonth(),
-						this.value.hour, this.value.minute, this.value.second,
-						(byte) this.value.precision, this.value.before, this.value.after,
-						this.value.timezone, TimeValue.CM_GREGORIAN_PRO
-				);
-			} catch(DateTimeException e) {
-				return null;
-			}
-
+		if (isJulianCalendar() && isPrecisionAtLeastDay() && isYearWithinValidRange()) {
+			return convertJulianToGregorian();
 		}
 
 		return null;
 	}
+
+	// Helper methods to decompose the complex condition
+	private boolean isAlreadyGregorian() {
+		return this.getPreferredCalendarModel().equals(TimeValue.CM_GREGORIAN_PRO);
+	}
+
+	private boolean isJulianCalendar() {
+		return this.getPreferredCalendarModel().equals(TimeValue.CM_JULIAN_PRO);
+	}
+
+	private boolean isPrecisionAtLeastDay() {
+		return this.getPrecision() >= TimeValue.PREC_DAY;
+	}
+
+	private boolean isYearWithinValidRange() {
+		return this.value.year > Integer.MIN_VALUE && this.value.year < Integer.MAX_VALUE;
+	}
+
+	// Conversion logic remains unchanged
+	private TimeValue convertJulianToGregorian() {
+		try {
+			JulianDate julian = JulianDate.of((int) this.value.year, this.value.month, this.value.day);
+			LocalDate date = LocalDate.from(julian);
+			return new TimeValueImpl(
+					date.getYear(), (byte) date.getMonth().getValue(), (byte) date.getDayOfMonth(),
+					this.value.hour, this.value.minute, this.value.second,
+					(byte) this.value.precision, this.value.before, this.value.after,
+					this.value.timezone, TimeValue.CM_GREGORIAN_PRO
+			);
+		} catch (DateTimeException e) {
+			return null;
+		}
+	}
+
 
 	/**
 	 * Helper object that represents the JSON object structure of the value.

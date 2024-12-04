@@ -78,8 +78,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 public class DatamodelConverter implements SnakVisitor<Snak>,
 		ValueVisitor<Value> {
 
-	static final Logger logger = LoggerFactory
-			.getLogger(DatamodelConverter.class);
+	private  final Logger logger;
 
 	/**
 	 * The factory to use for copying.
@@ -94,6 +93,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 */
 	public DatamodelConverter(DataObjectFactory dataObjectFactory) {
 		this.dataObjectFactory = dataObjectFactory;
+		this.logger = LoggerFactory.getLogger(getClass());
 	}
 
 	/**
@@ -634,11 +634,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return the copied object
 	 */
 	private List<StatementGroup> copyStatementGroups(List<StatementGroup> statementGroups) {
-		List<StatementGroup> result = new ArrayList<>(statementGroups.size());
-		for (StatementGroup statementGroup : statementGroups) {
-			result.add(copy(statementGroup));
-		}
-		return result;
+		return CopyUtils.copyStatementGroups(statementGroups, this);
 	}
 
 	/**
@@ -649,11 +645,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return the copied object
 	 */
 	private List<MonolingualTextValue> copyMonoLingualTextValues(Collection<MonolingualTextValue> monoLingualTextValues) {
-		List<MonolingualTextValue> result = new ArrayList<>(monoLingualTextValues.size());
-		for (MonolingualTextValue mtv : monoLingualTextValues) {
-			result.add(copy(mtv));
-		}
-		return result;
+		return CopyUtils.copyMonoLingualTextValues(monoLingualTextValues, this);
 	}
 
 	/**
@@ -678,9 +670,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return
 	 */
     private List<ItemIdValue> copyItemIds(List<ItemIdValue> ids) {
-        return ids.stream()
-                .map(id -> copy(id))
-                .collect(Collectors.toList());
+        return CopyUtils.copyItemIds(ids, this);
     }
     
     /**

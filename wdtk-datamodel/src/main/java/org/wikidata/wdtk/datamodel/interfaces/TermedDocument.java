@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Interface for EntityDocuments that can be described by terms in several
@@ -91,4 +92,13 @@ public interface TermedDocument extends LabeledDocument {
 	 * 		contain should all match the supplied language.
 	 */
 	TermedDocument withAliases(String language, List<MonolingualTextValue> aliases);
+
+	 /**
+     * Calculates hash code for this TermedDocument.
+     *
+     * @return the hash code of the object
+     */
+    default int hashCodeForTermedDocument() {
+        return Objects.hash(getAliases(), getDescriptions(), getLabels(), getRevisionId());
+    }
 }
