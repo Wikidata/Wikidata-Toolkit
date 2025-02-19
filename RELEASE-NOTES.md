@@ -1,3 +1,12 @@
+# Changelog
+
+## [0.17.0](https://github.com/Wikidata/Wikidata-Toolkit/compare/v0.16.1-SNAPSHOT...v0.17.0) (2025-02-19)
+
+
+### Features
+
+* Expose detailed error messages in MediaWiki API errors ([#911](https://github.com/Wikidata/Wikidata-Toolkit/issues/911)) ([8627004](https://github.com/Wikidata/Wikidata-Toolkit/commit/862700436e8607f9c8ca80eccde49f9fa3b83c52))
+
 Wikidata Toolkit Release Notes
 ==============================
 
@@ -408,5 +417,3 @@ Bug fixes:
 Know issues:
 * Entities loaded from dump get wrong base IRI (issue #43)
 * URLs for sitelinks are missing (issue #37)
-
-   
