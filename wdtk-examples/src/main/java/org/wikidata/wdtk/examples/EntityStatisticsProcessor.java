@@ -96,7 +96,7 @@ class EntityStatisticsProcessor implements EntityDocumentProcessor {
 	 *
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		ExampleHelpers.configureLogging();
 		EntityStatisticsProcessor.printDocumentation();
 
